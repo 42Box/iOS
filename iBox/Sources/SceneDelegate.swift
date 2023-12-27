@@ -16,8 +16,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
+        
+        let mainViewController = MainViewController()
+        
+        let navigationController = UINavigationController(rootViewController: mainViewController)
 
-        window?.rootViewController = ViewController() // 루트 뷰컨트롤러 설정
+        window?.rootViewController = navigationController // 루트 뷰컨트롤러 설정
         window?.makeKeyAndVisible() // 윈도우를 화면에 보여줌
     }
 
