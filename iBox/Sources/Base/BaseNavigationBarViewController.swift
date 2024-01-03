@@ -165,7 +165,8 @@ class BaseNavigationBarViewController<View: BaseView>: UIViewController, BaseNav
         
         contentView.snp.makeConstraints {
             $0.top.equalTo(statusBar.snp.bottom).offset(60)
-            $0.left.bottom.right.equalToSuperview()
+            $0.left.right.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(tabBarController?.tabBar.frame.height ?? 0)
         }
     }
     
