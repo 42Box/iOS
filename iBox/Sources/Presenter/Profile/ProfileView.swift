@@ -26,12 +26,13 @@ class ProfileView: BaseView {
     let chevronButton = UIButton().then {
         $0.configuration = .plain()
         $0.configuration?.image = UIImage(systemName: "chevron.right")
-        $0.configuration?.preferredSymbolConfigurationForImage = .init(pointSize: 15, weight: .bold)
+        $0.configuration?.preferredSymbolConfigurationForImage = .init(pointSize: 10, weight: .bold)
         $0.tintColor = .systemGray3
     }
 
     let tableView = UITableView().then {
         $0.register(ProfileItemCell.self, forCellReuseIdentifier: "ProfileItemCell")
+        $0.separatorStyle = .none
     }
     
     override func configureUI() {
