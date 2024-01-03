@@ -14,6 +14,7 @@ class MainTabBarController: UITabBarController {
         view.backgroundColor = .systemBackground
 
         setupTabBar()
+        setupTabBarAppearance()
     }
     
     private func setupTabBar() {
@@ -25,8 +26,15 @@ class MainTabBarController: UITabBarController {
     }
     
     private func setupViewController(viewController: UIViewController, image: UIImage?) -> UIViewController {
+        viewController.tabBarItem.title = ""
         viewController.tabBarItem.image = image
         return UINavigationController(rootViewController: viewController)
+    }
+    
+    private func setupTabBarAppearance() {
+        let appearance = UITabBarItem.appearance()
+        appearance.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.clear], for: .normal)
+        appearance.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.clear], for: .selected)
     }
 
 }

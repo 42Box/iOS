@@ -15,4 +15,5 @@ class BaseViewController<View: UIView>: UIViewController {
         super.viewDidLoad()
         view.addSubview(baseView)
     }
+    
 }
