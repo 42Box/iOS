@@ -1,5 +1,5 @@
 //
-//  ProfileItemCell.swift
+//  MyPageItemCell.swift
 //  iBox
 //
 //  Created by jiyeon on 1/3/24.
@@ -9,7 +9,7 @@ import UIKit
 
 import SnapKit
 
-class ProfileItemCell: UITableViewCell, BaseViewProtocol {
+class MyPageItemCell: UITableViewCell, BaseViewProtocol {
     
     // MARK: - UI
     
@@ -19,7 +19,6 @@ class ProfileItemCell: UITableViewCell, BaseViewProtocol {
     }
     
     let descriptionLabel = UILabel().then {
-        $0.text = "예시입니당"
         $0.font = .systemFont(ofSize: 13, weight: .regular)
         $0.textColor = .gray
     }
@@ -36,13 +35,14 @@ class ProfileItemCell: UITableViewCell, BaseViewProtocol {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureUI()
+        selectionStyle = .none // 셀 선택했을 때 회색으로 변하는 것 비활성화
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: BaseViewProtocol
+    // MARK: - BaseViewProtocol
     
     func configureUI() {
         addSubview(titleLabel)

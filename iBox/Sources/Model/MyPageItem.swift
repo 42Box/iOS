@@ -1,5 +1,5 @@
 //
-//  ProfileItem.swift
+//  MyPageItem.swift
 //  iBox
 //
 //  Created by jiyeon on 1/3/24.
@@ -7,12 +7,13 @@
 
 import UIKit
 
-struct ProfileSection {
+struct MyPageSection {
     var title: String
-    var items: [ProfileItem]
+    var items: [MyPageItem]
 }
 
-struct ProfileItem {
+struct MyPageItem {
     var title: String
+    var description: String?
     var viewController: UIViewController?
 }

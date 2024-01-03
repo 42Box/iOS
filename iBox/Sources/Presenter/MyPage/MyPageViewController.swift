@@ -1,5 +1,5 @@
 //
-//  ProfileViewController.swift
+//  MyPageViewController.swift
 //  iBox
 //
 //  Created by 이지현 on 12/27/23.
@@ -7,18 +7,18 @@
 
 import UIKit
 
-class ProfileViewController: BaseNavigationBarViewController<ProfileView> {
+class MyPageViewController: BaseNavigationBarViewController<MyPageView> {
     
     // MARK: - properties
     
-    var profileSections: [ProfileSection] = [
+    var myPageSections: [MyPageSection] = [
         .init(title: "settings", items: [
-            ProfileItem(title: "다크 모드")
+            MyPageItem(title: "다크 모드", viewController: DisplayModeViewController())
         ]),
         .init(title: "help", items: [
-            ProfileItem(title: "이용 가이드"),
-            ProfileItem(title: "앱 피드백"),
-            ProfileItem(title: "개발자 정보")
+            MyPageItem(title: "이용 가이드"),
+            MyPageItem(title: "앱 피드백"),
+            MyPageItem(title: "개발자 정보", description: "지쿠 😆✌🏻")
         ])
     ]
     
@@ -26,46 +26,59 @@ class ProfileViewController: BaseNavigationBarViewController<ProfileView> {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        guard let contentView = contentView as? ProfileView else { return }
+        guard let contentView = contentView as? MyPageView else { return }
+        
         contentView.tableView.delegate = self
         contentView.tableView.dataSource = self
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(profileViewTapped))
+        contentView.profileView.addGestureRecognizer(tapGesture)
     }
     
+    // MARK: - BaseNavigationBarViewControllerProtocol
+    
     override func setupNavigationBar() {
-        setNavigationBarTitleLabelText("Profile")
+        setNavigationBarTitleLabelText("My Page")
+    }
+    
+    // MARK: - functions
+    
+    @objc func profileViewTapped(_ gesture: UITapGestureRecognizer) {
+        let viewController = ProfileViewController()
+        navigationController?.pushViewController(viewController, animated: true)
     }
     
 }
 
-extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
+extension MyPageViewController: UITableViewDelegate, UITableViewDataSource {
     
     // 테이블 뷰의 섹션 개수 설정
     func numberOfSections(in tableView: UITableView) -> Int {
-        return profileSections.count
+        return myPageSections.count
     }
     
     // 테이블 뷰의 행 개수 설정
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return profileSections[section].items.count
+        return myPageSections[section].items.count
     }
     
     // 테이블 뷰 셀 구성
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ProfileItemCell")
-                as? ProfileItemCell else { return UITableViewCell() }
-        let profileItem = profileSections[indexPath.section].items[indexPath.row]
-        cell.titleLabel.text = profileItem.title
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "MyPageItemCell")
+                as? MyPageItemCell else { return UITableViewCell() }
+        let item = myPageSections[indexPath.section].items[indexPath.row]
+        cell.titleLabel.text = item.title
+        cell.descriptionLabel.text = item.description
         return cell
     }
     
     // 셀의 높이 설정
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
+        return 65
     }
     
     // 섹션 헤더의 View 설정
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        if section == 0 { return nil }
         let headerView = UIView()
         headerView.backgroundColor = .systemGroupedBackground
         return headerView
@@ -78,8 +91,8 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
     
     // 테이블 뷰 셀이 선택되었을 때 실행되는 메서드
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let profileItem = profileSections[indexPath.section].items[indexPath.row]
-        guard let viewController = profileItem.viewController else { return }
+        let item = myPageSections[indexPath.section].items[indexPath.row]
+        guard let viewController = item.viewController else { return }
         navigationController?.pushViewController(viewController, animated: true)
     }
     

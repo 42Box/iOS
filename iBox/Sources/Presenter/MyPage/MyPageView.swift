@@ -7,15 +7,17 @@
 
 import UIKit
 
-class ProfileView: BaseView {
+class MyPageView: BaseView {
     
-    let profileView = UIView()/*.then {
-        $0.backgroundColor = .systemPink
-    }*/
+    // MARK: - UI
+    
+    let profileView = UIView().then {
+        $0.isUserInteractionEnabled = true
+    }
     
     let profileImageView = UIImageView().then {
         $0.image = UIImage(systemName: "person.crop.circle")
-        $0.tintColor = .box
+        $0.tintColor = .box2
     }
     
     let profileLabel = UILabel().then {
@@ -31,9 +33,12 @@ class ProfileView: BaseView {
     }
 
     let tableView = UITableView().then {
-        $0.register(ProfileItemCell.self, forCellReuseIdentifier: "ProfileItemCell")
+        $0.register(MyPageItemCell.self, forCellReuseIdentifier: "MyPageItemCell")
         $0.separatorStyle = .none
+        $0.sectionHeaderTopPadding = 0
     }
+    
+    // MARK: - BaseViewProtocol
     
     override func configureUI() {
         addSubview(profileView)
@@ -50,7 +55,7 @@ class ProfileView: BaseView {
         profileImageView.snp.makeConstraints {
             $0.left.equalToSuperview().inset(20)
             $0.centerY.equalToSuperview()
-            $0.width.height.equalTo(60)
+            $0.width.height.equalTo(50)
         }
         
         profileLabel.snp.makeConstraints {

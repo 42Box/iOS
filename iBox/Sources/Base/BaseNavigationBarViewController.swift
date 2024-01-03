@@ -129,6 +129,7 @@ class BaseNavigationBarViewController<View: BaseView>: UIViewController, BaseNav
     // MARK: - functions
     
     private func configureUI() {
+        view.backgroundColor = .systemBackground
         view.addSubview(statusBar)
         view.addSubview(navigationBar)
         navigationBar.addSubview(navigationBar.backButton)
@@ -172,10 +173,17 @@ class BaseNavigationBarViewController<View: BaseView>: UIViewController, BaseNav
     
     private func setupProperties() {
         navigationController?.setNavigationBarHidden(true, animated: false)
+        
         setNavigationBarTintColor(tintColor)
         setNavigationBarTitleLabelFont(titleFont)
         setNavigationBarBackButtonHidden(true)
         setNavigationBarAddButtonHidden(true)
+        
+        navigationBar.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc func backButtonTapped() {
+        navigationController?.popViewController(animated: true)
     }
     
 }
