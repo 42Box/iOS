@@ -32,16 +32,6 @@ enum ColorName: String {
 
 struct ColorPalette {
     
-    public static var backgroundColor = {
-        return UIColor { (UITraitCollection: UITraitCollection) -> UIColor in
-            if UITraitCollection.userInterfaceStyle == .dark {
-                return .black
-            } else {
-                return .systemGray5
-            }
-        }
-    }()
-    
     public static var tableViewBackgroundColor = {
         return UIColor { (UITraitCollection: UITraitCollection) -> UIColor in
             if UITraitCollection.userInterfaceStyle == .dark {

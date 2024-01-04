@@ -7,7 +7,7 @@
 
 import UIKit
 
-class WebViewController: BaseViewController<WebView> {
+class WebViewController: BaseNavigationBarViewController<WebView> {
     var selectedWebsite: String?
 
     override func viewDidLoad() {
@@ -15,7 +15,12 @@ class WebViewController: BaseViewController<WebView> {
         view.backgroundColor = .systemBackground
         navigationItem.largeTitleDisplayMode = .never
         
-        baseView.selectedWebsite = selectedWebsite
+        guard let contentView = contentView as? WebView else { return }
+        contentView.selectedWebsite = selectedWebsite
+    }
+    
+    override func setupNavigationBar() {
+        setNavigationBarHidden(true)
     }
 
 }
