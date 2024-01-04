@@ -8,11 +8,11 @@
 import UIKit
 
 class MainTabBarController: UITabBarController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-
+        
         setupTabBar()
         setupTabBarAppearance()
     }
@@ -21,8 +21,9 @@ class MainTabBarController: UITabBarController {
         viewControllers = [
             setupViewController(viewController: BoxListViewController(), image: UIImage(systemName: "square.grid.2x2.fill")),
             setupViewController(viewController: FavoriteViewController(), image: UIImage(systemName: "heart.fill")),
-            setupViewController(viewController: ProfileViewController(), image: UIImage(systemName: "person.fill"))
+            setupViewController(viewController: MyPageViewController(), image: UIImage(systemName: "person.fill"))
         ]
+        tabBar.tintColor = .box
     }
     
     private func setupViewController(viewController: UIViewController, image: UIImage?) -> UIViewController {
