@@ -21,7 +21,7 @@ class DisplayModeCell: UITableViewCell, BaseViewProtocol {
     }
     
     let selectButton = UIButton().then {
-        $0.tintColor = .gray
+        $0.configuration = .plain()
     }
     
     // MARK: - initializer
@@ -46,7 +46,7 @@ class DisplayModeCell: UITableViewCell, BaseViewProtocol {
         displayModeImageView.snp.makeConstraints {
             $0.left.equalToSuperview().inset(20)
             $0.centerY.equalToSuperview()
-            $0.width.height.equalTo(25)
+            $0.width.height.equalTo(23)
         }
         
         titleLabel.snp.makeConstraints {
@@ -66,6 +66,16 @@ class DisplayModeCell: UITableViewCell, BaseViewProtocol {
     func bind(_ item: DisplayModeItem) {
         titleLabel.text = item.title
         displayModeImageView.image = item.image
+    }
+    
+    func setupSelectButton(_ selected: Bool) {
+        if selected {
+            selectButton.configuration?.image = UIImage(systemName: "circle.inset.filled")
+            selectButton.tintColor = .box2
+        } else {
+            selectButton.configuration?.image = UIImage(systemName: "circle")
+            selectButton.tintColor = .gray
+        }
     }
     
 }

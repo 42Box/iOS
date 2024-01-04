@@ -7,11 +7,6 @@
 
 import UIKit
 
-struct DisplayModeItem {
-    var title: String
-    var image: UIImage?
-}
-
 class DisplayModeViewController: BaseNavigationBarViewController<DisplayModeView> {
     
     // MARK: - properties
@@ -21,6 +16,8 @@ class DisplayModeViewController: BaseNavigationBarViewController<DisplayModeView
         DisplayModeItem(title: "다크 모드", image: UIImage(systemName: "circle.fill")),
         DisplayModeItem(title: "시스템 설정 모드", image: UIImage(systemName: "circle.righthalf.filled"))
     ]
+    
+    var selected = 0 // 예시
     
     // MARK: - life cycle
     
@@ -55,12 +52,19 @@ extension DisplayModeViewController: UITableViewDelegate, UITableViewDataSource 
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "DisplayModeCell")
                 as? DisplayModeCell else { return UITableViewCell() }
         cell.bind(displayMode[indexPath.row])
+        cell.setupSelectButton(indexPath.row == selected)
         return cell
     }
     
     // 셀의 높이 설정
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 65
+        return 55
+    }
+    
+    // 테이블 뷰 셀이 선택되었을 때 실행되는 메서드
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        selected = indexPath.row
+        tableView.reloadData() // 다시 그리기
     }
     
 }
