@@ -6,10 +6,18 @@
 //
 
 import UIKit
+import SnapKit
 
 class BoxListView: UIView {
     
-    let folders = ["folder1", "folder2", "folder3"]
+    var folderArr = [
+        Folder(name: "folder1", webs: [
+            Web(name: "42 Intra", url: "https://profile.intra.42.fr/"),
+            Web(name: "42Where", url: "https://where42.kr/")
+        ]),
+        Folder(name: "folder2", webs: [Web(name: "Cabi", url: "https://cabi.42seoul.io/")]),
+        Folder(name: "folder3", webs: [])
+    ]
     
     private lazy var tableView = {
         let tableView = UITableView()
@@ -47,19 +55,56 @@ class BoxListView: UIView {
 }
 
 extension BoxListView: UITableViewDataSource {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return folderArr.count
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return folders.count
+        if !folderArr[section].isExpanded {
+            return 0
+        }
+        return folderArr[section].webs.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = folders[indexPath.row]
-        cell.backgroundColor = .clear
+        cell.textLabel?.text = folderArr[indexPath.section].webs[indexPath.row].name
         return cell
     }
     
 }
 
 extension BoxListView: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let button = UIButton(type: .system)
+        button.setTitle(folderArr[section].name, for: .normal)
+        button.setTitleColor(.label, for: .normal)
+        button.backgroundColor = ColorPalette.tableViewBackgroundColor
+        button.titleLabel?.font = .boldSystemFont(ofSize: 16)
+        button.tag = section
+        
+        button.addTarget(self, action: #selector(handleExpandClose), for: .touchUpInside)
+        
+        return button
+    }
     
+    @objc private func handleExpandClose(button: UIButton) {
+        let section = button.tag
+        
+        var indexPaths = [IndexPath]()
+        for row in folderArr[section].webs.indices {
+            let indexPath = IndexPath(row: row, section: section)
+            indexPaths.append(indexPath)
+        }
+        
+        folderArr[section].isExpanded.toggle()
+        
+        if folderArr[section].isExpanded {
+            tableView.insertRows(at: indexPaths, with: .fade)
+        } else {
+            tableView.deleteRows(at: indexPaths, with: .fade)
+        }
+    }
 }
+
