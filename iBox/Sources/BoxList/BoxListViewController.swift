@@ -11,8 +11,18 @@ class BoxListViewController: BaseViewController<BoxListView> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        baseView.delegate = self
+        
         title = "iBox"
-        navigationController?.navigationBar.prefersLargeTitles = true // BaseViewController에 추가해도 될 듯?
+        navigationController?.navigationBar.prefersLargeTitles = true
     }
 
+}
+
+extension BoxListViewController: BoxListViewDelegate {
+    func didSelectWeb(at url: String) {
+        let viewController = WebViewController()
+        viewController.selectedWebsite = url
+        navigationController?.pushViewController(viewController, animated: true)
+    }
 }

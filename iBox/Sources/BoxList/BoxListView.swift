@@ -8,7 +8,12 @@
 import UIKit
 import SnapKit
 
+protocol BoxListViewDelegate: AnyObject {
+    func didSelectWeb(at url: String)
+}
+
 class BoxListView: UIView {
+    weak var delegate: BoxListViewDelegate?
     
     var folderArr = [
         Folder(name: "folder1", webs: [
@@ -69,6 +74,7 @@ extension BoxListView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        cell.selectionStyle = .none
         cell.textLabel?.text = folderArr[indexPath.section].webs[indexPath.row].name
         return cell
     }
@@ -105,6 +111,11 @@ extension BoxListView: UITableViewDelegate {
         } else {
             tableView.deleteRows(at: indexPaths, with: .fade)
         }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let webUrl = folderArr[indexPath.section].webs[indexPath.row].url
+        delegate?.didSelectWeb(at: webUrl)
     }
 }
 
