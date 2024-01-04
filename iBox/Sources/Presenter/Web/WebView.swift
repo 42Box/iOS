@@ -10,7 +10,7 @@ import WebKit
 
 import SnapKit
 
-class WebView: UIView {
+class WebView: BaseView {
     var selectedWebsite: String? {
         didSet {
             loadWebsite()

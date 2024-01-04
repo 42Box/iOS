@@ -13,7 +13,7 @@ protocol BoxListViewDelegate: AnyObject {
     func didSelectWeb(at url: String, withName name: String)
 }
 
-class BoxListView: UIView {
+class BoxListView: BaseView {
     weak var delegate: BoxListViewDelegate?
     
     var folderArr = [
@@ -31,7 +31,7 @@ class BoxListView: UIView {
         let view = UIView()
         view.clipsToBounds = true
         view.layer.cornerRadius = 20
-        view.backgroundColor = ColorPalette.tableViewBackgroundColor
+        view.backgroundColor = .systemGroupedBackground
         
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
@@ -58,7 +58,7 @@ class BoxListView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = ColorPalette.backgroundColor
+        backgroundColor = .systemBackground
         
         setupLayout()
     }

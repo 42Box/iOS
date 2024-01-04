@@ -7,14 +7,17 @@
 
 import UIKit
 
-class BoxListViewController: BaseViewController<BoxListView> {
+class BoxListViewController: BaseNavigationBarViewController<BoxListView> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        baseView.delegate = self
         
-        title = "iBox"
-        navigationController?.navigationBar.prefersLargeTitles = true
+        guard let contentView = contentView as? BoxListView else { return }
+        contentView.delegate = self
+    }
+    
+    override func setupNavigationBar() {
+        setNavigationBarTitleLabelText("iBox")
     }
 
 }
