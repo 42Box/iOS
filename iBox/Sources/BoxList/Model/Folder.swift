@@ -9,8 +9,9 @@ import Foundation
 
 struct Folder {
     let name: String
+    let color: ColorName
     let webs: [Web]
-    var isExpanded: Bool = true
+    var isOpened: Bool = true
 }
 
 struct Web {

@@ -6,23 +6,40 @@
 //
 
 import UIKit
+
 import SnapKit
 
 protocol BoxListViewDelegate: AnyObject {
-    func didSelectWeb(at url: String)
+    func didSelectWeb(at url: String, withName name: String)
 }
 
 class BoxListView: UIView {
     weak var delegate: BoxListViewDelegate?
     
     var folderArr = [
-        Folder(name: "folder1", webs: [
+        Folder(name: "기본 폴더", color: .gray, webs: [
             Web(name: "42 Intra", url: "https://profile.intra.42.fr/"),
-            Web(name: "42Where", url: "https://where42.kr/")
+            Web(name: "42Where", url: "https://where42.kr/"),
+            Web(name: "42Stat", url: "https://stat.42seoul.kr/"),
+            Web(name: "집현전", url: "https://42library.kr/")
         ]),
-        Folder(name: "folder2", webs: [Web(name: "Cabi", url: "https://cabi.42seoul.io/")]),
-        Folder(name: "folder3", webs: [])
+        Folder(name: "새 폴더", color: .green, webs: [Web(name: "Cabi", url: "https://cabi.42seoul.io/")], isOpened: false),
+        Folder(name: "새 폴더(2)", color: .yellow, webs: [Web(name: "24HANE", url: "https://24hoursarenotenough.42seoul.kr/")], isOpened: false)
     ]
+    
+    private lazy var backgroundView = {
+        let view = UIView()
+        view.clipsToBounds = true
+        view.layer.cornerRadius = 20
+        view.backgroundColor = ColorPalette.tableViewBackgroundColor
+        
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview().offset(10)
+            make.leading.trailing.equalToSuperview()
+        }
+        return view
+    }()
     
     private lazy var tableView = {
         let tableView = UITableView()
@@ -30,12 +47,12 @@ class BoxListView: UIView {
         tableView.delegate = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         
-        tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: frame.width, height: 10))
-        tableView.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
+        tableView.sectionHeaderTopPadding = 0
+//        tableView.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
         tableView.clipsToBounds = true
         tableView.layer.cornerRadius = 20
-        tableView.backgroundColor = ColorPalette.tableViewBackgroundColor
-        tableView.separatorColor = .secondaryLabel
+        tableView.backgroundColor = .clear
+        tableView.separatorColor = .clear
         return tableView
     }()
 
@@ -51,8 +68,8 @@ class BoxListView: UIView {
     }
     
     private func setupLayout() {
-        addSubview(tableView)
-        tableView.snp.makeConstraints { make in
+        addSubview(backgroundView)
+        backgroundView.snp.makeConstraints { make in
             make.top.equalTo(safeAreaLayoutGuide).inset(10)
             make.leading.trailing.bottom.equalTo(safeAreaLayoutGuide).inset(20)
         }
@@ -66,7 +83,7 @@ extension BoxListView: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if !folderArr[section].isExpanded {
+        if !folderArr[section].isOpened {
             return 0
         }
         return folderArr[section].webs.count
@@ -75,27 +92,50 @@ extension BoxListView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.selectionStyle = .none
+        cell.backgroundColor = .clear
         cell.textLabel?.text = folderArr[indexPath.section].webs[indexPath.row].name
+        cell.imageView?.image = UIImage(systemName: "ellipsis.rectangle.fill")
+        cell.imageView?.tintColor = .systemGray
         return cell
     }
     
 }
 
 extension BoxListView: UITableViewDelegate {
+    
+    public func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let view = UIView()
+        let line = UIView()
+        view.addSubview(line)
+        line.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(15)
+        }
+        view.backgroundColor = ColorPalette.tableViewBackgroundColor
+        line.backgroundColor = .tertiaryLabel
+        return view
+    }
+
+    public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0.3
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 50
+    }
+    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let button = UIButton(type: .system)
-        button.setTitle(folderArr[section].name, for: .normal)
-        button.setTitleColor(.label, for: .normal)
-        button.backgroundColor = ColorPalette.tableViewBackgroundColor
-        button.titleLabel?.font = .boldSystemFont(ofSize: 16)
+        let button = FolderButton(isOpen: folderArr[section].isOpened)
+        button.setFolderName(folderArr[section].name)
+        button.setFolderColor(folderArr[section].color.toUIColor())
         button.tag = section
         
-        button.addTarget(self, action: #selector(handleExpandClose), for: .touchUpInside)
+        button.addTarget(self, action: #selector(handleOpenClose), for: .touchUpInside)
         
         return button
     }
     
-    @objc private func handleExpandClose(button: UIButton) {
+    @objc private func handleOpenClose(button: FolderButton) {
         let section = button.tag
         
         var indexPaths = [IndexPath]()
@@ -104,9 +144,10 @@ extension BoxListView: UITableViewDelegate {
             indexPaths.append(indexPath)
         }
         
-        folderArr[section].isExpanded.toggle()
+        folderArr[section].isOpened.toggle()
+        button.toggleStatus()
         
-        if folderArr[section].isExpanded {
+        if folderArr[section].isOpened {
             tableView.insertRows(at: indexPaths, with: .fade)
         } else {
             tableView.deleteRows(at: indexPaths, with: .fade)
@@ -115,7 +156,8 @@ extension BoxListView: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let webUrl = folderArr[indexPath.section].webs[indexPath.row].url
-        delegate?.didSelectWeb(at: webUrl)
+        let webName = folderArr[indexPath.section].webs[indexPath.row].name
+        delegate?.didSelectWeb(at: webUrl, withName: webName)
     }
 }
 

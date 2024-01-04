@@ -7,13 +7,15 @@
 
 import UIKit
 
-class WebViewController: UIViewController {
+class WebViewController: BaseViewController<WebView> {
     var selectedWebsite: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-
+        navigationItem.largeTitleDisplayMode = .never
+        
+        baseView.selectedWebsite = selectedWebsite
     }
 
 }
