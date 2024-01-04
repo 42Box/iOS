@@ -35,7 +35,7 @@ struct ColorPalette {
     public static var backgroundColor = {
         return UIColor { (UITraitCollection: UITraitCollection) -> UIColor in
             if UITraitCollection.userInterfaceStyle == .dark {
-                return UIColor.black
+                return .black
             } else {
                 return .systemGray5
             }
@@ -45,9 +45,29 @@ struct ColorPalette {
     public static var tableViewBackgroundColor = {
         return UIColor { (UITraitCollection: UITraitCollection) -> UIColor in
             if UITraitCollection.userInterfaceStyle == .dark {
-                return UIColor.systemGray5
+                return .systemGray5
             } else {
                 return .white
+            }
+        }
+    }()
+    
+    public static var folderGray = {
+        return UIColor { (UITraitCollection: UITraitCollection) -> UIColor in
+            if UITraitCollection.userInterfaceStyle == .dark {
+                return .systemGray2
+            } else {
+                return .systemGray3
+            }
+        }
+    }()
+    
+    public static var webIconColor = {
+        return UIColor { (UITraitCollection: UITraitCollection) -> UIColor in
+            if UITraitCollection.userInterfaceStyle == .dark {
+                return .systemGray
+            } else {
+                return .black
             }
         }
     }()

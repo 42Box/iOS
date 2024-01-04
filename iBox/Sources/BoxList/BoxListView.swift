@@ -95,7 +95,7 @@ extension BoxListView: UITableViewDataSource {
         cell.backgroundColor = .clear
         cell.textLabel?.text = folderArr[indexPath.section].webs[indexPath.row].name
         cell.imageView?.image = UIImage(systemName: "ellipsis.rectangle.fill")
-        cell.imageView?.tintColor = .systemGray
+        cell.imageView?.tintColor = ColorPalette.webIconColor
         return cell
     }
     
