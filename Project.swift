@@ -35,8 +35,7 @@ class iBoxFactory: ProjectFactory {
                     ],
                 ]
             ]
-        ],
-        "UIUserInterfaceStyle": "Light"
+        ]
     ]
     
     func generateTarget() -> [ProjectDescription.Target] {[
