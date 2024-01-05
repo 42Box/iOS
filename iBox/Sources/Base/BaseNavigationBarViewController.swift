@@ -26,6 +26,7 @@ protocol BaseNavigationBarViewControllerProtocol {
     func setNavigationBarHidden(_ hidden: Bool)
     func setNavigationBarBackButtonHidden(_ hidden: Bool)
     func setNavigationBarAddButtonHidden(_ hidden: Bool)
+    func setNavigationBarAddButtonAction(_ selector: Selector)
     func setNavigationBarTitleLabelText(_ text: String?)
     func setNavigationBarTitleLabelFont(_ font: UIFont?)
     func setNavigationBarTitleLabelTextColor(_ color: UIColor?)
@@ -112,6 +113,10 @@ class BaseNavigationBarViewController<View: BaseView>: UIViewController, BaseNav
     
     func setNavigationBarAddButtonHidden(_ hidden: Bool) {
         navigationBar.addButton.isHidden = hidden
+    }
+    
+    func setNavigationBarAddButtonAction(_ selector: Selector) {
+        navigationBar.addButton.addTarget(self, action: selector, for: .touchUpInside)
     }
     
     func setNavigationBarTitleLabelText(_ text: String?) {
