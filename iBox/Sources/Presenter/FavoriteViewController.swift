@@ -11,8 +11,8 @@ class FavoriteViewController: BaseViewController<MainView> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        let favorite = UserDefaultsManager.favorite.value
+        print("\(favorite.name) : \(favorite.url)")
     }
     
 

@@ -1,5 +1,5 @@
 //
-//  DisplayModeCell.swift
+//  ThemeCell.swift
 //  iBox
 //
 //  Created by jiyeon on 1/3/24.
@@ -7,11 +7,11 @@
 
 import UIKit
 
-class DisplayModeCell: UITableViewCell, BaseViewProtocol {
+class ThemeCell: UITableViewCell, BaseViewProtocol {
     
     // MARK: - UI
     
-    let displayModeImageView = UIImageView().then {
+    let themeImageView = UIImageView().then {
         $0.tintColor = .black
     }
     
@@ -39,18 +39,18 @@ class DisplayModeCell: UITableViewCell, BaseViewProtocol {
     // MARK: - BaseViewProtocol
     
     func configureUI() {
-        addSubview(displayModeImageView)
+        addSubview(themeImageView)
         addSubview(titleLabel)
         addSubview(selectButton)
         
-        displayModeImageView.snp.makeConstraints {
+        themeImageView.snp.makeConstraints {
             $0.left.equalToSuperview().inset(20)
             $0.centerY.equalToSuperview()
             $0.width.height.equalTo(23)
         }
         
         titleLabel.snp.makeConstraints {
-            $0.left.equalTo(displayModeImageView.snp.right).offset(10)
+            $0.left.equalTo(themeImageView.snp.right).offset(10)
             $0.centerY.equalToSuperview()
         }
         
@@ -63,9 +63,9 @@ class DisplayModeCell: UITableViewCell, BaseViewProtocol {
     
     // MARK: - functions
     
-    func bind(_ item: DisplayModeItem) {
-        titleLabel.text = item.title
-        displayModeImageView.image = item.image
+    func bind(_ theme: Theme) {
+        titleLabel.text = theme.toString()
+        themeImageView.image = theme.toImage()
     }
     
     func setupSelectButton(_ selected: Bool) {

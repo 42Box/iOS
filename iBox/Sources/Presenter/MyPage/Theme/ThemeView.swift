@@ -1,5 +1,5 @@
 //
-//  DisplayModeView.swift
+//  ThemeView.swift
 //  iBox
 //
 //  Created by jiyeon on 1/3/24.
@@ -9,12 +9,12 @@ import UIKit
 
 import SnapKit
 
-class DisplayModeView: BaseView {
+class ThemeView: BaseView {
     
     // MARK: - UI
 
     let tableView = UITableView().then {
-        $0.register(DisplayModeCell.self, forCellReuseIdentifier: "DisplayModeCell")
+        $0.register(ThemeCell.self, forCellReuseIdentifier: "ThemeCell")
         $0.separatorStyle = .none
         $0.sectionHeaderTopPadding = 0
     }
