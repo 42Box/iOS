@@ -11,6 +11,7 @@ class BoxListViewController: BaseNavigationBarViewController<BoxListView> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupNavigationBar()
         
         guard let contentView = contentView as? BoxListView else { return }
         contentView.delegate = self
@@ -18,6 +19,13 @@ class BoxListViewController: BaseNavigationBarViewController<BoxListView> {
     
     override func setupNavigationBar() {
         setNavigationBarTitleLabelText("iBox")
+        setNavigationBarAddButtonHidden(false)
+        setNavigationBarAddButtonAction(#selector(addButtonTapped))
+    }
+    
+    @objc private func addButtonTapped(_ sender: Any?) {
+        let addBookmarkBottomSheetViewController = AddBookmarkBottomSheetViewController(bottomSheetHeight: 200)
+        present(addBookmarkBottomSheetViewController, animated: false)
     }
 
 }
