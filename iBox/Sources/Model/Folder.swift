@@ -14,7 +14,7 @@ struct Folder {
     var isOpened: Bool = true
 }
 
-struct Web {
+struct Web: Codable {
     let name: String
     let url: String
 }

@@ -13,7 +13,7 @@ class MyPageViewController: BaseNavigationBarViewController<MyPageView> {
     
     var myPageSections: [MyPageSection] = [
         .init(title: "settings", items: [
-            MyPageItem(title: "다크 모드", viewController: DisplayModeViewController())
+            MyPageItem(title: "테마", viewController: ThemeViewController())
         ]),
         .init(title: "help", items: [
             MyPageItem(title: "이용 가이드"),
