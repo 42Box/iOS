@@ -19,7 +19,7 @@ class BoxListView: BaseView {
     var folderArr = [
         Folder(name: "기본 폴더", color: .gray, webs: [
             Web(name: "42 Intra", url: "https://profile.intra.42.fr/"),
-            Web(name: "42Where", url: "https://where42.kr/"),
+            Web(name: "42Where", url: "https://www.where42.kr/"),
             Web(name: "42Stat", url: "https://stat.42seoul.kr/"),
             Web(name: "집현전", url: "https://42library.kr/")
         ]),
