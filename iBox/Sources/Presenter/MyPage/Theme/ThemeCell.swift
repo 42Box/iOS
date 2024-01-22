@@ -12,12 +12,11 @@ class ThemeCell: UITableViewCell, BaseViewProtocol {
     // MARK: - UI
     
     let themeImageView = UIImageView().then {
-        $0.tintColor = .black
+        $0.tintColor = .label
     }
     
     let titleLabel = UILabel().then {
         $0.font = .systemFont(ofSize: 16)
-        $0.textColor = .black
     }
     
     let selectButton = UIButton().then {

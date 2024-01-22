@@ -62,5 +62,15 @@ struct ColorPalette {
         }
     }()
     
+    public static var dimmedViewColor = {
+        return UIColor { (UITraitCollection: UITraitCollection) -> UIColor in
+            if UITraitCollection.userInterfaceStyle == .dark {
+                return UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 0.75)
+            } else {
+                return UIColor(red: 0, green: 0, blue: 0, alpha: 0.75)
+            }
+        }
+    }()
+    
 }
 

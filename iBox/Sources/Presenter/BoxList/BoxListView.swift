@@ -41,7 +41,7 @@ class BoxListView: BaseView {
         return view
     }()
     
-    private lazy var tableView = {
+    lazy var tableView = {
         let tableView = UITableView()
         tableView.dataSource = self
         tableView.delegate = self

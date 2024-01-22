@@ -24,11 +24,6 @@ class ThemeViewController: BaseNavigationBarViewController<ThemeView> {
         contentView.tableView.dataSource = self
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        UserDefaultsManager.theme.value = selected
-    }
-    
     // MARK: - BaseNavigationBarViewControllerProtocol
     
     override func setupNavigationBar() {
@@ -64,7 +59,10 @@ extension ThemeViewController: UITableViewDelegate, UITableViewDataSource {
     // 테이블 뷰 셀이 선택되었을 때 실행되는 메서드
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selected = Theme.allCases[indexPath.row]
+        guard let window = self.view.window else { return }
+        window.overrideUserInterfaceStyle = selected.toUserInterfaceStyle()
         tableView.reloadData() // 다시 그리기
+        UserDefaultsManager.theme.value = selected
     }
     
 }
