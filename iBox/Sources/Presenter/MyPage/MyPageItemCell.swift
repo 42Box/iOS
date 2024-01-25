@@ -15,7 +15,6 @@ class MyPageItemCell: UITableViewCell, BaseViewProtocol {
     
     let titleLabel = UILabel().then {
         $0.font = .systemFont(ofSize: 16)
-        $0.textColor = .black
     }
     
     let descriptionLabel = UILabel().then {

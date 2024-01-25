@@ -16,6 +16,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
+
+        // 앱 테마 정보
+        window?.overrideUserInterfaceStyle = UserDefaultsManager.theme.value.toUserInterfaceStyle()
         
         // 나중에 userDefaults에 저장해두고 꺼내와서 preload하기
         let urlsToPreload = [
