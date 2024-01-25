@@ -11,6 +11,7 @@ import WebKit
 class WebViewPreloader {
     static let shared = WebViewPreloader()
     private var webViews: [URL: WKWebView] = [:]
+    private var favoriteView: (url: URL, webView: WKWebView)?
     
     private init() {}
     
@@ -22,12 +23,28 @@ class WebViewPreloader {
         }
     }
     
+    func preloadFavoriteView(url: URL) {
+        let webView = WKWebView()
+        webView.load(URLRequest(url: url))
+        favoriteView = (url, webView)
+    }
+    
     func getWebView(for url: URL) -> WKWebView? {
         return webViews[url]
+    }
+    
+    func getFavoriteView() -> WKWebView? {
+        return favoriteView?.webView
     }
     
     func resetWebView(for url: URL) {
         webViews[url]?.load(URLRequest(url: url))
     }
+    
+    func resetFavoriteView() {
+        guard let favoriteView else { return }
+        favoriteView.webView.load(URLRequest(url: favoriteView.url))
+    }
+    
 
 }
