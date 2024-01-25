@@ -18,6 +18,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         window?.rootViewController = MainTabBarController()
         window?.makeKeyAndVisible() // 윈도우를 화면에 보여줌
+        
+        // 나중에 userDefaults에 저장해두고 꺼내와서 preload하기
+        let urlsToPreload = [
+            URL(string: "https://profile.intra.42.fr/")!,
+            URL(string: "https://www.where42.kr/")!,
+            URL(string: "https://stat.42seoul.kr/")!,
+            URL(string: "https://42library.kr/")!,
+            URL(string: "https://cabi.42seoul.io/")!,
+            URL(string: "https://24hoursarenotenough.42seoul.kr/")!
+        ]
+        WebViewPreloader.shared.preload(urls: urlsToPreload)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
