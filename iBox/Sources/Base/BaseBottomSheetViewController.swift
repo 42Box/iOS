@@ -104,7 +104,7 @@ class BaseBottomSheetViewController<View: BaseView>: UIViewController {
             $0.height.equalTo(bottomSheetHeight)
         }
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseIn, animations: {
-            self.dimmedView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.75)
+            self.dimmedView.backgroundColor = ColorPalette.dimmedViewColor
             self.view.layoutIfNeeded()
         })
     }

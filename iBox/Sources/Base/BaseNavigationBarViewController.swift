@@ -52,7 +52,7 @@ class BaseNavigationBarViewController<View: BaseView>: UIViewController, BaseNav
     // MARK: - properties
     
     let backgroundColor: UIColor = .systemBackground
-    let tintColor: UIColor = .black
+    let tintColor: UIColor = .label
     let titleFont: UIFont = .systemFont(ofSize: 20, weight: .semibold)
     
     // MARK: - life cycle

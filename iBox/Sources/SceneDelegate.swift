@@ -17,6 +17,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
         window?.rootViewController = MainTabBarController()
+        
+        // 앱 테마 정보
+        window?.overrideUserInterfaceStyle = UserDefaultsManager.theme.value.toUserInterfaceStyle()
+        
         window?.makeKeyAndVisible() // 윈도우를 화면에 보여줌
         
         // 나중에 userDefaults에 저장해두고 꺼내와서 preload하기
