@@ -19,7 +19,7 @@ final class UserDefaultsManager {
     )
     static let favorite = UserDefaultValue(
         key: .favorite,
-        defaultValue: Web(name: "42 Intra", url: "https://profile.intra.42.fr/")
+        defaultValue: Bookmark(name: "42 Intra", url: "https://profile.intra.42.fr/")
     )
 }
 
