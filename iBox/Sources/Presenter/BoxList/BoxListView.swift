@@ -29,7 +29,6 @@ class BoxListView: BaseView {
         
         setupLayout()
         configureDataSource()
-        initDataSource()
         bindViewModel()
         viewModel?.input.send(.viewDidLoad)
     }
@@ -58,11 +57,11 @@ class BoxListView: BaseView {
         tableView.register(BoxListCell.self, forCellReuseIdentifier: BoxListCell.reuseIdentifier)
         
         tableView.sectionHeaderTopPadding = 0
-//        tableView.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
         tableView.clipsToBounds = true
         tableView.layer.cornerRadius = 20
         tableView.backgroundColor = .clear
         tableView.separatorColor = .clear
+        tableView.rowHeight = 50 
         return tableView
     }()
     
@@ -83,11 +82,10 @@ class BoxListView: BaseView {
         }
     }
     
-    private func initDataSource() {
-        guard let viewModel else { return }
+    private func applySnapshot(with: [BoxListSectionViewModel]) {
         var snapshot = NSDiffableDataSourceSnapshot<BoxListSectionViewModel.ID, BoxListCellViewModel.ID>()
-        snapshot.appendSections(viewModel.boxList.map{ $0.id })
-        for folder in viewModel.boxList {
+        snapshot.appendSections(with.map{ $0.id })
+        for folder in with {
             snapshot.appendItems(folder.boxListCellViewModels.map { $0.id }, toSection: folder.id)
         }
         boxListDataSource.apply(snapshot, animatingDifferences: true)
@@ -100,44 +98,12 @@ class BoxListView: BaseView {
         output.receive(on: DispatchQueue.main)
             .sink { [weak self] event in
                 switch event {
-                case .toggleFolder:
-                    var snapshot = NSDiffableDataSourceSnapshot<BoxListSectionViewModel.ID, BoxListCellViewModel.ID>()
-                    snapshot.appendSections(viewModel.boxList.map{ $0.id })
-                    for folder in viewModel.boxList {
-                        if folder.isOpen {
-                            snapshot.appendItems(folder.boxListCellViewModels.map { $0.id }, toSection: folder.id)
-                        }
-                    }
-                    self?.boxListDataSource.apply(snapshot, animatingDifferences: true)
+                case .sendBoxList(boxList: let boxList):
+                    self?.applySnapshot(with: boxList)
                 }
             }.store(in: &cancellables)
     }
 }
-
-//extension BoxListView: UITableViewDataSource {
-//    
-//    func numberOfSections(in tableView: UITableView) -> Int {
-//        return viewModel.folderArr.count
-//    }
-//    
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        if !viewModel.folderArr[section].isOpened {
-//            return 0
-//        }
-//        return viewModel.folderArr[section].bookmarks.count
-//    }
-//    
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-//        cell.selectionStyle = .none
-//        cell.backgroundColor = .clear
-//        cell.textLabel?.text = viewModel.folderArr[indexPath.section].bookmarks[indexPath.row].name
-//        cell.imageView?.image = UIImage(systemName: "ellipsis.rectangle.fill")
-//        cell.imageView?.tintColor = ColorPalette.webIconColor
-//        return cell
-//    }
-//    
-//}
 
 extension BoxListView: UITableViewDelegate {
     
@@ -164,7 +130,7 @@ extension BoxListView: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let viewModel else { return nil }
-        let button = FolderButton(isOpen: viewModel.boxList[section].isOpen)
+        let button = FolderButton(isOpen: viewModel.boxList[section].isOpened)
         button.setFolderName(viewModel.boxList[section].name)
         button.setFolderColor(viewModel.boxList[section].color.toUIColor())
         button.tag = section

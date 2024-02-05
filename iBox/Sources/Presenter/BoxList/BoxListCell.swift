@@ -16,6 +16,8 @@ class BoxListCell: UITableViewCell {
     private lazy var cellImageView = {
         let view = UIImageView()
         view.image = UIImage(systemName: "ellipsis.rectangle.fill")
+        view.tintColor = .label
+        view.contentMode = .scaleAspectFit
         return view
     }()
     
@@ -26,6 +28,7 @@ class BoxListCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = .systemGroupedBackground
         
         setupLayout()
     }
@@ -37,14 +40,15 @@ class BoxListCell: UITableViewCell {
     private func setupLayout() {
         contentView.addSubview(cellImageView)
         cellImageView.snp.makeConstraints { make in
-            make.top.leading.bottom.equalToSuperview()
-            make.width.equalTo(50)
+            make.leading.equalToSuperview().inset(20)
+            make.top.bottom.equalToSuperview().inset(10)
+            make.width.equalTo(30)
         }
         
         contentView.addSubview(label)
         label.snp.makeConstraints { make in
             make.top.trailing.bottom.equalToSuperview()
-            make.leading.equalTo(cellImageView.snp.trailing)
+            make.leading.equalTo(cellImageView.snp.trailing).offset(10)
         }
     }
     

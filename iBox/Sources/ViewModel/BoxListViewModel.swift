@@ -27,7 +27,7 @@ class BoxListViewModel {
     }
     
     enum Output {
-        case toggleFolder
+        case sendBoxList(boxList: [BoxListSectionViewModel])
     }
     
     let input = PassthroughSubject<Input, Never>()
@@ -36,11 +36,13 @@ class BoxListViewModel {
     
     func transform(input: AnyPublisher<Input, Never>) -> AnyPublisher<Output, Never> {
         input.sink { [weak self] event in
+            guard let self else { return }
             switch event {
             case .viewDidLoad:
-                print("viewDidLoad")
+                output.send(.sendBoxList(boxList: boxList))
             case let .folderTapped(section):
-                self?.toggleFolder(section: section)
+                boxList[section].isOpened.toggle()
+                output.send(.sendBoxList(boxList: boxList))
             }
         }.store(in: &cancellables)
         return output.eraseToAnyPublisher()
@@ -48,12 +50,6 @@ class BoxListViewModel {
     
     func viewModel(at indexPath: IndexPath) -> BoxListCellViewModel {
         return boxList[indexPath.section].boxListCellViewModels[indexPath.row]
-    }
-    
-    func toggleFolder(section: Int) {
-        
-        boxList[section].isOpen.toggle()
-        output.send(.toggleFolder)
     }
 
 }
