@@ -5,6 +5,7 @@
 //  Created by 이지현 on 1/3/24.
 //
 
+import Combine
 import UIKit
 
 import SnapKit
@@ -14,18 +15,27 @@ protocol BoxListViewDelegate: AnyObject {
 }
 
 class BoxListView: BaseView {
+    var viewModel: BoxListViewModel?
+    private var boxListDataSource: UITableViewDiffableDataSource<BoxListSectionViewModel.ID, BoxListCellViewModel.ID>!
     weak var delegate: BoxListViewDelegate?
     
-    var folderArr = [
-        Folder(name: "기본 폴더", color: .gray, webs: [
-            Web(name: "42 Intra", url: "https://profile.intra.42.fr/"),
-            Web(name: "42Where", url: "https://www.where42.kr/"),
-            Web(name: "42Stat", url: "https://stat.42seoul.kr/"),
-            Web(name: "집현전", url: "https://42library.kr/")
-        ]),
-        Folder(name: "새 폴더", color: .green, webs: [Web(name: "Cabi", url: "https://cabi.42seoul.io/")], isOpened: false),
-        Folder(name: "새 폴더(2)", color: .yellow, webs: [Web(name: "24HANE", url: "https://24hoursarenotenough.42seoul.kr/")], isOpened: false)
-    ]
+    private var cancellables = Set<AnyCancellable>()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        backgroundColor = .systemBackground
+        viewModel = BoxListViewModel()
+        
+        setupLayout()
+        configureDataSource()
+        bindViewModel()
+        viewModel?.input.send(.viewDidLoad)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     private lazy var backgroundView = {
         let view = UIView()
@@ -43,29 +53,17 @@ class BoxListView: BaseView {
     
     private lazy var tableView = {
         let tableView = UITableView()
-        tableView.dataSource = self
         tableView.delegate = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(BoxListCell.self, forCellReuseIdentifier: BoxListCell.reuseIdentifier)
         
         tableView.sectionHeaderTopPadding = 0
-//        tableView.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
         tableView.clipsToBounds = true
         tableView.layer.cornerRadius = 20
         tableView.backgroundColor = .clear
         tableView.separatorColor = .clear
+        tableView.rowHeight = 50 
         return tableView
     }()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        backgroundColor = .systemBackground
-        
-        setupLayout()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
     private func setupLayout() {
         addSubview(backgroundView)
@@ -74,31 +72,37 @@ class BoxListView: BaseView {
             make.leading.trailing.bottom.equalTo(safeAreaLayoutGuide).inset(20)
         }
     }
-}
-
-extension BoxListView: UITableViewDataSource {
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return folderArr.count
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if !folderArr[section].isOpened {
-            return 0
+    private func configureDataSource() {
+        boxListDataSource = UITableViewDiffableDataSource(tableView: tableView) { [weak self] tableView, indexPath, itemIdentifier in
+            guard let self, let viewModel = self.viewModel else { fatalError() }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: BoxListCell.reuseIdentifier, for: indexPath) as? BoxListCell else { fatalError() }
+            cell.configure(viewModel.viewModel(at: indexPath))
+            return cell
         }
-        return folderArr[section].webs.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.selectionStyle = .none
-        cell.backgroundColor = .clear
-        cell.textLabel?.text = folderArr[indexPath.section].webs[indexPath.row].name
-        cell.imageView?.image = UIImage(systemName: "ellipsis.rectangle.fill")
-        cell.imageView?.tintColor = ColorPalette.webIconColor
-        return cell
+    private func applySnapshot(with: [BoxListSectionViewModel]) {
+        var snapshot = NSDiffableDataSourceSnapshot<BoxListSectionViewModel.ID, BoxListCellViewModel.ID>()
+        snapshot.appendSections(with.map{ $0.id })
+        for folder in with {
+            snapshot.appendItems(folder.boxListCellViewModels.map { $0.id }, toSection: folder.id)
+        }
+        boxListDataSource.apply(snapshot, animatingDifferences: true)
     }
     
+    private func bindViewModel() {
+        guard let viewModel else { return }
+        let output = viewModel.transform(input: viewModel.input.eraseToAnyPublisher())
+        
+        output.receive(on: DispatchQueue.main)
+            .sink { [weak self] event in
+                switch event {
+                case .sendBoxList(boxList: let boxList):
+                    self?.applySnapshot(with: boxList)
+                }
+            }.store(in: &cancellables)
+    }
 }
 
 extension BoxListView: UITableViewDelegate {
@@ -125,9 +129,10 @@ extension BoxListView: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let button = FolderButton(isOpen: folderArr[section].isOpened)
-        button.setFolderName(folderArr[section].name)
-        button.setFolderColor(folderArr[section].color.toUIColor())
+        guard let viewModel else { return nil }
+        let button = FolderButton(isOpen: viewModel.boxList[section].isOpened)
+        button.setFolderName(viewModel.boxList[section].name)
+        button.setFolderColor(viewModel.boxList[section].color.toUIColor())
         button.tag = section
         
         button.addTarget(self, action: #selector(handleOpenClose), for: .touchUpInside)
@@ -136,27 +141,15 @@ extension BoxListView: UITableViewDelegate {
     }
     
     @objc private func handleOpenClose(button: FolderButton) {
-        let section = button.tag
-        
-        var indexPaths = [IndexPath]()
-        for row in folderArr[section].webs.indices {
-            let indexPath = IndexPath(row: row, section: section)
-            indexPaths.append(indexPath)
-        }
-        
-        folderArr[section].isOpened.toggle()
+        guard let viewModel else { return }
+        viewModel.input.send(.folderTapped(section: button.tag))
         button.toggleStatus()
-        
-        if folderArr[section].isOpened {
-            tableView.insertRows(at: indexPaths, with: .fade)
-        } else {
-            tableView.deleteRows(at: indexPaths, with: .fade)
-        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let webUrl = folderArr[indexPath.section].webs[indexPath.row].url
-        let webName = folderArr[indexPath.section].webs[indexPath.row].name
+        guard let viewModel else { return }
+        let webUrl = viewModel.boxList[indexPath.section].boxListCellViewModels[indexPath.row].url
+        let webName = viewModel.boxList[indexPath.section].boxListCellViewModels[indexPath.row].name
         delegate?.didSelectWeb(at: webUrl, withName: webName)
     }
 }

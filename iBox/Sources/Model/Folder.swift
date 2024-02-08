@@ -10,11 +10,7 @@ import Foundation
 struct Folder {
     let name: String
     let color: ColorName
-    let webs: [Web]
+    let bookmarks: [Bookmark]
     var isOpened: Bool = true
 }
 
-struct Web: Codable {
-    let name: String
-    let url: String
-}
