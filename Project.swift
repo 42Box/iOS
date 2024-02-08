@@ -19,7 +19,7 @@ class iBoxFactory: ProjectFactory {
         .external(name: "SnapKit")
     ]
     
-    let infoPlist: [String: Plist.Value] = [
+    private let appInfoPlist: [String: Plist.Value] = [
         "ITSAppUsesNonExemptEncryption": false,
         "CFBundleName": "iBox",
         "CFBundleShortVersionString": "1.2.1",
@@ -38,20 +38,46 @@ class iBoxFactory: ProjectFactory {
         ]
     ]
     
-    func generateTarget() -> [ProjectDescription.Target] {[
-        Target(
+    private let shareExtensionInfoPlist: [String: Plist.Value] = [
+        "CFBundleDisplayName": "iBox Share",
+        "CFBundleShortVersionString": "1.0",
+        "CFBundleVersion": "1",
+        "NSExtension": [
+            "NSExtensionAttributes": [
+                "NSExtensionActivationRule": [
+                    "NSExtensionActivationSupportsWebURLWithMaxCount" : 1
+                ]
+            ],
+            "NSExtensionPointIdentifier": "com.apple.share-services"
+        ]
+    ]
+    
+    func generateTarget() -> [ProjectDescription.Target] {
+        let appTarget = Target(
             name: projectName,
             destinations: .iOS,
             product: .app,
             bundleId: bundleId,
             deploymentTargets: .iOS("15.0"),
-            infoPlist: .extendingDefault(with: infoPlist),
+            infoPlist: .extendingDefault(with: appInfoPlist),
             sources: ["\(projectName)/Sources/**"],
             resources: "\(projectName)/Resources/**",
             dependencies: dependencies
         )
-    ]}
-    
+        
+        let shareExtensionTarget = Target(
+            name: "\(projectName)ShareExtension",
+            destinations: .iOS,
+            product: .appExtension,
+            bundleId: "\(bundleId).ShareExtension",
+            infoPlist: .extendingDefault(with: shareExtensionInfoPlist),
+            sources: ["ShareExtension/**"],
+            resources: [],
+            dependencies: []
+        )
+        
+        return [appTarget, shareExtensionTarget]
+    }
     
 }
 
