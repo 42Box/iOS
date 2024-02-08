@@ -48,7 +48,8 @@ class iBoxFactory: ProjectFactory {
                     "NSExtensionActivationSupportsWebURLWithMaxCount" : 1
                 ]
             ],
-            "NSExtensionPointIdentifier": "com.apple.share-services"
+            "NSExtensionPointIdentifier": "com.apple.share-services",
+            "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).ShareViewController"
         ]
     ]
     

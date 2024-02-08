@@ -1,46 +1,75 @@
 //
 //  ShareViewController.swift
-//  iBoxShareExtension
+//  iBoxWebShareExtension
 //
-//  Created by jiyeon on 1/30/24.
+//  Created by Chan on 2/8/24.
 //
 
 import UIKit
 import Social
+import MobileCoreServices
 
-class ShareViewController: SLComposeServiceViewController {
-
-    override func isContentValid() -> Bool {
-        // Do validation of contentText and/or NSExtensionContext attachments here
+class ShareViewController: UIViewController {
+    
+    private let appURLString = "iBox://"
+    private let groupName = "group.com.ibox"
+    
+    @IBOutlet weak var label: UILabel?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
-        // contentText : 유저가 공유하기 창을 눌러 넘어온 문자열 값(상수)
-        if let currentMessage = contentText{
-            let currentMessageLength = currentMessage.count
-            // charactersRemaining : 문자열 길이 제한 값(상수)
-            charactersRemaining = (100 - currentMessageLength) as NSNumber
-            
-            print("currentMessage : \(currentMessage) // 길이 : \(currentMessageLength) // 제한 : \(charactersRemaining)")
-            if Int(charactersRemaining) < 0 {
-                print("100자가 넘었을때는 공유할 수 없다!")
-                return false
+        guard let extensionItem = extensionContext?.inputItems.first as? NSExtensionItem,
+              let itemProvider = extensionItem.attachments?.first as? NSItemProvider else {
+            return
+        }
+        
+        // URL 타입의 데이터 로드
+        if itemProvider.hasItemConformingToTypeIdentifier(kUTTypeURL as String) {
+            itemProvider.loadItem(forTypeIdentifier: kUTTypeURL as String, options: nil) { (item, error) in
+                DispatchQueue.global().async {
+                    if let url = item as? URL {
+                        // 로드된 URL 처리
+                        print("Loaded URL: \(url)")
+                    } else if let error = error {
+                        // 에러 처리
+                        print("Error loading URL: \(error.localizedDescription)")
+                    }
+                }
             }
         }
-        return true
     }
-
-    override func didSelectPost() {
-        // This is called after the user selects Post. Do the upload of contentText and/or NSExtensionContext attachments.
     
-        // Inform the host that we're done, so it un-blocks its UI. Note: Alternatively you could call super's -didSelectPost, which will similarly complete the extension context.
-        self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
+    
+    func hideExtensionWithCompletionHandler(completion: @escaping (Bool) -> Void) {
+        UIView.animate(withDuration: 0.3, animations: {
+            self.navigationController?.view.transform = CGAffineTransform(translationX: 0, y:self.navigationController!.view.frame.size.height)
+        }, completion: completion)
+    }
+    
+    // MARK: IBAction
+    
+    @IBAction func cancel() {
+        self.hideExtensionWithCompletionHandler(completion: { _ in
+            self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
+        })
+    }
+    
+    @IBAction func save() {
+        self.hideExtensionWithCompletionHandler(completion: { _ in
+            self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
+        })
+        // UserDefaults에 데이터 저장
+        if let data = self.label?.text {
+            let defaults = UserDefaults(suiteName: groupName)
+            defaults?.set(data, forKey: "share")
+            defaults?.synchronize()
+            print("ShareViewController: URL 저장 !")
+        }
+        // 원래 앱 열기
+        if let appURL = URL(string: appURLString) {
+            self.view.window?.windowScene?.open(appURL, options: nil)
+        }
     }
 
-    // To add configuration options via table cells at the bottom of the sheet, return an array of SLComposeSheetConfigurationItem here.
-    override func configurationItems() -> [Any]! {
-        let item = SLComposeSheetConfigurationItem()
-        
-        item?.title = "여기는 제목입니다"
-        // item?.tapHandler : 유저가 터치했을 때 호출되는 핸들러
-        return [item]
-    }
 }
