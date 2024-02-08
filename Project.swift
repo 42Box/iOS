@@ -14,6 +14,7 @@ protocol ProjectFactory {
 class iBoxFactory: ProjectFactory {
     let projectName: String = "iBox"
     let bundleId: String = "com.box42.iBox"
+    let iosVersion: String = "15.0"
     
     let dependencies: [TargetDependency] = [
         .external(name: "SnapKit")
@@ -45,21 +46,22 @@ class iBoxFactory: ProjectFactory {
         "NSExtension": [
             "NSExtensionAttributes": [
                 "NSExtensionActivationRule": [
+                    "NSExtensionActivationSupportsWebPageWithMaxCount" : 1,
                     "NSExtensionActivationSupportsWebURLWithMaxCount" : 1
                 ]
             ],
             "NSExtensionPointIdentifier": "com.apple.share-services",
-            "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).ShareViewController"
+            "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).CustomShareViewController"
         ]
     ]
     
     func generateTarget() -> [ProjectDescription.Target] {
         let appTarget = Target(
             name: projectName,
-            destinations: .iOS,
+            platform: .iOS,
             product: .app,
             bundleId: bundleId,
-            deploymentTargets: .iOS("15.0"),
+            deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
             infoPlist: .extendingDefault(with: appInfoPlist),
             sources: ["\(projectName)/Sources/**"],
             resources: "\(projectName)/Resources/**",
@@ -68,9 +70,10 @@ class iBoxFactory: ProjectFactory {
         
         let shareExtensionTarget = Target(
             name: "\(projectName)ShareExtension",
-            destinations: .iOS,
+            platform: .iOS,
             product: .appExtension,
             bundleId: "\(bundleId).ShareExtension",
+            deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
             infoPlist: .extendingDefault(with: shareExtensionInfoPlist),
             sources: ["ShareExtension/**"],
             resources: [],
