@@ -21,6 +21,10 @@ class iBoxFactory: ProjectFactory {
         .target(name: "iBoxShareExtension")
     ]
     
+    let iBoxShareExtensionDependencies: [TargetDependency] = [
+        .external(name: "SnapKit")
+    ]
+    
     private let appInfoPlist: [String: Plist.Value] = [
         "ITSAppUsesNonExemptEncryption": false,
         "CFBundleName": "iBox",
@@ -69,7 +73,6 @@ class iBoxFactory: ProjectFactory {
             dependencies: dependencies
         )
         
-        
         let shareExtensionTarget = Target(
             name: "\(projectName)ShareExtension",
             platform: .iOS,
@@ -79,7 +82,7 @@ class iBoxFactory: ProjectFactory {
             infoPlist: .extendingDefault(with: shareExtensionInfoPlist),
             sources: ["ShareExtension/**"],
             resources: [],
-            dependencies: []
+            dependencies: iBoxShareExtensionDependencies
         )
         
         return [appTarget, shareExtensionTarget]
