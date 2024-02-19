@@ -44,9 +44,9 @@ class iBoxFactory: ProjectFactory {
         ],
         "CFBundleURLTypes": [
             [
-                "CFBundleTypeRole": "Editor",
-                "CFBundleURLName": "com.url.ibox",
-                "CFBundleURLSchemes": ["iBox"]
+                "CFBundleURLName": "com.url.iBox",
+                "CFBundleURLSchemes": ["iBox"],
+                "CFBundleTypeRole": "Editor"
             ]
         ],
     ]
