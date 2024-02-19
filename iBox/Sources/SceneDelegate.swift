@@ -37,6 +37,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window?.rootViewController = MainTabBarController()
         window?.makeKeyAndVisible() // 윈도우를 화면에 보여줌
+
+        if let urlContext = connectionOptions.urlContexts.first {
+            let url = urlContext.url
+            guard url.scheme == "iBox" else { return }
+
+            print("Opened URL: \(url)")
+            
+            // 앱이 실행되기 전에 url이 들어오는 경우 Logic
+        }
+    }
+    
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        if let urlContext = URLContexts.first {
+            let url = urlContext.url
+            guard url.scheme == "iBox" else { return }
+
+            print("Opened URL: \(url)")
+            
+            // 앱 실행 중에 url이 들어오는 경우 Logic
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

@@ -60,39 +60,30 @@ class CustomShareViewController: UIViewController {
             let defaults = UserDefaults(suiteName: "group.com.iBox")
             defaults?.set(sharedData, forKey: "shareData")
         } else {
-          print("저장에 실패하였습니다.")
+            print("저장에 실패하였습니다.")
         }
-
+        
         self.hideExtensionWithCompletionHandler(completion: { _ in
             self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
         })
     }
-
     
-    @IBAction func openApp() {
-        if dataURL != "" {
-            let sharedData = dataURL
-            print(sharedData)
-            let defaults = UserDefaults(suiteName: "group.com.iBox")
-            defaults?.set(sharedData, forKey: "shareData")
-            
-            let url = URL(string: "iBox://")!
-            self.extensionContext?.open(url, completionHandler: { success in
-                if success {
-                    print("iBox 앱이 성공적으로 열렸습니다.")
-                } else {
-                    print("iBox 앱을 열 수 없습니다.")
-                }
-                self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
-            })
-        } else {
-            print("data url 전송에 실패하였습니다.")
-            self.hideExtensionWithCompletionHandler(completion: { _ in
-                self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
-            })
+    
+    @objc func openURL(_ url: URL) -> Bool {
+        self.hideExtensionWithCompletionHandler(completion: { _ in
+            self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
+        })
+        
+        var responder: UIResponder? = self
+        while responder != nil {
+            if let application = responder as? UIApplication {
+                return application.perform(#selector(openURL(_:)), with: url) != nil
+            }
+            responder = responder?.next
         }
+        return false
     }
-
+    
     func extractSharedURL() {
         guard let extensionItem = extensionContext?.inputItems.first as? NSExtensionItem else { return }
         
@@ -126,7 +117,18 @@ extension CustomShareViewController: ShareExtensionBackGroundViewDelegate {
     }
     
     func didTapOpenApp() {
-        openApp()
+        let sharedData = dataURL
+        let defaults = UserDefaults(suiteName: "group.com.iBox")
+        defaults?.set(sharedData, forKey: "shareData")
+        let url = URL(string: "iBox://\(sharedData)")!
+        
+        if openURL(url) {
+            print("iBox 앱이 성공적으로 열렸습니다.")
+        } else {
+            print("iBox 앱을 열 수 없습니다.")
+        }
+        
+        print(url)
     }
     
 }
