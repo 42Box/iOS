@@ -41,7 +41,14 @@ class iBoxFactory: ProjectFactory {
                     ],
                 ]
             ]
-        ]
+        ],
+        "CFBundleURLTypes": [
+            [
+                "CFBundleTypeRole": "Editor",
+                "CFBundleURLName": "com.url.ibox",
+                "CFBundleURLSchemes": ["iBox"]
+            ]
+        ],
     ]
     
     private let shareExtensionInfoPlist: [String: Plist.Value] = [
