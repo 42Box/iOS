@@ -57,8 +57,6 @@ class CustomShareViewController: UIViewController {
         if dataURL != "" {
             let sharedData = dataURL
             print(sharedData)
-            let defaults = UserDefaults(suiteName: "group.com.iBox")
-            defaults?.set(sharedData, forKey: "shareData")
         } else {
             print("저장에 실패하였습니다.")
         }
@@ -118,8 +116,6 @@ extension CustomShareViewController: ShareExtensionBackGroundViewDelegate {
     
     func didTapOpenApp() {
         let sharedData = dataURL
-        let defaults = UserDefaults(suiteName: "group.com.iBox")
-        defaults?.set(sharedData, forKey: "shareData")
         let url = URL(string: "iBox://\(sharedData)")!
         
         if openURL(url) {
