@@ -6,6 +6,7 @@
 //
 
 import UIKit
+
 import SnapKit
 
 protocol ShareExtensionBackGroundViewDelegate: AnyObject {
@@ -15,87 +16,120 @@ protocol ShareExtensionBackGroundViewDelegate: AnyObject {
 }
 
 class ShareExtensionBackGroundView: UIView {
+    
+    // MARK: - Properties
+    
     weak var delegate: ShareExtensionBackGroundViewDelegate?
     
-    let label = UILabel()
-    let cancelButton = UIButton(type: .system)
-    let saveButton = UIButton(type: .system)
-    let openAppButton = UIButton(type: .system)
+    // MARK: - UI Components
+    
+    lazy var label: UILabel = {
+        let label = UILabel()
+        label.text = "이 링크를 iBox 앱에서 여시겠습니까?"
+        label.font = .systemFont(ofSize: 17)
+        label.textColor = .label
+        return label
+    }()
+    
+    lazy var linkLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .label
+        label.numberOfLines = 3
+        label.lineBreakMode = .byTruncatingTail
+        return label
+    }()
+    
+    lazy var cancelButton: UIButton = {
+        let button = UIButton()
+        button.configuration = .plain()
+        button.configuration?.attributedTitle = .init(
+            "Cancel",
+            attributes: .init([.font: UIFont.systemFont(ofSize: 14)])
+        )
+        return button
+    }()
+    
+    lazy var saveButton: UIButton = {
+        let button = UIButton()
+        button.configuration = .plain()
+        button.configuration?.attributedTitle = .init(
+            "Save",
+            attributes: .init([.font: UIFont.boldSystemFont(ofSize: 14)])
+        )
+        return button
+    }()
+    
+    lazy var openAppButton: UIButton = {
+        let button = UIButton()
+        button.configuration = .plain()
+        button.configuration?.attributedTitle = .init(
+            "Open",
+            attributes: .init([.font: UIFont.boldSystemFont(ofSize: 14)])
+        )
+        return button
+    }()
+    
+    // MARK: - Initializer
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.setupUI()
+        
+        setupHierarchy()
+        setupLayout()
+        setupButtonAction()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupUI() {
-        self.backgroundColor = .white
+    // MARK: - Setup Methods
+    
+    private func setupHierarchy() {
+        addSubview(label)
+        addSubview(linkLabel)
+        addSubview(cancelButton)
+        addSubview(saveButton)
+        addSubview(openAppButton)
+    }
+    
+    private func setupLayout() {
+        backgroundColor = .systemBackground
+        clipsToBounds = true
+        layer.cornerRadius = 10
         
-        setupLabel()
-        setupCancelButton()
-        setupSaveButton()
-        setupOpenAppButton()
+        label.snp.makeConstraints {
+            $0.top.leading.equalToSuperview().inset(20)
+        }
         
+        linkLabel.snp.makeConstraints {
+            $0.top.equalTo(label.snp.bottom).offset(10)
+            $0.leading.trailing.equalToSuperview().inset(20)
+        }
+        
+        cancelButton.snp.makeConstraints {
+            $0.trailing.equalTo(saveButton.snp.leading).offset(-20)
+            $0.centerY.equalTo(openAppButton.snp.centerY)
+        }
+        
+        saveButton.snp.makeConstraints {
+            $0.trailing.equalTo(openAppButton.snp.leading).offset(-20)
+            $0.centerY.equalTo(openAppButton.snp.centerY)
+        }
+        
+        openAppButton.snp.makeConstraints {
+            $0.trailing.bottom.equalToSuperview().inset(20)
+        }
+    }
+    
+    private func setupButtonAction() {
         cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
         saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         openAppButton.addTarget(self, action: #selector(openAppButtonTapped), for: .touchUpInside)
     }
     
-    private func setupLabel() {
-        self.addSubview(label)
-        label.text = "Exporting links to iBox!"
-        label.textColor = .black
-        label.textAlignment = .center
-        
-        label.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(20)
-            make.centerX.equalToSuperview()
-            make.width.equalTo(200)
-            make.height.equalTo(21)
-        }
-    }
-    
-    private func setupCancelButton() {
-        self.addSubview(cancelButton)
-        cancelButton.setTitle("Cancel", for: .normal)
-        
-        cancelButton.snp.makeConstraints { make in
-            make.top.equalTo(label.snp.bottom).offset(20)
-            make.centerX.equalToSuperview()
-            make.width.equalTo(200)
-            make.height.equalTo(40)
-        }
-    }
-    
-    private func setupSaveButton() {
-        self.addSubview(saveButton)
-        saveButton.setTitle("Send to iBox app", for: .normal)
-        
-        saveButton.snp.makeConstraints { make in
-            make.top.equalTo(cancelButton.snp.bottom).offset(20)
-            make.centerX.equalToSuperview()
-            make.width.equalTo(200)
-            make.height.equalTo(40)
-        }
-    }
-    
-    private func setupOpenAppButton() {
-        self.addSubview(openAppButton)
-        openAppButton.setTitle("Open in the iBox app", for: .normal)
-        
-        openAppButton.snp.makeConstraints { make in
-            make.top.equalTo(saveButton.snp.bottom).offset(20)
-            make.centerX.equalToSuperview()
-            make.width.equalTo(200)
-            make.height.equalTo(40)
-        }
-    }
-    
-    func updateLabel(with text: String) {
-        label.text = text
+    func updateLinkLabel(with text: String) {
+        linkLabel.text = text
     }
     
     // MARK: - Actions

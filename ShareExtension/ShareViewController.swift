@@ -26,9 +26,9 @@ class CustomShareViewController: UIViewController {
         self.view.addSubview(backgroundView)
         backgroundView.delegate = self
         backgroundView.snp.makeConstraints { make in
-            make.trailing.leading.equalToSuperview().inset(10)
-            make.centerY.equalToSuperview()
-            make.height.equalToSuperview().multipliedBy(2.0 / 3.0)
+            make.trailing.leading.equalToSuperview().inset(20)
+            make.center.equalToSuperview()
+            make.height.equalTo(200)
         }
     }
     
@@ -102,7 +102,7 @@ class CustomShareViewController: UIViewController {
                     DispatchQueue.main.async {
                         if let url = data as? URL, error == nil {
                             self?.dataURL = url.absoluteString
-                            self?.backgroundView.updateLabel(with: url.absoluteString)
+                            self?.backgroundView.updateLinkLabel(with: url.absoluteString)
                             print("Shared URL: \(url.absoluteString)")
                         } else {
                             print("Failed to retrieve URL: \(String(describing: error))")
