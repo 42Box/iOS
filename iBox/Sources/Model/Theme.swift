@@ -27,12 +27,4 @@ enum Theme: Codable, CaseIterable {
         case .system: "circle.righthalf.filled"
         }
     }
-    
-    func toUserInterfaceStyle() -> UIUserInterfaceStyle {
-        switch self {
-        case .light: UIUserInterfaceStyle.light
-        case .dark: UIUserInterfaceStyle.dark
-        case .system: UIUserInterfaceStyle.unspecified
-        }
-    }
 }
