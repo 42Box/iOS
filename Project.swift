@@ -14,12 +14,18 @@ protocol ProjectFactory {
 class iBoxFactory: ProjectFactory {
     let projectName: String = "iBox"
     let bundleId: String = "com.box42.iBox"
+    let iosVersion: String = "15.0"
     
     let dependencies: [TargetDependency] = [
+        .external(name: "SnapKit"),
+        .target(name: "iBoxShareExtension")
+    ]
+    
+    let iBoxShareExtensionDependencies: [TargetDependency] = [
         .external(name: "SnapKit")
     ]
     
-    let infoPlist: [String: Plist.Value] = [
+    private let appInfoPlist: [String: Plist.Value] = [
         "ITSAppUsesNonExemptEncryption": false,
         "CFBundleName": "iBox",
         "CFBundleShortVersionString": "1.2.1",
@@ -35,23 +41,59 @@ class iBoxFactory: ProjectFactory {
                     ],
                 ]
             ]
+        ],
+        "CFBundleURLTypes": [
+            [
+                "CFBundleURLName": "com.url.iBox",
+                "CFBundleURLSchemes": ["iBox"],
+                "CFBundleTypeRole": "Editor"
+            ]
+        ],
+    ]
+    
+    private let shareExtensionInfoPlist: [String: Plist.Value] = [
+        "CFBundleDisplayName": "iBox.Share",
+        "CFBundleShortVersionString": "1.0",
+        "CFBundleVersion": "1",
+        "NSExtension": [
+            "NSExtensionAttributes": [
+                "NSExtensionActivationRule": [
+                    "NSExtensionActivationSupportsWebPageWithMaxCount" : 1,
+                    "NSExtensionActivationSupportsWebURLWithMaxCount" : 1
+                ]
+            ],
+            "NSExtensionPointIdentifier": "com.apple.share-services",
+            "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).CustomShareViewController"
         ]
     ]
     
-    func generateTarget() -> [ProjectDescription.Target] {[
-        Target(
+    func generateTarget() -> [ProjectDescription.Target] {
+        let appTarget = Target(
             name: projectName,
-            destinations: .iOS,
+            platform: .iOS,
             product: .app,
             bundleId: bundleId,
-            deploymentTargets: .iOS("15.0"),
-            infoPlist: .extendingDefault(with: infoPlist),
+            deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
+            infoPlist: .extendingDefault(with: appInfoPlist),
             sources: ["\(projectName)/Sources/**"],
             resources: "\(projectName)/Resources/**",
             dependencies: dependencies
         )
-    ]}
-    
+        
+        let shareExtensionTarget = Target(
+            name: "\(projectName)ShareExtension",
+            platform: .iOS,
+            product: .appExtension,
+            bundleId: "\(bundleId).ShareExtension",
+            deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
+            infoPlist: .extendingDefault(with: shareExtensionInfoPlist),
+            sources: ["ShareExtension/**"],
+            resources: [],
+            dependencies: iBoxShareExtensionDependencies
+        )
+        
+        return [appTarget, shareExtensionTarget]
+    }
     
 }
 
