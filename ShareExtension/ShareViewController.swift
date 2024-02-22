@@ -52,21 +52,7 @@ class CustomShareViewController: UIViewController {
             self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
         })
     }
-    
-    @IBAction func save() {
-        if dataURL != "" {
-            let sharedData = dataURL
-            print(sharedData)
-        } else {
-            print("저장에 실패하였습니다.")
-        }
-        
-        self.hideExtensionWithCompletionHandler(completion: { _ in
-            self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
-        })
-    }
-    
-    
+
     @objc func openURL(_ url: URL) -> Bool {
         self.hideExtensionWithCompletionHandler(completion: { _ in
             self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
@@ -108,10 +94,6 @@ extension CustomShareViewController: ShareExtensionBackGroundViewDelegate {
     
     func didTapCancel() {
         cancel()
-    }
-    
-    func didTapSave() {
-        save()
     }
     
     func didTapOpenApp() {
