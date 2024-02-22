@@ -26,7 +26,7 @@ class HomeTabSelectorViewController: BaseNavigationBarViewController<HomeTabSele
     // MARK: - BaseNavigationBarViewControllerProtocol
     
     override func setupNavigationBar() {
-        setNavigationBarTitleLabelText("첫 화면 설정하기")
+        setNavigationBarTitleLabelText("홈화면 설정하기")
         setNavigationBarTitleLabelFont(.systemFont(ofSize: 17, weight: .semibold))
         setNavigationBarBackButtonHidden(false)
     }
