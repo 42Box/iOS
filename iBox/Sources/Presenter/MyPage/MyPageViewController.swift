@@ -41,7 +41,7 @@ extension MyPageViewController: MyPageViewDelegate {
         if indexPath.section == 0 {
             switch indexPath.row {
             case 0: navigationController?.pushViewController(ThemeViewController(), animated: true)
-            case 1: navigationController?.pushViewController(MainTabViewController(), animated: true)
+            case 1: navigationController?.pushViewController(HomeTabSelectorViewController(), animated: true)
             default: break
             }
         } else {

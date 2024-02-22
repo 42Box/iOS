@@ -1,5 +1,5 @@
 //
-//  MainTabCell.swift
+//  HomeTabSelectorCell.swift
 //  iBox
 //
 //  Created by jiyeon on 2/22/24.
@@ -9,7 +9,7 @@ import UIKit
 
 import SnapKit
 
-class MainTabCell: UITableViewCell {
+class HomeTabSelectorCell: UITableViewCell {
     
     // MARK: - Properties
     

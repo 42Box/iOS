@@ -1,5 +1,5 @@
 //
-//  MainTabView.swift
+//  HomeTabSelectorView.swift
 //  iBox
 //
 //  Created by jiyeon on 2/22/24.
@@ -8,18 +8,18 @@
 import Combine
 import UIKit
 
-class MainTabView: BaseView {
+class HomeTabSelectorView: BaseView {
     
     // MARK: - Properties
     
-    private var viewModel: MainTabViewModel?
+    private var viewModel: HomeTabSelectorViewModel?
     private var cancellables = Set<AnyCancellable>()
     
     // MARK: - UI Components
     
     let tableView = UITableView().then {
         $0.separatorStyle = .none
-        $0.register(MainTabCell.self, forCellReuseIdentifier: MainTabCell.reuseIdentifier)
+        $0.register(HomeTabSelectorCell.self, forCellReuseIdentifier: HomeTabSelectorCell.reuseIdentifier)
     }
     
     // MARK: - Initializer
@@ -51,19 +51,19 @@ class MainTabView: BaseView {
     
     // MARK: - Bind ViewModel
     
-    func bindViewModel(_ viewModel: MainTabViewModel) {
+    func bindViewModel(_ viewModel: HomeTabSelectorViewModel) {
         self.viewModel = viewModel
         viewModel.$selectedIndex
             .receive(on: RunLoop.main)
             .sink { [weak self] selectedIndex in
-                UserDefaultsManager.mainTabIndex.value = selectedIndex
+                UserDefaultsManager.homeTabIndex.value = selectedIndex
                 self?.tableView.reloadData()
             }.store(in: &cancellables)
     }
     
 }
 
-extension MainTabView: UITableViewDelegate {
+extension HomeTabSelectorView: UITableViewDelegate {
     
     // 셀의 높이 설정
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -78,16 +78,16 @@ extension MainTabView: UITableViewDelegate {
     
 }
 
-extension MainTabView: UITableViewDataSource {
+extension HomeTabSelectorView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return MainTabType.allCases.count
+        return HomeTabType.allCases.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let viewModel = viewModel,
-              let cell = tableView.dequeueReusableCell(withIdentifier: MainTabCell.reuseIdentifier) as? MainTabCell else { return UITableViewCell() }
-        cell.titleLabel.text = MainTabType.allCases[indexPath.row].toString()
+              let cell = tableView.dequeueReusableCell(withIdentifier: HomeTabSelectorCell.reuseIdentifier) as? HomeTabSelectorCell else { return UITableViewCell() }
+        cell.titleLabel.text = HomeTabType.allCases[indexPath.row].toString()
         cell.setupSelectButton(viewModel.selectedIndex == indexPath.row)
         return cell
     }

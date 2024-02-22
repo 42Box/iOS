@@ -1,5 +1,5 @@
 //
-//  MainTabType.swift
+//  HomeTabType.swift
 //  iBox
 //
 //  Created by jiyeon on 2/22/24.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum MainTabType: CaseIterable {
+enum HomeTabType: CaseIterable {
     case boxList
     case favorite
     

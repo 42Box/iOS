@@ -1,5 +1,5 @@
 //
-//  MainTabViewController.swift
+//  HomeTabSelectorViewwController.swift
 //  iBox
 //
 //  Created by jiyeon on 2/22/24.
@@ -7,11 +7,11 @@
 
 import UIKit
 
-class MainTabViewController: BaseNavigationBarViewController<MainTabView> {
+class HomeTabSelectorViewController: BaseNavigationBarViewController<HomeTabSelectorView> {
     
     // MARK: - Properties
     
-    private let viewModel = MainTabViewModel()
+    private let viewModel = HomeTabSelectorViewModel()
     
     // MARK: - life cycle
     
@@ -19,7 +19,7 @@ class MainTabViewController: BaseNavigationBarViewController<MainTabView> {
         super.viewDidLoad()
         setupNavigationBar() // 얘는 왜 여기에 적어줘야 전부 다 적용이 될까 ..? 🧐
         
-        guard let contentView = contentView as? MainTabView else { return }
+        guard let contentView = contentView as? HomeTabSelectorView else { return }
         contentView.bindViewModel(viewModel)
     }
     
