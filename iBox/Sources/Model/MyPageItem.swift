@@ -5,7 +5,7 @@
 //  Created by jiyeon on 1/3/24.
 //
 
-import UIKit
+import Foundation
 
 struct MyPageSection {
     var title: String
@@ -15,5 +15,4 @@ struct MyPageSection {
 struct MyPageItem {
     var title: String
     var description: String?
-    var viewController: UIViewController?
 }

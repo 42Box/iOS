@@ -7,32 +7,24 @@
 
 import UIKit
 
+protocol MyPageViewDelegate {
+    func pushViewController(_ indexPath: IndexPath)
+    func pushViewController(_ viewController: UIViewController)
+}
+
 class MyPageViewController: BaseNavigationBarViewController<MyPageView> {
     
-    // MARK: - properties
+    // MARK: - Properties
     
-    var myPageSections: [MyPageSection] = [
-        .init(title: "settings", items: [
-            MyPageItem(title: "테마", viewController: ThemeViewController())
-        ]),
-        .init(title: "help", items: [
-            MyPageItem(title: "이용 가이드"),
-            MyPageItem(title: "앱 피드백"),
-            MyPageItem(title: "개발자 정보", description: "지쿠 😆✌🏻")
-        ])
-    ]
+    private let viewModel = MyPageViewModel()
     
     // MARK: - life cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         guard let contentView = contentView as? MyPageView else { return }
-        
-        contentView.tableView.delegate = self
-        contentView.tableView.dataSource = self
-        
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(profileViewTapped))
-        contentView.profileView.addGestureRecognizer(tapGesture)
+        contentView.delegate = self
+        contentView.bindViewModel(viewModel)
     }
     
     // MARK: - BaseNavigationBarViewControllerProtocol
@@ -41,58 +33,24 @@ class MyPageViewController: BaseNavigationBarViewController<MyPageView> {
         setNavigationBarTitleLabelText("My Page")
     }
     
-    // MARK: - functions
-    
-    @objc func profileViewTapped(_ gesture: UITapGestureRecognizer) {
-        let viewController = ProfileViewController()
-        navigationController?.pushViewController(viewController, animated: true)
-    }
-    
 }
 
-extension MyPageViewController: UITableViewDelegate, UITableViewDataSource {
+extension MyPageViewController: MyPageViewDelegate {
     
-    // 테이블 뷰의 섹션 개수 설정
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return myPageSections.count
+    func pushViewController(_ indexPath: IndexPath) {
+        if indexPath.section == 0 {
+            navigationController?.pushViewController(ThemeViewController(), animated: true)
+        } else {
+            switch indexPath.row {
+            case 0: print("이용 가이드 탭 !")
+            case 1: print("앱 피드백 탭 !")
+            case 2: print("개발자 정보 탭 !")
+            default: break;
+            }
+        }
     }
     
-    // 테이블 뷰의 행 개수 설정
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return myPageSections[section].items.count
-    }
-    
-    // 테이블 뷰 셀 구성
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "MyPageItemCell")
-                as? MyPageItemCell else { return UITableViewCell() }
-        let item = myPageSections[indexPath.section].items[indexPath.row]
-        cell.titleLabel.text = item.title
-        cell.descriptionLabel.text = item.description
-        return cell
-    }
-    
-    // 셀의 높이 설정
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 65
-    }
-    
-    // 섹션 헤더의 View 설정
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerView = UIView()
-        headerView.backgroundColor = .systemGroupedBackground
-        return headerView
-    }
-    
-    // 섹션 헤더의 높이 설정
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 10
-    }
-    
-    // 테이블 뷰 셀이 선택되었을 때 실행되는 메서드
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let item = myPageSections[indexPath.section].items[indexPath.row]
-        guard let viewController = item.viewController else { return }
+    func pushViewController(_ viewController: UIViewController) {
         navigationController?.pushViewController(viewController, animated: true)
     }
     

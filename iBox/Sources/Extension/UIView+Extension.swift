@@ -19,3 +19,15 @@ extension Then where Self: AnyObject {
 }
 
 extension UIView: Then {}
+
+extension UIView {
+    
+    func toUserInterfaceStyle(_ theme: Theme) -> UIUserInterfaceStyle {
+        switch theme {
+        case .light: return UIUserInterfaceStyle.light
+        case .dark: return UIUserInterfaceStyle.dark
+        case .system: return UIUserInterfaceStyle.unspecified
+        }
+    }
+    
+}
