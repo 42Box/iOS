@@ -39,13 +39,17 @@ extension MyPageViewController: MyPageViewDelegate {
     
     func pushViewController(_ indexPath: IndexPath) {
         if indexPath.section == 0 {
-            navigationController?.pushViewController(ThemeViewController(), animated: true)
+            switch indexPath.row {
+            case 0: navigationController?.pushViewController(ThemeViewController(), animated: true)
+            case 1: navigationController?.pushViewController(MainTabViewController(), animated: true)
+            default: break
+            }
         } else {
             switch indexPath.row {
             case 0: print("이용 가이드 탭 !")
             case 1: print("앱 피드백 탭 !")
             case 2: print("개발자 정보 탭 !")
-            default: break;
+            default: break
             }
         }
     }

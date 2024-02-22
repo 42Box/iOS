@@ -12,7 +12,10 @@ class MyPageViewModel {
     let myPageSectionViewModels: [MyPageSectionViewModel] = [
         MyPageSectionViewModel(MyPageSection(
             title: "settings",
-            items: [MyPageItem(title: "테마")]
+            items: [
+                MyPageItem(title: "테마"),
+                MyPageItem(title: "첫 화면")
+            ]
         )),
         MyPageSectionViewModel(MyPageSection(
             title: "help",
