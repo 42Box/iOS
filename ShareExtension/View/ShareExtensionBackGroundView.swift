@@ -11,7 +11,6 @@ import SnapKit
 
 protocol ShareExtensionBackGroundViewDelegate: AnyObject {
     func didTapCancel()
-    func didTapSave()
     func didTapOpenApp()
 }
 
@@ -49,16 +48,6 @@ class ShareExtensionBackGroundView: UIView {
         return button
     }()
     
-    lazy var saveButton: UIButton = {
-        let button = UIButton()
-        button.configuration = .plain()
-        button.configuration?.attributedTitle = .init(
-            "Save",
-            attributes: .init([.font: UIFont.boldSystemFont(ofSize: 14)])
-        )
-        return button
-    }()
-    
     lazy var openAppButton: UIButton = {
         let button = UIButton()
         button.configuration = .plain()
@@ -89,7 +78,6 @@ class ShareExtensionBackGroundView: UIView {
         addSubview(label)
         addSubview(linkLabel)
         addSubview(cancelButton)
-        addSubview(saveButton)
         addSubview(openAppButton)
     }
     
@@ -108,11 +96,6 @@ class ShareExtensionBackGroundView: UIView {
         }
         
         cancelButton.snp.makeConstraints {
-            $0.trailing.equalTo(saveButton.snp.leading).offset(-20)
-            $0.centerY.equalTo(openAppButton.snp.centerY)
-        }
-        
-        saveButton.snp.makeConstraints {
             $0.trailing.equalTo(openAppButton.snp.leading).offset(-20)
             $0.centerY.equalTo(openAppButton.snp.centerY)
         }
@@ -124,7 +107,6 @@ class ShareExtensionBackGroundView: UIView {
     
     private func setupButtonAction() {
         cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
-        saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         openAppButton.addTarget(self, action: #selector(openAppButtonTapped), for: .touchUpInside)
     }
     
@@ -136,10 +118,6 @@ class ShareExtensionBackGroundView: UIView {
     
     @objc func cancelButtonTapped() {
         delegate?.didTapCancel()
-    }
-    
-    @objc func saveButtonTapped() {
-        delegate?.didTapSave()
     }
     
     @objc func openAppButtonTapped() {
