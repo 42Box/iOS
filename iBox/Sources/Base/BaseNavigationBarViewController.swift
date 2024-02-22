@@ -51,7 +51,7 @@ class BaseNavigationBarViewController<View: BaseView>: UIViewController, BaseNav
     
     // MARK: - properties
     
-    let backgroundColor: UIColor = .systemBackground
+    let backgroundColor: UIColor = .backgroundColor
     let tintColor: UIColor = .label
     let titleFont: UIFont = .systemFont(ofSize: 20, weight: .semibold)
     
@@ -134,7 +134,7 @@ class BaseNavigationBarViewController<View: BaseView>: UIViewController, BaseNav
     // MARK: - functions
     
     private func configureUI() {
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .backgroundColor
         view.addSubview(statusBar)
         view.addSubview(navigationBar)
         navigationBar.addSubview(navigationBar.backButton)

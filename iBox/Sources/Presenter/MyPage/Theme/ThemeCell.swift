@@ -38,6 +38,7 @@ class ThemeCell: UITableViewCell, BaseViewProtocol {
     // MARK: - BaseViewProtocol
     
     func configureUI() {
+        backgroundColor = .clear
         addSubview(themeImageView)
         addSubview(titleLabel)
         addSubview(selectButton)

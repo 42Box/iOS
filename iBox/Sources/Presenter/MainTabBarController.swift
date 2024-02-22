@@ -11,7 +11,7 @@ class MainTabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .backgroundColor
         
         setupTabBar()
         setupTabBarAppearance()
@@ -24,7 +24,7 @@ class MainTabBarController: UITabBarController {
             setupViewController(viewController: MyPageViewController(), image: UIImage(systemName: "person.fill"))
         ]
         tabBar.tintColor = .box
-        tabBar.backgroundColor = .systemBackground
+        tabBar.backgroundColor = .backgroundColor
     }
     
     private func setupViewController(viewController: UIViewController, image: UIImage?) -> UIViewController {

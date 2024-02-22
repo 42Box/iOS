@@ -12,7 +12,7 @@ class PreloadedWebViewController: BaseNavigationBarViewController<PreloadedWebVi
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .backgroundColor
         navigationItem.largeTitleDisplayMode = .never
         
         guard let contentView = contentView as? PreloadedWebView else { return }

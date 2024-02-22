@@ -18,8 +18,24 @@ extension UIColor {
         )
     }
     
-    class var box: UIColor { UIColor(hex: 0xFF7F29) }
-    class var box2: UIColor { UIColor(hex: 0xFF9548) }
-    class var box3: UIColor { UIColor(hex: 0xFFDC6E) }
+    private static func color(light: UIColor, dark: UIColor) -> UIColor {
+        return UIColor { traitCollection in
+            switch traitCollection.userInterfaceStyle {
+            case .dark:
+                return dark
+            default:
+                return light
+            }
+        }
+    }
+    
+    static let box = UIColor(hex: 0xFF7F29)
+    static let box2 = UIColor(hex: 0xFF9548)
+    static let box3 = UIColor(hex: 0xFFDC6E)
+    static let tableViewBackgroundColor = color(light: .white, dark: .systemGray5)
+    static let floderGray = color(light: .systemGray3, dark: .systemGray2)
+    static let webIconColor = color(light: .black, dark: .systemGray)
+    static let dimmedViewColor = UIColor.black.withAlphaComponent(0.75)
+    static let backgroundColor = color(light: .white, dark: UIColor(hex: 0x242424))
     
 }

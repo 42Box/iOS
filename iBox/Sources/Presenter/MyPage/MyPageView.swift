@@ -41,6 +41,7 @@ class MyPageView: BaseView {
         $0.register(MyPageItemCell.self, forCellReuseIdentifier: "MyPageItemCell")
         $0.separatorStyle = .none
         $0.sectionHeaderTopPadding = 0
+        $0.backgroundColor = .clear
     }
     
     // MARK: - Initializer
