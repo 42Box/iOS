@@ -20,11 +20,11 @@ enum Theme: Codable, CaseIterable {
         }
     }
     
-    func toImage() -> UIImage? {
+    func toImageString() -> String {
         switch self {
-        case .light: UIImage(systemName: "circle")
-        case .dark: UIImage(systemName: "circle.fill")
-        case .system: UIImage(systemName: "circle.righthalf.filled")
+        case .light: "circle"
+        case .dark: "circle.fill"
+        case .system: "circle.righthalf.filled"
         }
     }
     

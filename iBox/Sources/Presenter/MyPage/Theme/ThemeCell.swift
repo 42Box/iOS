@@ -64,7 +64,7 @@ class ThemeCell: UITableViewCell, BaseViewProtocol {
     
     func bind(_ theme: Theme) {
         titleLabel.text = theme.toString()
-        themeImageView.image = theme.toImage()
+        themeImageView.image = UIImage(systemName: theme.toImageString())
     }
     
     func setupSelectButton(_ selected: Bool) {
