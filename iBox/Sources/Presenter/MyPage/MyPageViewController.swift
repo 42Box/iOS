@@ -25,6 +25,12 @@ class MyPageViewController: BaseNavigationBarViewController<MyPageView> {
         guard let contentView = contentView as? MyPageView else { return }
         contentView.delegate = self
         contentView.bindViewModel(viewModel)
+        viewModel.input.send(.viewWillAppear)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.input.send(.viewWillAppear)
     }
     
     // MARK: - BaseNavigationBarViewControllerProtocol
