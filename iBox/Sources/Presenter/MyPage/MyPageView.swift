@@ -5,6 +5,7 @@
 //  Created by jiyeon on 1/3/24.
 //
 
+import Combine
 import UIKit
 
 class MyPageView: BaseView {
@@ -13,6 +14,7 @@ class MyPageView: BaseView {
     
     var delegate: MyPageViewDelegate?
     private var viewModel: MyPageViewModel?
+    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - UI
     
@@ -103,6 +105,14 @@ class MyPageView: BaseView {
     
     func bindViewModel(_ viewModel: MyPageViewModel) {
         self.viewModel = viewModel
+        viewModel.transform(input: viewModel.input.eraseToAnyPublisher())
+            .receive(on: RunLoop.main)
+            .sink { [weak self] event in
+                switch event {
+                case .updateMyPageSectionViewModels:
+                    self?.tableView.reloadData()
+                }
+            }.store(in: &cancellables)
     }
     
     // MARK: - functions
