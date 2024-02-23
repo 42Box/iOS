@@ -147,7 +147,7 @@ extension MyPageView: UITableViewDelegate, UITableViewDataSource {
     // 섹션 헤더의 View 설정
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView()
-        headerView.backgroundColor = .systemGroupedBackground
+        headerView.backgroundColor = .backgroundColor
         return headerView
     }
     
