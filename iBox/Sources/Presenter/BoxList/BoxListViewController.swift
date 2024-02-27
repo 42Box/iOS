@@ -31,10 +31,9 @@ class BoxListViewController: BaseNavigationBarViewController<BoxListView> {
 }
 
 extension BoxListViewController: BoxListViewDelegate {
-    func didSelectWeb(at url: String, withName name: String) {
-        let viewController = PreloadedWebViewController()
+    func didSelectWeb(at url: URL, withName name: String) {
+        let viewController = PreloadedWebViewController(selectedWebsite: url)
         viewController.title = name
-        viewController.selectedWebsite = url
         navigationController?.pushViewController(viewController, animated: true)
     }
 }

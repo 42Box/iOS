@@ -10,16 +10,7 @@ import Foundation
 
 class BoxListViewModel {
     
-    var boxList = [
-    BoxListSectionViewModel(folder: Folder(name: "기본 폴더", color: .gray, bookmarks: [
-        Bookmark(name: "42 Intra", url: "https://profile.intra.42.fr/"),
-        Bookmark(name: "42Where", url: "https://www.where42.kr/"),
-        Bookmark(name: "42Stat", url: "https://stat.42seoul.kr/"),
-        Bookmark(name: "집현전", url: "https://42library.kr/")
-    ])),
-    BoxListSectionViewModel(folder: Folder(name: "새 폴더", color: .green, bookmarks: [Bookmark(name: "Cabi", url: "https://cabi.42seoul.io/")], isOpened: false)),
-    BoxListSectionViewModel(folder: Folder(name: "새 폴더(2)", color: .yellow, bookmarks: [Bookmark(name: "24HANE", url: "https://24hoursarenotenough.42seoul.kr/")], isOpened: false))
-    ]
+    var boxList = [BoxListSectionViewModel]()
     
     enum Input {
         case viewDidLoad
@@ -39,6 +30,8 @@ class BoxListViewModel {
             guard let self else { return }
             switch event {
             case .viewDidLoad:
+                let folders = CoreDataManager.shared.getFolders()
+                self.boxList = folders.map{ BoxListSectionViewModel(folder: $0) }
                 output.send(.sendBoxList(boxList: boxList))
             case let .folderTapped(section):
                 boxList[section].isOpened.toggle()

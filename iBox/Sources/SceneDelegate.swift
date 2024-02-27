@@ -20,6 +20,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // 앱 테마 정보
         window?.overrideUserInterfaceStyle = window?.toUserInterfaceStyle(UserDefaultsManager.theme.value) ?? .unspecified
         
+        insertDefaultDataIfNeeded()
+        
         // 나중에 userDefaults에 저장해두고 꺼내와서 preload하기
         let urlsToPreload = [
             URL(string: "https://profile.intra.42.fr/")!,
@@ -32,9 +34,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         WebViewPreloader.shared.preload(urls: urlsToPreload)
         
         let favorite = UserDefaultsManager.favorite.value
-        guard let favoriteUrl = URL(string: favorite.url) else { return }
+        let favoriteUrl = favorite.url
         WebViewPreloader.shared.preloadFavoriteView(url: favoriteUrl)
-        
+                
         window?.rootViewController = MainTabBarController()
         window?.makeKeyAndVisible() // 윈도우를 화면에 보여줌
 
@@ -45,6 +47,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             print("Opened URL: \(url)")
             
             // 앱이 실행되기 전에 url이 들어오는 경우 Logic
+        }
+    }
+    
+    private func insertDefaultDataIfNeeded() {
+        let isDefaultDataInserted = UserDefaultsManager.isDefaultDataInserted.value
+        if !isDefaultDataInserted {
+            var defaultData = [
+                Folder(id: UUID(), name: "42 폴더", color: .gray, bookmarks: [
+                    Bookmark(id: UUID(), name: "42 Intra", url: URL(string: "https://profile.intra.42.fr/")!),
+                    Bookmark(id: UUID(), name: "42Where", url: URL(string: "https://www.where42.kr/")! ),
+                    Bookmark(id: UUID(), name: "42Stat", url: URL(string: "https://stat.42seoul.kr/")!),
+                    Bookmark(id: UUID(), name: "집현전", url: URL(string: "https://42library.kr/")!),
+                    Bookmark(id: UUID(), name: "Cabi", url: URL(string: "https://cabi.42seoul.io/")!),
+                    Bookmark(id: UUID(), name: "24HANE", url: URL(string: "https://24hoursarenotenough.42seoul.kr/")!)
+                ])
+            ]
+            CoreDataManager.shared.deleteAllFolders()
+            CoreDataManager.shared.addInitialFolders(defaultData)
+            UserDefaultsManager.isDefaultDataInserted.value = true
         }
     }
     
@@ -87,7 +108,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
 
         // Save changes in the application's managed object context when the application transitions to the background.
-        (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
     }
 
 

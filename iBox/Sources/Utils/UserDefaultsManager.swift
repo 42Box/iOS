@@ -8,9 +8,10 @@
 import Foundation
 
 enum UserDefaultsAccessKey: String {
-    case theme          // 다크 모드
-    case favorite       // 즐겨찾기
-    case homeTab        // 첫 화면
+    case theme                  // 다크 모드
+    case favorite               // 즐겨찾기
+    case homeTab                // 첫 화면
+    case isDefaultDataInserted  // 기본 데이터 삽입 여부 
 }
 
 final class UserDefaultsManager {
@@ -20,11 +21,15 @@ final class UserDefaultsManager {
     )
     static let favorite = UserDefaultValue(
         key: .favorite,
-        defaultValue: Bookmark(name: "42 Intra", url: "https://profile.intra.42.fr/")
+        defaultValue: Bookmark(id: UUID(), name: "42 Intra", url: URL(string: "https://profile.intra.42.fr/")!)
     )
     static let homeTabIndex = UserDefaultValue(
         key: .homeTab,
         defaultValue: 0
+    )
+    static let isDefaultDataInserted = UserDefaultValue(
+        key: .isDefaultDataInserted,
+        defaultValue: false
     )
 }
 

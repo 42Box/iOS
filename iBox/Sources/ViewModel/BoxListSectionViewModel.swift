@@ -20,7 +20,9 @@ class BoxListSectionViewModel: Identifiable {
         return isOpened ? originalBoxListCellViewModels : []
     }
     
-    let id = UUID()
+    var id: UUID {
+        folder.id
+    }
     
     var name: String {
         folder.name

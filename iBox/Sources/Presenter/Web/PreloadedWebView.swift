@@ -11,7 +11,7 @@ import WebKit
 import SnapKit
 
 class PreloadedWebView: BaseView {
-    var selectedWebsite: String? {
+    var selectedWebsite: URL? {
         didSet {
             getWebView()
         }
@@ -30,7 +30,7 @@ class PreloadedWebView: BaseView {
     
     private func getWebView() {
         guard let selectedWebsite else { return }
-        webView = WebViewPreloader.shared.getWebView(for: URL(string: selectedWebsite)!)
+        webView = WebViewPreloader.shared.getWebView(for: selectedWebsite)
         guard let webView else { return }
         addSubview(webView)
         webView.snp.makeConstraints { make in

@@ -11,7 +11,7 @@ import UIKit
 import SnapKit
 
 protocol BoxListViewDelegate: AnyObject {
-    func didSelectWeb(at url: String, withName name: String)
+    func didSelectWeb(at url: URL, withName name: String)
 }
 
 class BoxListView: BaseView {

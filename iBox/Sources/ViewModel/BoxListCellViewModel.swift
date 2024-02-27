@@ -12,16 +12,16 @@ class BoxListCellViewModel: Identifiable {
     
     init(bookmark: Bookmark) {
         self.bookmark = bookmark
+        self.name = bookmark.name
+        self.url = bookmark.url
     }
     
-    let id = UUID()
-    
-    var name: String {
-        bookmark.name
+    var id: UUID {
+        bookmark.id
     }
+    
+    var name: String
 
-    var url: String {
-        bookmark.url
-    }
+    var url: URL
     
 }
