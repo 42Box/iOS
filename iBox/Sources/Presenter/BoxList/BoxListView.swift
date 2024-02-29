@@ -41,7 +41,7 @@ class BoxListView: BaseView {
         let view = UIView()
         view.clipsToBounds = true
         view.layer.cornerRadius = 20
-        view.backgroundColor = .systemGroupedBackground
+        view.backgroundColor = .tableViewBackgroundColor
         
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in

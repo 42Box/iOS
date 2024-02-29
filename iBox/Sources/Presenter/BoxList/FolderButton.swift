@@ -36,7 +36,7 @@ class FolderButton: UIButton {
     init(isOpen: Bool) {
         self.isOpen = isOpen
         super.init(frame: .zero)
-        backgroundColor = .systemGroupedBackground
+        backgroundColor = .tableViewBackgroundColor
         
         setupLayout()
     }
