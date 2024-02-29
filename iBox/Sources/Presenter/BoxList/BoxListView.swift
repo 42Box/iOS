@@ -12,7 +12,7 @@ import SnapKit
 
 protocol BoxListViewDelegate: AnyObject {
     func didSelectWeb(at url: URL, withName name: String)
-    func pushViewController(index: Int)
+    func pushViewController(type: EditType)
 }
 
 class BoxListView: BaseView {

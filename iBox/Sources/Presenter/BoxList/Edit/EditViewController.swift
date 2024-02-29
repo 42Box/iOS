@@ -8,7 +8,7 @@
 import UIKit
 
 protocol EditViewDelegate {
-    func pushViewController(index: Int)
+    func pushViewController(type: EditType)
 }
 
 class EditViewController: BaseBottomSheetViewController<EditView> {
@@ -24,8 +24,8 @@ class EditViewController: BaseBottomSheetViewController<EditView> {
 
 extension EditViewController: EditViewDelegate {
     
-    func pushViewController(index: Int) {
-        delegate?.pushViewController(index: index)
+    func pushViewController(type: EditType) {
+        delegate?.pushViewController(type: type)
         dismiss(animated: false)
     }
     

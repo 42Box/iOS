@@ -14,8 +14,8 @@ class EditView: BaseView {
     var delegate: EditViewDelegate?
     
     private let editItems = [
-        EditItem(imageString: "folder.fill", title: "폴더 편집"),
-        EditItem(imageString: "bookmark.fill", title: "북마크 편집")
+        EditItem(type: .folder, imageString: "folder.fill", title: "폴더 편집"),
+        EditItem(type: .bookmark, imageString: "bookmark.fill", title: "북마크 편집")
     ]
     
     // MARK: - UI Components
@@ -67,7 +67,7 @@ extension EditView: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        delegate?.pushViewController(index: indexPath.row)
+        delegate?.pushViewController(type: editItems[indexPath.row].type)
     }
     
 }

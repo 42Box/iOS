@@ -44,11 +44,12 @@ extension BoxListViewController: BoxListViewDelegate {
         navigationController?.pushViewController(viewController, animated: true)
     }
     
-    func pushViewController(index: Int) {
-        switch index {
-        case 0: navigationController?.pushViewController(EditFolderViewController(), animated: true)
-        case 1: navigationController?.pushViewController(EditBookmarkViewController(), animated: true)
-        default: break
+    func pushViewController(type: EditType) {
+        switch type {
+        case .folder:
+            navigationController?.pushViewController(EditFolderViewController(), animated: true)
+        case .bookmark:
+            navigationController?.pushViewController(EditBookmarkViewController(), animated: true)
         }
     }
 }

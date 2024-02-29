@@ -51,7 +51,7 @@ class EditCell: UITableViewCell {
     private func setupLayout() {
         iconView.snp.makeConstraints { make in
             make.width.height.equalTo(20)
-            make.leading.equalToSuperview().inset(20)
+            make.leading.equalToSuperview().inset(30)
             make.centerY.equalToSuperview()
         }
         
