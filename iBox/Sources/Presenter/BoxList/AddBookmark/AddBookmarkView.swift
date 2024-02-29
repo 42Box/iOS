@@ -14,7 +14,7 @@ class AddBookmarkBottomSheetView: BaseView {
     // MARK: - configure UI
     
     override func configureUI() {
-        backgroundColor = .systemBackground
+        backgroundColor = .backgroundColor
     }
     
 }

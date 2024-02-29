@@ -23,6 +23,7 @@ class ThemeView: BaseView {
         $0.register(ThemeCell.self, forCellReuseIdentifier: "ThemeCell")
         $0.separatorStyle = .none
         $0.sectionHeaderTopPadding = 0
+        $0.backgroundColor = .clear
     }
     
     // MARK: - Initializer

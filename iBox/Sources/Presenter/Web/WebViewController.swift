@@ -12,7 +12,7 @@ class WebViewController: BaseNavigationBarViewController<WebView> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .backgroundColor
         navigationItem.largeTitleDisplayMode = .never
         
         guard let contentView = contentView as? WebView else { return }

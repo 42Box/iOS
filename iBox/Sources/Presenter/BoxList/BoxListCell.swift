@@ -28,8 +28,7 @@ class BoxListCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        backgroundColor = .systemGroupedBackground
-        selectionStyle = .none
+        backgroundColor = .tableViewBackgroundColor
         
         setupLayout()
     }

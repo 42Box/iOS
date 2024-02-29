@@ -43,6 +43,7 @@ class MyPageView: BaseView {
         $0.register(MyPageItemCell.self, forCellReuseIdentifier: "MyPageItemCell")
         $0.separatorStyle = .none
         $0.sectionHeaderTopPadding = 0
+        $0.backgroundColor = .clear
     }
     
     // MARK: - Initializer
@@ -156,7 +157,7 @@ extension MyPageView: UITableViewDelegate, UITableViewDataSource {
     // 섹션 헤더의 View 설정
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView()
-        headerView.backgroundColor = .systemGroupedBackground
+        headerView.backgroundColor = .backgroundColor
         return headerView
     }
     

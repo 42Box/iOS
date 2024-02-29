@@ -24,7 +24,7 @@ class BoxListView: BaseView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        backgroundColor = .systemBackground
+        backgroundColor = .backgroundColor
         viewModel = BoxListViewModel()
         
         setupLayout()
@@ -41,7 +41,7 @@ class BoxListView: BaseView {
         let view = UIView()
         view.clipsToBounds = true
         view.layer.cornerRadius = 20
-        view.backgroundColor = .systemGroupedBackground
+        view.backgroundColor = .tableViewBackgroundColor
         
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
@@ -115,7 +115,7 @@ extension BoxListView: UITableViewDelegate {
             make.top.bottom.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(15)
         }
-        view.backgroundColor = ColorPalette.tableViewBackgroundColor
+        view.backgroundColor = .clear
         line.backgroundColor = .tertiaryLabel
         return view
     }
