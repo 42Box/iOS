@@ -1,5 +1,5 @@
 //
-//  EditFolderViewController.swift
+//  EditBookmarkViewController.swift
 //  iBox
 //
 //  Created by jiyeon on 2/29/24.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class EditFolderViewController: BaseNavigationBarViewController<EditFolderView> {
+class EditBookmarkViewController: BaseNavigationBarViewController<EditBookmarkView> {
     
     // MARK: - Life Cycle
     
@@ -19,7 +19,7 @@ class EditFolderViewController: BaseNavigationBarViewController<EditFolderView> 
     // MARK: - BaseNavigationBarViewControllerProtocol
     
     override func setupNavigationBar() {
-        setNavigationBarTitleLabelText("폴더 편집")
+        setNavigationBarTitleLabelText("북마크 편집")
         setNavigationBarTitleLabelFont(.systemFont(ofSize: 17, weight: .semibold))
         setNavigationBarBackButtonHidden(false)
     }
