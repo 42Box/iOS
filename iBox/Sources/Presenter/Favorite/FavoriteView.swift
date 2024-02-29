@@ -16,7 +16,7 @@ class FavoriteView: PreloadedWebView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .systemBackground
+        backgroundColor = .backgroundColor
         
         setupLayout()
     }

@@ -34,7 +34,7 @@ class MainView: UIView {
     // MARK: - configure UI
     
     func configureUI() {
-        backgroundColor = .systemBackground
+        backgroundColor = .backgroundColor
         
         addSubview(label)
         

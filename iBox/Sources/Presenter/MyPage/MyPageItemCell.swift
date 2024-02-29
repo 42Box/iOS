@@ -44,6 +44,7 @@ class MyPageItemCell: UITableViewCell, BaseViewProtocol {
     // MARK: - BaseViewProtocol
     
     func configureUI() {
+        backgroundColor = .clear
         addSubview(titleLabel)
         addSubview(descriptionLabel)
         addSubview(chevronButton)

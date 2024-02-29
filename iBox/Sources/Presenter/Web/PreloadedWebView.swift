@@ -21,7 +21,7 @@ class PreloadedWebView: BaseView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .systemBackground
+        backgroundColor = .backgroundColor
     }
     
     required init?(coder: NSCoder) {
