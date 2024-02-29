@@ -24,8 +24,8 @@ class MainTabBarController: UITabBarController {
             setupViewController(viewController: MyPageViewController(), image: UIImage(systemName: "person.fill"))
         ]
         tabBar.tintColor = .box
-        tabBar.backgroundColor = .systemBackground
-        selectedIndex = UserDefaultsManager.homeTabIndex.value
+        tabBar.backgroundColor = .backgroundColor
+        selectedIndex = UserDefaultsManager.homeTabIndex
     }
     
     private func setupViewController(viewController: UIViewController, image: UIImage?) -> UIViewController {

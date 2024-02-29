@@ -10,6 +10,6 @@ import Foundation
 
 class HomeTabSelectorViewModel {
     
-    @Published var selectedIndex: Int = UserDefaultsManager.homeTabIndex.value
+    @Published var selectedIndex: Int = UserDefaultsManager.homeTabIndex
     
 }

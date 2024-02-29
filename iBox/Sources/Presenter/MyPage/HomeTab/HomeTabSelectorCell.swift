@@ -39,6 +39,7 @@ class HomeTabSelectorCell: UITableViewCell {
     // MARK: - Setup Methods
     
     private func setupLayout() {
+        backgroundColor = .clear
         selectionStyle = .none
         
         addSubview(titleLabel)
