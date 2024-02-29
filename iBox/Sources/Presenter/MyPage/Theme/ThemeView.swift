@@ -60,8 +60,8 @@ class ThemeView: BaseView {
             .receive(on: RunLoop.main)
             .sink { [weak self] selectedIndex in
                 guard let window = self?.window else { return }
-                UserDefaultsManager.theme.value = Theme.allCases[selectedIndex]
-                window.overrideUserInterfaceStyle = self?.toUserInterfaceStyle(UserDefaultsManager.theme.value) ?? .unspecified
+                UserDefaultsManager.theme = Theme.allCases[selectedIndex]
+                window.overrideUserInterfaceStyle = self?.toUserInterfaceStyle(UserDefaultsManager.theme) ?? .unspecified
                 self?.tableView.reloadData()
             }.store(in: &cancellables)
     }

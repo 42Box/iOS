@@ -42,8 +42,8 @@ class MyPageViewModel {
             MyPageSection(
                 title: "settings",
                 items: [
-                    MyPageItem(title: "테마", description: UserDefaultsManager.theme.value.toString()),
-                    MyPageItem(title: "홈화면", description: HomeTabType.allCases[UserDefaultsManager.homeTabIndex.value].toString())
+                    MyPageItem(title: "테마", description: UserDefaultsManager.theme.toString()),
+                    MyPageItem(title: "홈화면", description: HomeTabType.allCases[UserDefaultsManager.homeTabIndex].toString())
                 ]
             )
         ))

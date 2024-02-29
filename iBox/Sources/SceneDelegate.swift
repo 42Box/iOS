@@ -18,7 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
 
         // 앱 테마 정보
-        window?.overrideUserInterfaceStyle = window?.toUserInterfaceStyle(UserDefaultsManager.theme.value) ?? .unspecified
+        window?.overrideUserInterfaceStyle = window?.toUserInterfaceStyle(UserDefaultsManager.theme) ?? .unspecified
         
         insertDefaultDataIfNeeded()
         
@@ -33,7 +33,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         ]
         WebViewPreloader.shared.preload(urls: urlsToPreload)
         
-        let favorite = UserDefaultsManager.favorite.value
+        let favorite = UserDefaultsManager.favorite
         let favoriteUrl = favorite.url
         WebViewPreloader.shared.preloadFavoriteView(url: favoriteUrl)
                 
@@ -51,7 +51,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     private func insertDefaultDataIfNeeded() {
-        let isDefaultDataInserted = UserDefaultsManager.isDefaultDataInserted.value
+        let isDefaultDataInserted = UserDefaultsManager.isDefaultDataInserted
         if !isDefaultDataInserted {
             var defaultData = [
                 Folder(id: UUID(), name: "42 폴더", color: .gray, bookmarks: [
@@ -65,7 +65,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             ]
             CoreDataManager.shared.deleteAllFolders()
             CoreDataManager.shared.addInitialFolders(defaultData)
-            UserDefaultsManager.isDefaultDataInserted.value = true
+            UserDefaultsManager.isDefaultDataInserted = true
         }
     }
     

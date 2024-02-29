@@ -20,6 +20,7 @@ class HomeTabSelectorView: BaseView {
     let tableView = UITableView().then {
         $0.separatorStyle = .none
         $0.register(HomeTabSelectorCell.self, forCellReuseIdentifier: HomeTabSelectorCell.reuseIdentifier)
+        $0.backgroundColor = .clear
     }
     
     // MARK: - Initializer
@@ -56,7 +57,7 @@ class HomeTabSelectorView: BaseView {
         viewModel.$selectedIndex
             .receive(on: RunLoop.main)
             .sink { [weak self] selectedIndex in
-                UserDefaultsManager.homeTabIndex.value = selectedIndex
+                UserDefaultsManager.homeTabIndex = selectedIndex
                 self?.tableView.reloadData()
             }.store(in: &cancellables)
     }
