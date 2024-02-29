@@ -11,15 +11,26 @@ import SnapKit
 
 class MyPageItemCell: UITableViewCell, BaseViewProtocol {
     
+    static let reuseIdentifier = "MyPageItemCell"
+    private var viewModel: MyPageCellViewModel?
+    
     // MARK: - UI
     
     let titleLabel = UILabel().then {
         $0.font = .systemFont(ofSize: 16)
     }
     
+    let stackView = UIStackView().then {
+        $0.axis = .horizontal
+    }
+    
     let descriptionLabel = UILabel().then {
         $0.font = .systemFont(ofSize: 13, weight: .regular)
         $0.textColor = .gray
+    }
+    
+    let controlSwitch = UISwitch().then {
+        $0.tintColor = .box3
     }
     
     let chevronButton = UIButton().then {
@@ -34,7 +45,7 @@ class MyPageItemCell: UITableViewCell, BaseViewProtocol {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureUI()
-        selectionStyle = .none // 셀 선택했을 때 회색으로 변하는 것 비활성화
+        selectionStyle = .none
     }
     
     required init?(coder: NSCoder) {
@@ -46,23 +57,40 @@ class MyPageItemCell: UITableViewCell, BaseViewProtocol {
     func configureUI() {
         backgroundColor = .clear
         addSubview(titleLabel)
-        addSubview(descriptionLabel)
-        addSubview(chevronButton)
+        addSubview(stackView)
+        stackView.addArrangedSubview(controlSwitch)
+        stackView.addArrangedSubview(descriptionLabel)
+        stackView.addArrangedSubview(chevronButton)
         
         titleLabel.snp.makeConstraints {
             $0.left.equalToSuperview().inset(20)
             $0.centerY.equalToSuperview()
         }
         
-        chevronButton.snp.makeConstraints {
-            $0.right.equalToSuperview().inset(20)
+        stackView.snp.makeConstraints {
+            $0.right.equalToSuperview().inset(30)
             $0.centerY.equalToSuperview()
-            $0.width.height.equalTo(20)
         }
+    }
+    
+    // MARK: - Bind ViewModel
+    
+    func bindViewModel(_ viewModel: MyPageCellViewModel) {
+        self.viewModel = viewModel
+        titleLabel.text = viewModel.title
         
-        descriptionLabel.snp.makeConstraints {
-            $0.right.equalTo(chevronButton.snp.left).offset(-10)
-            $0.centerY.equalToSuperview()
+        descriptionLabel.isHidden = true
+        controlSwitch.isHidden = true
+        chevronButton.isHidden = true
+        
+        if let description = viewModel.description {
+            descriptionLabel.text = viewModel.description
+            descriptionLabel.isHidden = false
+        } else if let flag = viewModel.flag {
+            controlSwitch.isOn = flag
+            controlSwitch.isHidden = false
+        } else {
+            chevronButton.isHidden = false
         }
     }
     
