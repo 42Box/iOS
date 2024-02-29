@@ -19,13 +19,20 @@ class BoxListViewController: BaseNavigationBarViewController<BoxListView> {
     
     override func setupNavigationBar() {
         setNavigationBarTitleLabelText("iBox")
-        setNavigationBarAddButtonHidden(false)
+        setNavigationBarMenuButtonHidden(false)
         setNavigationBarAddButtonAction(#selector(addButtonTapped))
+        setNavigationBarMoreButtonAction(#selector(moreButtonTapped))
     }
     
-    @objc private func addButtonTapped(_ sender: Any?) {
+    @objc private func addButtonTapped() {
         let addBookmarkBottomSheetViewController = AddBookmarkBottomSheetViewController(bottomSheetHeight: 200)
         present(addBookmarkBottomSheetViewController, animated: false)
+    }
+    
+    @objc private func moreButtonTapped() {
+        let editViewController = EditViewController(bottomSheetHeight: 200)
+        editViewController.delegate = self
+        present(editViewController, animated: false)
     }
 
 }
@@ -35,5 +42,13 @@ extension BoxListViewController: BoxListViewDelegate {
         let viewController = PreloadedWebViewController(selectedWebsite: url)
         viewController.title = name
         navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    func pushViewController(index: Int) {
+        switch index {
+        case 0: navigationController?.pushViewController(EditFolderViewController(), animated: true)
+        case 1: navigationController?.pushViewController(EditBookmarkViewController(), animated: true)
+        default: break
+        }
     }
 }
