@@ -28,6 +28,12 @@ class BaseBottomSheetViewController<View: BaseView>: UIViewController {
         $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner] // 왼쪽 위, 오른쪽 위 둥글게
     }
     
+    let indicator = UIView().then {
+        $0.clipsToBounds = true
+        $0.layer.cornerRadius = 2
+        $0.backgroundColor = .darkGray
+    }
+    
     // MARK: - initializer
     
     init(bottomSheetHeight: CGFloat) {
@@ -58,6 +64,7 @@ class BaseBottomSheetViewController<View: BaseView>: UIViewController {
     private func configureUI() {
         view.addSubview(dimmedView)
         view.addSubview(sheetView)
+        sheetView.addSubview(indicator)
         
         dimmedView.snp.makeConstraints {
             $0.edges.equalToSuperview()
@@ -67,6 +74,13 @@ class BaseBottomSheetViewController<View: BaseView>: UIViewController {
             $0.top.equalTo(view.snp.bottom)
             $0.left.right.equalToSuperview()
             $0.height.equalTo(bottomSheetHeight)
+        }
+        
+        indicator.snp.makeConstraints {
+            $0.width.equalTo(40)
+            $0.height.equalTo(4)
+            $0.top.equalToSuperview().inset(10)
+            $0.centerX.equalToSuperview()
         }
     }
     

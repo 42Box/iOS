@@ -13,6 +13,7 @@ class NavigationBar: UIView {
     var backButton = UIButton()
     var titleLabel = UILabel()
     var addButton = UIButton()
+    var moreButton = UIButton()
 }
 
 protocol BaseNavigationBarViewControllerProtocol {
@@ -25,8 +26,9 @@ protocol BaseNavigationBarViewControllerProtocol {
     func setNavigationBarTintColor(_ color: UIColor)
     func setNavigationBarHidden(_ hidden: Bool)
     func setNavigationBarBackButtonHidden(_ hidden: Bool)
-    func setNavigationBarAddButtonHidden(_ hidden: Bool)
+    func setNavigationBarMenuButtonHidden(_ hidden: Bool)
     func setNavigationBarAddButtonAction(_ selector: Selector)
+    func setNavigationBarMoreButtonAction(_ selector: Selector)
     func setNavigationBarTitleLabelText(_ text: String?)
     func setNavigationBarTitleLabelFont(_ font: UIFont?)
     func setNavigationBarTitleLabelTextColor(_ color: UIColor?)
@@ -45,6 +47,9 @@ class BaseNavigationBarViewController<View: BaseView>: UIViewController, BaseNav
         $0.addButton.configuration = .plain()
         $0.addButton.configuration?.image = UIImage(systemName: "plus")
         $0.addButton.configuration?.preferredSymbolConfigurationForImage = .init(weight: .bold)
+        $0.moreButton.configuration = .plain()
+        $0.moreButton.configuration?.image = UIImage(systemName: "ellipsis.circle")
+        $0.moreButton.configuration?.preferredSymbolConfigurationForImage = .init(weight: .bold)
     }
     
     let contentView: BaseView = View()
@@ -76,6 +81,7 @@ class BaseNavigationBarViewController<View: BaseView>: UIViewController, BaseNav
     func setNavigationBarTintColor(_ color: UIColor) {
         navigationBar.backButton.tintColor = color
         navigationBar.addButton.tintColor = color
+        navigationBar.moreButton.tintColor = color
     }
     
     func setNavigationBarHidden(_ hidden: Bool) {
@@ -111,12 +117,17 @@ class BaseNavigationBarViewController<View: BaseView>: UIViewController, BaseNav
         }
     }
     
-    func setNavigationBarAddButtonHidden(_ hidden: Bool) {
+    func setNavigationBarMenuButtonHidden(_ hidden: Bool) {
         navigationBar.addButton.isHidden = hidden
+        navigationBar.moreButton.isHidden = hidden
     }
     
     func setNavigationBarAddButtonAction(_ selector: Selector) {
         navigationBar.addButton.addTarget(self, action: selector, for: .touchUpInside)
+    }
+    
+    func setNavigationBarMoreButtonAction(_ selector: Selector) {
+        navigationBar.moreButton.addTarget(self, action: selector, for: .touchUpInside)
     }
     
     func setNavigationBarTitleLabelText(_ text: String?) {
@@ -140,6 +151,7 @@ class BaseNavigationBarViewController<View: BaseView>: UIViewController, BaseNav
         navigationBar.addSubview(navigationBar.backButton)
         navigationBar.addSubview(navigationBar.titleLabel)
         navigationBar.addSubview(navigationBar.addButton)
+        navigationBar.addSubview(navigationBar.moreButton)
         view.addSubview(contentView)
         
         statusBar.snp.makeConstraints {
@@ -163,8 +175,14 @@ class BaseNavigationBarViewController<View: BaseView>: UIViewController, BaseNav
             $0.center.equalToSuperview()
         }
         
-        navigationBar.addButton.snp.makeConstraints {
+        navigationBar.moreButton.snp.makeConstraints {
             $0.right.equalToSuperview().inset(20)
+            $0.centerY.equalToSuperview()
+            $0.width.height.equalTo(24)
+        }
+        
+        navigationBar.addButton.snp.makeConstraints {
+            $0.right.equalTo(navigationBar.moreButton.snp.left).offset(-20)
             $0.centerY.equalToSuperview()
             $0.width.height.equalTo(24)
         }
@@ -182,7 +200,7 @@ class BaseNavigationBarViewController<View: BaseView>: UIViewController, BaseNav
         setNavigationBarTintColor(tintColor)
         setNavigationBarTitleLabelFont(titleFont)
         setNavigationBarBackButtonHidden(true)
-        setNavigationBarAddButtonHidden(true)
+        setNavigationBarMenuButtonHidden(true)
         
         navigationBar.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
     }
