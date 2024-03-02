@@ -13,7 +13,7 @@ on:
 jobs:
   build:
     name: Deploy on macOS 12 - Archive / Release for iOS
-    runs-on: macos-12
+    runs-on: macos-latest
     env:
       XCODE_VERSION: "15.2.0"
       SWIFT_VERSION: "5.9.2"
@@ -38,15 +38,14 @@ jobs:
           swift-version: ${{ env.SWIFT_VERSION }}
 
       - name: Install Tuist
-        run: curl -Ls https://install.tuist.io | bash
+        run: sudo curl -Ls https://install.tuist.io | bash
 
       - name: Generate Xcode project with Tuist
-        run: tuist generate --version ${{ env.TUIST_VERSION }}
+        run: tuist local ${{ env.TUIST_VERSION }} && tuist generate
 
       - name: Archive for iOS (Main App and Share Extension)
         run: |
           xcodebuild archive -project $XCODE_PROJECT -scheme $XCODE_SCHEME -archivePath "$XCODE_ARCHIVE_EXPORT_PATH"/"$XCODE_ARCHIVE_PATH" -sdk iphoneos BUILD_LIBRARY_FOR_DISTRIBUTION=YES SKIP_INSTALL=NO
-          # Share Extension에 대한 별도의 아카이브 커맨드가 필요하다면 여기에 추가
           
       - name: Export IPA
         run: |
