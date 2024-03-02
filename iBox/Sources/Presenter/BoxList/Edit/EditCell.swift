@@ -56,7 +56,7 @@ class EditCell: UITableViewCell {
         }
         
         titleLabel.snp.makeConstraints{ make in
-            make.leading.equalTo(iconView.snp.trailing).offset(10)
+            make.leading.equalTo(iconView.snp.trailing).offset(20)
             make.centerY.equalToSuperview()
         }
     }
