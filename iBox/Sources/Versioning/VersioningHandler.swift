@@ -53,7 +53,7 @@ class VersioningHandler {
             return
         }
         
-        if appVersion.compare(minRequiredVersion, options: .numeric) != .orderedAscending {
+        if appVersion.compare(minRequiredVersion, options: .numeric) == .orderedAscending {
             showAlertForUpdate(updateUrl: updateUrl, isMandatory: true, completion: completion)
         } else if appVersion.compare(latestVersion, options: .numeric) == .orderedAscending {
             showAlertForUpdate(updateUrl: updateUrl, isMandatory: false, completion: completion)
