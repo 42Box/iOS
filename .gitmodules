@@ -1,0 +1,3 @@
+[submodule "iBox/Resources/Version"]
+	path = iBox/Resources/Version
+	url = https://github.com/42Box/versioning
