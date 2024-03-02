@@ -5,7 +5,7 @@
 //  Created by Chan on 3/2/24.
 //
 
-enum VersionCheckCode {
+enum VersionCheckCode: Equatable {
     case Initial // 초기값
     case success // 성공
     case later // 나중에 (ab testing code)
