@@ -16,7 +16,7 @@ class MyPageViewModel {
     }
     
     enum Output {
-        case updateMyPageSectionViewModels
+        case updateSectionViewModels
     }
     
     // MARK: - Properties
@@ -24,15 +24,15 @@ class MyPageViewModel {
     let input = PassthroughSubject<Input, Never>()
     private let output = PassthroughSubject<Output, Never>()
     private var cancellables = Set<AnyCancellable>()
-    var myPageSectionViewModels = [MyPageSectionViewModel]()
+    var sectionViewModels = [MyPageSectionViewModel]()
     
     func transform(input: AnyPublisher<Input, Never>) -> AnyPublisher<Output, Never> {
         input.sink { [weak self] event in
             switch event {
             case .viewWillAppear:
-                self?.myPageSectionViewModels.removeAll()
-                self?.updateMyPageSectionViewModels()
-                self?.output.send(.updateMyPageSectionViewModels)
+                self?.sectionViewModels.removeAll()
+                self?.updateSectionViewModels()
+                self?.output.send(.updateSectionViewModels)
             case let .setPreload(isOn):
                 UserDefaultsManager.isPreload = isOn
             }
@@ -40,13 +40,13 @@ class MyPageViewModel {
         return output.eraseToAnyPublisher()
     }
     
-    private func updateMyPageSectionViewModels() {
-        myPageSectionViewModels.append(MyPageSectionViewModel(cellViewModels: [
+    private func updateSectionViewModels() {
+        sectionViewModels.append(MyPageSectionViewModel(cellViewModels: [
             MyPageCellViewModel(MyPageItem(type: .theme, description: UserDefaultsManager.theme.toString())),
             MyPageCellViewModel(MyPageItem(type: .homeTab, description: HomeTabType.allCases[UserDefaultsManager.homeTabIndex].toString())),
             MyPageCellViewModel(MyPageItem(type: .preload, flag: UserDefaultsManager.isPreload))
         ]))
-        myPageSectionViewModels.append(MyPageSectionViewModel(cellViewModels: [
+        sectionViewModels.append(MyPageSectionViewModel(cellViewModels: [
             MyPageCellViewModel(MyPageItem(type: .guide)),
             MyPageCellViewModel(MyPageItem(type: .feedback)),
             MyPageCellViewModel(MyPageItem(type: .developer))

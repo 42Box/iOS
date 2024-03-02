@@ -12,20 +12,17 @@ protocol MyPageViewDelegate {
     func pushViewController(_ viewController: UIViewController)
 }
 
-class MyPageViewController: BaseNavigationBarViewController<MyPageView> {
-    
-    // MARK: - Properties
+final class MyPageViewController: BaseNavigationBarViewController<MyPageView> {
     
     private let viewModel = MyPageViewModel()
     
-    // MARK: - life cycle
+    // MARK: - Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         guard let contentView = contentView as? MyPageView else { return }
         contentView.delegate = self
         contentView.bindViewModel(viewModel)
-        viewModel.input.send(.viewWillAppear)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -49,14 +46,13 @@ extension MyPageViewController: MyPageViewDelegate {
             navigationController?.pushViewController(ThemeViewController(), animated: true)
         case .homeTab:
             navigationController?.pushViewController(HomeTabSelectorViewController(), animated: true)
-        case .preload:
-            print("미리 로드 탭 !")
         case .guide:
             print("이용 가이드 탭 !")
         case .feedback:
             print("앱 피드백 탭 !")
         case .developer:
             print("개발자 정보 탭 !")
+        default: break
         }
     }
     

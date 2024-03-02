@@ -8,15 +8,13 @@
 import Combine
 import UIKit
 
-class MyPageView: BaseView {
-    
-    // MARK: - Properties
+final class MyPageView: BaseView {
     
     var delegate: MyPageViewDelegate?
     private var viewModel: MyPageViewModel?
     private var cancellables = Set<AnyCancellable>()
     
-    // MARK: - UI
+    // MARK: - UI Components
     
     let profileView = UIView().then {
         $0.isUserInteractionEnabled = true
@@ -51,29 +49,37 @@ class MyPageView: BaseView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupProperty()
+        setupHierarchy()
+        setupLayout()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - BaseViewProtocol
+    // MARK: - Setup Methods
     
     private func setupProperty() {
         tableView.delegate = self
         tableView.dataSource = self
         
-       let tapGesture = UITapGestureRecognizer(target: self, action: #selector(profileViewTapped))
-        profileView.addGestureRecognizer(tapGesture)
+        profileView.addGestureRecognizer(
+            UITapGestureRecognizer(
+                target: self,
+                action: #selector(profileViewTapped)
+            )
+        )
     }
     
-    override func configureUI() {
+    private func setupHierarchy() {
         addSubview(profileView)
         profileView.addSubview(profileImageView)
         profileView.addSubview(profileLabel)
         profileView.addSubview(chevronButton)
         addSubview(tableView)
-        
+    }
+    
+    private func setupLayout() {
         profileView.snp.makeConstraints {
             $0.left.top.right.equalToSuperview()
             $0.height.equalTo(90)
@@ -110,27 +116,30 @@ class MyPageView: BaseView {
             .receive(on: RunLoop.main)
             .sink { [weak self] event in
                 switch event {
-                case .updateMyPageSectionViewModels:
+                case .updateSectionViewModels:
                     self?.tableView.reloadData()
                 }
             }.store(in: &cancellables)
     }
     
-    // MARK: - functions
+    // MARK: - Action Functions
     
-    @objc func profileViewTapped() {
+    @objc private func profileViewTapped() {
         delegate?.pushViewController(ProfileViewController())
+    }
+    
+    @objc private func handleSwitchControlTap(_ controlSwitch: UISwitch) {
+        guard let viewModel = viewModel else { return }
+        viewModel.input.send(.setPreload(controlSwitch.isOn))
     }
     
 }
 
 extension MyPageView: UITableViewDelegate {
     
-    // MARK: - section
-    
     func numberOfSections(in tableView: UITableView) -> Int {
         guard let viewModel = viewModel else { return 0 }
-        return viewModel.myPageSectionViewModels.count
+        return viewModel.sectionViewModels.count
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -140,10 +149,8 @@ extension MyPageView: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 10
+        return 20
     }
-    
-    // MARK: - cell
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 55
@@ -151,7 +158,7 @@ extension MyPageView: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let viewModel = viewModel else { return }
-        let myPageItem = viewModel.myPageSectionViewModels[indexPath.section].cellViewModels[indexPath.row].myPageItem
+        let myPageItem = viewModel.sectionViewModels[indexPath.section].cellViewModels[indexPath.row].myPageItem
         if (myPageItem.type != MyPageType.preload) {
             delegate?.pushViewController(myPageItem.type)
         }
@@ -163,25 +170,20 @@ extension MyPageView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let viewModel = viewModel else { return 0 }
-        return viewModel.myPageSectionViewModels[section].cellViewModels.count
+        return viewModel.sectionViewModels[section].cellViewModels.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let viewModel = viewModel,
               let cell = tableView.dequeueReusableCell(withIdentifier: MyPageItemCell.reuseIdentifier)
                 as? MyPageItemCell else { return UITableViewCell() }
-        let cellViewModel = viewModel.myPageSectionViewModels[indexPath.section].cellViewModels[indexPath.row]
+        let cellViewModel = viewModel.sectionViewModels[indexPath.section].cellViewModels[indexPath.row]
         cell.bindViewModel(cellViewModel)
         if cellViewModel.flag != nil {
-            cell.controlSwitch.addTarget(self, action: #selector(handleControlSwitchTap), for: .touchUpInside)
+            cell.switchControl.removeTarget(nil, action: nil, for: .valueChanged)
+            cell.switchControl.addTarget(self, action: #selector(handleSwitchControlTap), for: .valueChanged)
         }
         return cell
-    }
-    
-    @objc private func handleControlSwitchTap(_ controlSwitch: UISwitch) {
-        guard let viewModel = viewModel else { return }
-        viewModel.input.send(.setPreload(controlSwitch.isOn))
-        print(controlSwitch.isOn)
     }
     
 }
