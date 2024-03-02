@@ -9,18 +9,22 @@ import Foundation
 
 class MyPageCellViewModel {
     
-    let model: MyPageItem
+    let myPageItem: MyPageItem
     
-    init(_ model: MyPageItem) {
-        self.model = model
+    init(_ myPageItem: MyPageItem) {
+        self.myPageItem = myPageItem
     }
     
     var title: String {
-        model.title
+        myPageItem.type.toString()
+    }
+    
+    var flag: Bool? {
+        myPageItem.flag
     }
     
     var description: String? {
-        model.description
+        myPageItem.description
     }
     
 }

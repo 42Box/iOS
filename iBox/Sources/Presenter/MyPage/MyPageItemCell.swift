@@ -9,9 +9,12 @@ import UIKit
 
 import SnapKit
 
-class MyPageItemCell: UITableViewCell, BaseViewProtocol {
+class MyPageItemCell: UITableViewCell {
     
-    // MARK: - UI
+    static let reuseIdentifier = "MyPageItemCell"
+    private var viewModel: MyPageCellViewModel?
+    
+    // MARK: - UI Components
     
     let titleLabel = UILabel().then {
         $0.font = .systemFont(ofSize: 16)
@@ -22,6 +25,10 @@ class MyPageItemCell: UITableViewCell, BaseViewProtocol {
         $0.textColor = .gray
     }
     
+    let switchControl = UISwitch().then {
+        $0.onTintColor = .box2
+    }
+    
     let chevronButton = UIButton().then {
         $0.configuration = .plain()
         $0.configuration?.image = UIImage(systemName: "chevron.right")
@@ -29,40 +36,73 @@ class MyPageItemCell: UITableViewCell, BaseViewProtocol {
         $0.tintColor = .systemGray3
     }
     
-    // MARK: - initializer
+    // MARK: - Initializer
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        configureUI()
-        selectionStyle = .none // 셀 선택했을 때 회색으로 변하는 것 비활성화
+        setupProperty()
+        setupHierarchy()
+        setupLayout()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - BaseViewProtocol
+    // MARK: - Setup Methods
     
-    func configureUI() {
+    private func setupProperty() {
         backgroundColor = .clear
-        addSubview(titleLabel)
-        addSubview(descriptionLabel)
-        addSubview(chevronButton)
-        
+        selectionStyle = .none
+    }
+    
+    private func setupHierarchy() {
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(switchControl)
+        contentView.addSubview(descriptionLabel)
+        contentView.addSubview(chevronButton)
+    }
+    
+    private func setupLayout() {
         titleLabel.snp.makeConstraints {
             $0.left.equalToSuperview().inset(20)
+            $0.centerY.equalToSuperview()
+        }
+        
+        switchControl.snp.makeConstraints {
+            $0.right.equalToSuperview().inset(30)
+            $0.centerY.equalToSuperview()
+        }
+        
+        descriptionLabel.snp.makeConstraints {
+            $0.right.equalToSuperview().inset(30)
             $0.centerY.equalToSuperview()
         }
         
         chevronButton.snp.makeConstraints {
             $0.right.equalToSuperview().inset(20)
             $0.centerY.equalToSuperview()
-            $0.width.height.equalTo(20)
         }
+    }
+    
+    // MARK: - Bind ViewModel
+    
+    func bindViewModel(_ viewModel: MyPageCellViewModel) {
+        self.viewModel = viewModel
+        titleLabel.text = viewModel.title
         
-        descriptionLabel.snp.makeConstraints {
-            $0.right.equalTo(chevronButton.snp.left).offset(-10)
-            $0.centerY.equalToSuperview()
+        descriptionLabel.isHidden = true
+        switchControl.isHidden = true
+        chevronButton.isHidden = true
+        
+        if let description = viewModel.description {
+            descriptionLabel.text = description
+            descriptionLabel.isHidden = false
+        } else if let flag = viewModel.flag {
+            switchControl.isOn = flag
+            switchControl.isHidden = false
+        } else {
+            chevronButton.isHidden = false
         }
     }
     

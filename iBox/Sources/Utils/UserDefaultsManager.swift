@@ -20,6 +20,9 @@ final class UserDefaultsManager {
     
     @UserDefaultsData(key: "isDefaultDataInserted", defaultValue: false)
     static var isDefaultDataInserted: Bool
+    
+    @UserDefaultsData(key: "isPreload", defaultValue: false)
+    static var isPreload: Bool
 
 }
 

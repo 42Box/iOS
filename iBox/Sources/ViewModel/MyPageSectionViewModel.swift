@@ -9,11 +9,10 @@ import Foundation
 
 class MyPageSectionViewModel {
     
+    let cellViewModels: [MyPageCellViewModel]
     
-    let model: MyPageSection
-    
-    init(_ model: MyPageSection) {
-        self.model = model
+    init(cellViewModels: [MyPageCellViewModel]) {
+        self.cellViewModels = cellViewModels
     }
     
 }

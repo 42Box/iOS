@@ -8,24 +8,21 @@
 import UIKit
 
 protocol MyPageViewDelegate {
-    func pushViewController(_ indexPath: IndexPath)
+    func pushViewController(_ type: MyPageType)
     func pushViewController(_ viewController: UIViewController)
 }
 
-class MyPageViewController: BaseNavigationBarViewController<MyPageView> {
-    
-    // MARK: - Properties
+final class MyPageViewController: BaseNavigationBarViewController<MyPageView> {
     
     private let viewModel = MyPageViewModel()
     
-    // MARK: - life cycle
+    // MARK: - Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         guard let contentView = contentView as? MyPageView else { return }
         contentView.delegate = self
         contentView.bindViewModel(viewModel)
-        viewModel.input.send(.viewWillAppear)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -36,27 +33,26 @@ class MyPageViewController: BaseNavigationBarViewController<MyPageView> {
     // MARK: - BaseNavigationBarViewControllerProtocol
     
     override func setupNavigationBar() {
-        setNavigationBarTitleLabelText("My Page")
+        setNavigationBarTitleLabelText("마이 페이지")
     }
     
 }
 
 extension MyPageViewController: MyPageViewDelegate {
     
-    func pushViewController(_ indexPath: IndexPath) {
-        if indexPath.section == 0 {
-            switch indexPath.row {
-            case 0: navigationController?.pushViewController(ThemeViewController(), animated: true)
-            case 1: navigationController?.pushViewController(HomeTabSelectorViewController(), animated: true)
-            default: break
-            }
-        } else {
-            switch indexPath.row {
-            case 0: print("이용 가이드 탭 !")
-            case 1: print("앱 피드백 탭 !")
-            case 2: print("개발자 정보 탭 !")
-            default: break
-            }
+    func pushViewController(_ type: MyPageType) {
+        switch type {
+        case .theme:
+            navigationController?.pushViewController(ThemeViewController(), animated: true)
+        case .homeTab:
+            navigationController?.pushViewController(HomeTabSelectorViewController(), animated: true)
+        case .guide:
+            print("이용 가이드 탭 !")
+        case .feedback:
+            print("앱 피드백 탭 !")
+        case .developer:
+            print("개발자 정보 탭 !")
+        default: break
         }
     }
     

@@ -8,15 +8,13 @@
 import Combine
 import UIKit
 
-class MyPageView: BaseView {
-    
-    // MARK: - Properties
+final class MyPageView: BaseView {
     
     var delegate: MyPageViewDelegate?
     private var viewModel: MyPageViewModel?
     private var cancellables = Set<AnyCancellable>()
     
-    // MARK: - UI
+    // MARK: - UI Components
     
     let profileView = UIView().then {
         $0.isUserInteractionEnabled = true
@@ -40,7 +38,7 @@ class MyPageView: BaseView {
     }
 
     let tableView = UITableView().then {
-        $0.register(MyPageItemCell.self, forCellReuseIdentifier: "MyPageItemCell")
+        $0.register(MyPageItemCell.self, forCellReuseIdentifier: MyPageItemCell.reuseIdentifier)
         $0.separatorStyle = .none
         $0.sectionHeaderTopPadding = 0
         $0.backgroundColor = .clear
@@ -50,30 +48,38 @@ class MyPageView: BaseView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupProperties()
+        setupProperty()
+        setupHierarchy()
+        setupLayout()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - BaseViewProtocol
+    // MARK: - Setup Methods
     
-    private func setupProperties() {
+    private func setupProperty() {
         tableView.delegate = self
         tableView.dataSource = self
         
-       let tapGesture = UITapGestureRecognizer(target: self, action: #selector(profileViewTapped))
-        profileView.addGestureRecognizer(tapGesture)
+        profileView.addGestureRecognizer(
+            UITapGestureRecognizer(
+                target: self,
+                action: #selector(profileViewTapped)
+            )
+        )
     }
     
-    override func configureUI() {
+    private func setupHierarchy() {
         addSubview(profileView)
         profileView.addSubview(profileImageView)
         profileView.addSubview(profileLabel)
         profileView.addSubview(chevronButton)
         addSubview(tableView)
-        
+    }
+    
+    private func setupLayout() {
         profileView.snp.makeConstraints {
             $0.left.top.right.equalToSuperview()
             $0.height.equalTo(90)
@@ -91,7 +97,7 @@ class MyPageView: BaseView {
         }
         
         chevronButton.snp.makeConstraints {
-            $0.right.equalToSuperview().inset(20)
+            $0.right.equalToSuperview().inset(30)
             $0.centerY.equalToSuperview()
             $0.width.height.equalTo(20)
         }
@@ -110,67 +116,74 @@ class MyPageView: BaseView {
             .receive(on: RunLoop.main)
             .sink { [weak self] event in
                 switch event {
-                case .updateMyPageSectionViewModels:
+                case .updateSectionViewModels:
                     self?.tableView.reloadData()
                 }
             }.store(in: &cancellables)
     }
     
-    // MARK: - functions
+    // MARK: - Action Functions
     
-    @objc func profileViewTapped() {
+    @objc private func profileViewTapped() {
         delegate?.pushViewController(ProfileViewController())
+    }
+    
+    @objc private func handleSwitchControlTap(_ controlSwitch: UISwitch) {
+        guard let viewModel = viewModel else { return }
+        viewModel.input.send(.setPreload(controlSwitch.isOn))
     }
     
 }
 
-extension MyPageView: UITableViewDelegate, UITableViewDataSource {
+extension MyPageView: UITableViewDelegate {
     
-    // 테이블 뷰의 섹션 개수 설정
     func numberOfSections(in tableView: UITableView) -> Int {
         guard let viewModel = viewModel else { return 0 }
-        return viewModel.myPageSectionViewModels.count
+        return viewModel.sectionViewModels.count
     }
     
-    // 테이블 뷰의 행 개수 설정
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let viewModel = viewModel else { return 0 }
-        return viewModel.myPageSectionViewModels[section].model.items.count
-    }
-    
-    // 테이블 뷰 셀 구성
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let viewModel = viewModel,
-              let cell = tableView.dequeueReusableCell(withIdentifier: "MyPageItemCell")
-                as? MyPageItemCell else { return UITableViewCell() }
-        let item = viewModel.myPageSectionViewModels[indexPath.section].model.items[indexPath.row]
-        cell.titleLabel.text = item.title
-        cell.descriptionLabel.text = item.description
-        return cell
-    }
-    
-    // 셀의 높이 설정
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 65
-    }
-    
-    // 섹션 헤더의 View 설정
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView()
         headerView.backgroundColor = .backgroundColor
         return headerView
     }
     
-    // 섹션 헤더의 높이 설정
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 10
+        return 20
     }
     
-    // 테이블 뷰 셀이 선택되었을 때 실행되는 메서드
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 55
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let viewModel = viewModel else { return }
-        let item = viewModel.myPageSectionViewModels[indexPath.section].model.items[indexPath.row]
-        delegate?.pushViewController(indexPath)
+        let myPageItem = viewModel.sectionViewModels[indexPath.section].cellViewModels[indexPath.row].myPageItem
+        if (myPageItem.type != MyPageType.preload) {
+            delegate?.pushViewController(myPageItem.type)
+        }
+    }
+    
+}
+
+extension MyPageView: UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard let viewModel = viewModel else { return 0 }
+        return viewModel.sectionViewModels[section].cellViewModels.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let viewModel = viewModel,
+              let cell = tableView.dequeueReusableCell(withIdentifier: MyPageItemCell.reuseIdentifier)
+                as? MyPageItemCell else { return UITableViewCell() }
+        let cellViewModel = viewModel.sectionViewModels[indexPath.section].cellViewModels[indexPath.row]
+        cell.bindViewModel(cellViewModel)
+        if cellViewModel.flag != nil {
+            cell.switchControl.removeTarget(nil, action: nil, for: .valueChanged)
+            cell.switchControl.addTarget(self, action: #selector(handleSwitchControlTap), for: .valueChanged)
+        }
+        return cell
     }
     
 }

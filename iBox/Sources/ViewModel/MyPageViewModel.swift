@@ -12,10 +12,11 @@ class MyPageViewModel {
     
     enum Input {
         case viewWillAppear
+        case setPreload(_ isOn: Bool)
     }
     
     enum Output {
-        case updateMyPageSectionViewModels
+        case updateSectionViewModels
     }
     
     // MARK: - Properties
@@ -23,40 +24,33 @@ class MyPageViewModel {
     let input = PassthroughSubject<Input, Never>()
     private let output = PassthroughSubject<Output, Never>()
     private var cancellables = Set<AnyCancellable>()
-    var myPageSectionViewModels = [MyPageSectionViewModel]()
+    var sectionViewModels = [MyPageSectionViewModel]()
     
     func transform(input: AnyPublisher<Input, Never>) -> AnyPublisher<Output, Never> {
         input.sink { [weak self] event in
             switch event {
             case .viewWillAppear:
-                self?.myPageSectionViewModels.removeAll()
-                self?.updateMyPageSectionViewModels()
-                self?.output.send(.updateMyPageSectionViewModels)
+                self?.sectionViewModels.removeAll()
+                self?.updateSectionViewModels()
+                self?.output.send(.updateSectionViewModels)
+            case let .setPreload(isOn):
+                UserDefaultsManager.isPreload = isOn
             }
         }.store(in: &cancellables)
         return output.eraseToAnyPublisher()
     }
     
-    private func updateMyPageSectionViewModels() {
-        myPageSectionViewModels.append(MyPageSectionViewModel(
-            MyPageSection(
-                title: "settings",
-                items: [
-                    MyPageItem(title: "테마", description: UserDefaultsManager.theme.toString()),
-                    MyPageItem(title: "홈화면", description: HomeTabType.allCases[UserDefaultsManager.homeTabIndex].toString())
-                ]
-            )
-        ))
-        myPageSectionViewModels.append(MyPageSectionViewModel(
-            MyPageSection(
-                title: "help",
-                items: [
-                    MyPageItem(title: "이용 가이드"),
-                    MyPageItem(title: "앱 피드백"),
-                    MyPageItem(title: "개발자 정보")
-                ]
-            ))
-        )
+    private func updateSectionViewModels() {
+        sectionViewModels.append(MyPageSectionViewModel(cellViewModels: [
+            MyPageCellViewModel(MyPageItem(type: .theme, description: UserDefaultsManager.theme.toString())),
+            MyPageCellViewModel(MyPageItem(type: .homeTab, description: HomeTabType.allCases[UserDefaultsManager.homeTabIndex].toString())),
+            MyPageCellViewModel(MyPageItem(type: .preload, flag: UserDefaultsManager.isPreload))
+        ]))
+        sectionViewModels.append(MyPageSectionViewModel(cellViewModels: [
+            MyPageCellViewModel(MyPageItem(type: .guide)),
+            MyPageCellViewModel(MyPageItem(type: .feedback)),
+            MyPageCellViewModel(MyPageItem(type: .developer))
+        ]))
     }
     
 }
