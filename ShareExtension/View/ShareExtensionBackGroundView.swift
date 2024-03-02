@@ -65,7 +65,6 @@ class ShareExtensionBackGroundView: UIView {
         setupProperty()
         setupHierarchy()
         setupLayout()
-        setupButtonAction()
     }
     
     required init?(coder: NSCoder) {
@@ -78,6 +77,9 @@ class ShareExtensionBackGroundView: UIView {
         backgroundColor = .systemBackground
         clipsToBounds = true
         layer.cornerRadius = 10
+        
+        cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
+        openAppButton.addTarget(self, action: #selector(openAppButtonTapped), for: .touchUpInside)
     }
     
     private func setupHierarchy() {
@@ -105,11 +107,6 @@ class ShareExtensionBackGroundView: UIView {
         openAppButton.snp.makeConstraints { make in
             make.trailing.bottom.equalToSuperview().inset(20)
         }
-    }
-    
-    private func setupButtonAction() {
-        cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
-        openAppButton.addTarget(self, action: #selector(openAppButtonTapped), for: .touchUpInside)
     }
     
     func updateLinkLabel(with text: String) {
