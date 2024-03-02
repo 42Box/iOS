@@ -1,5 +1,12 @@
 {
-  "latestVersion": "1.2.0",
-  "minRequiredVersion": "1.1.0",
-  "updateUrl": "https://appstore.com/iBox"
+  "version": [
+    {
+      "id": 1,
+      "latestVersion": "1.2.0",
+      "minRequiredVersion": "1.1.0"
+    }
+  ],
+  "url": {
+    "updateUrl": "https://appstore.com/iBox"
+  }
 }
