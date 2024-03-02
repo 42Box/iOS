@@ -7,6 +7,6 @@
 
 import UIKit
 
-class EditFolderView: BaseView {
+class EditFolderView: UIView {
     
 }

@@ -12,7 +12,7 @@ protocol MyPageViewDelegate {
     func pushViewController(_ viewController: UIViewController)
 }
 
-final class MyPageViewController: BaseNavigationBarViewController<MyPageView> {
+final class MyPageViewController: BaseViewController<MyPageView>, BaseViewControllerProtocol {
     
     private let viewModel = MyPageViewModel()
     
@@ -20,6 +20,8 @@ final class MyPageViewController: BaseNavigationBarViewController<MyPageView> {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupNavigationBar()
+        
         guard let contentView = contentView as? MyPageView else { return }
         contentView.delegate = self
         contentView.bindViewModel(viewModel)
@@ -30,9 +32,9 @@ final class MyPageViewController: BaseNavigationBarViewController<MyPageView> {
         viewModel.input.send(.viewWillAppear)
     }
     
-    // MARK: - BaseNavigationBarViewControllerProtocol
+    // MARK: - BaseViewControllerProtocol
     
-    override func setupNavigationBar() {
+    func setupNavigationBar() {
         setNavigationBarTitleLabelText("마이 페이지")
     }
     

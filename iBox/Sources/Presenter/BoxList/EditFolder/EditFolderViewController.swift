@@ -7,7 +7,7 @@
 
 import UIKit
 
-class EditFolderViewController: BaseNavigationBarViewController<EditFolderView> {
+class EditFolderViewController: BaseViewController<EditFolderView>, BaseViewControllerProtocol {
     
     // MARK: - Life Cycle
     
@@ -18,7 +18,7 @@ class EditFolderViewController: BaseNavigationBarViewController<EditFolderView> 
     
     // MARK: - BaseNavigationBarViewControllerProtocol
     
-    override func setupNavigationBar() {
+    func setupNavigationBar() {
         setNavigationBarTitleLabelText("폴더 편집")
         setNavigationBarTitleLabelFont(.systemFont(ofSize: 17, weight: .semibold))
         setNavigationBarBackButtonHidden(false)

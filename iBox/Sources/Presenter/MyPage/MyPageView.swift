@@ -8,7 +8,7 @@
 import Combine
 import UIKit
 
-final class MyPageView: BaseView {
+final class MyPageView: UIView {
     
     var delegate: MyPageViewDelegate?
     private var viewModel: MyPageViewModel?
@@ -80,31 +80,31 @@ final class MyPageView: BaseView {
     }
     
     private func setupLayout() {
-        profileView.snp.makeConstraints {
-            $0.left.top.right.equalToSuperview()
-            $0.height.equalTo(90)
+        profileView.snp.makeConstraints { make in
+            make.leading.top.trailing.equalToSuperview()
+            make.height.equalTo(90)
         }
         
-        profileImageView.snp.makeConstraints {
-            $0.left.equalToSuperview().inset(20)
-            $0.centerY.equalToSuperview()
-            $0.width.height.equalTo(50)
+        profileImageView.snp.makeConstraints { make in
+            make.leading.equalToSuperview().inset(20)
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(50)
         }
         
-        profileLabel.snp.makeConstraints {
-            $0.left.equalTo(profileImageView.snp.right).offset(10)
-            $0.centerY.equalToSuperview()
+        profileLabel.snp.makeConstraints { make in
+            make.leading.equalTo(profileImageView.snp.trailing).offset(10)
+            make.centerY.equalToSuperview()
         }
         
-        chevronButton.snp.makeConstraints {
-            $0.right.equalToSuperview().inset(30)
-            $0.centerY.equalToSuperview()
-            $0.width.height.equalTo(20)
+        chevronButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(30)
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(20)
         }
         
-        tableView.snp.makeConstraints {
-            $0.top.equalTo(profileView.snp.bottom).offset(10)
-            $0.left.bottom.right.equalToSuperview()
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(profileView.snp.bottom).offset(10)
+            make.leading.bottom.trailing.equalToSuperview()
         }
     }
     

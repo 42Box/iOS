@@ -7,8 +7,11 @@
 
 import UIKit
 
-class PreloadedWebViewController: BaseNavigationBarViewController<PreloadedWebView> {
+class PreloadedWebViewController: BaseViewController<PreloadedWebView>, BaseViewControllerProtocol {
+    
     var selectedWebsite: URL
+    
+    // MARK: - Initializer
     
     init(selectedWebsite: URL) {
         self.selectedWebsite = selectedWebsite
@@ -18,6 +21,8 @@ class PreloadedWebViewController: BaseNavigationBarViewController<PreloadedWebVi
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: - Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,7 +39,9 @@ class PreloadedWebViewController: BaseNavigationBarViewController<PreloadedWebVi
         WebViewPreloader.shared.resetWebView(for: selectedWebsite)
     }
     
-    override func setupNavigationBar() {
+    // MARK: - BaseViewControllerProtocol
+    
+    func setupNavigationBar() {
         setNavigationBarHidden(true)
     }
 

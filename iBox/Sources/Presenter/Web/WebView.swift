@@ -10,25 +10,22 @@ import WebKit
 
 import SnapKit
 
-class WebView: BaseView {
+class WebView: UIView {
     var selectedWebsite: String? {
         didSet {
             loadWebsite()
         }
     }
     
-    private lazy var webView = {
-        let webView = WKWebView()
-        webView.navigationDelegate = self
-//        webView.scrollView.contentInsetAdjustmentBehavior = .always
-        
-        return webView
-    }()
+    private let webView = WKWebView()
+//        .then {
+//        $0.scrollView.contentInsetAdjustmentBehavior = .always
+//    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .backgroundColor
-        
+        setupProperty()
+        setupHierarchy()
         setupLayout()
     }
     
@@ -36,8 +33,18 @@ class WebView: BaseView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupLayout() {
+    // MARK: - Setup Methods
+    
+    private func setupProperty() {
+        backgroundColor = .backgroundColor
+        webView.navigationDelegate = self
+    }
+    
+    private func setupHierarchy() {
         addSubview(webView)
+    }
+    
+    private func setupLayout() {
         webView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }

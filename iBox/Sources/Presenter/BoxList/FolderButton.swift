@@ -10,34 +10,32 @@ import UIKit
 import SnapKit
 
 class FolderButton: UIButton {
+    
     private var isOpen: Bool = true
     
-    private lazy var folderImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "folder.fill")
-        imageView.contentMode = .scaleAspectFit
-        return imageView
-    }()
+    // MARK: - UI Components
     
-    private lazy var folderNameLabel = {
-        let label = UILabel()
-        label.textColor = .label
-        label.font = .systemFont(ofSize: 18, weight: .semibold)
-        return label
-    }()
+    private let folderImageView = UIImageView().then {
+        $0.image = UIImage(systemName: "folder.fill")
+        $0.contentMode = .scaleAspectFit
+    }
     
-    private lazy var openCloseImageView = {
-        let imageView = UIImageView()
-        imageView.tintColor = .tertiaryLabel
-        imageView.image = isOpen ? UIImage(systemName: "chevron.up") : UIImage(systemName: "chevron.down")
-        return imageView
-    }()
+    private let folderNameLabel = UILabel().then {
+        $0.textColor = .label
+        $0.font = .systemFont(ofSize: 18, weight: .semibold)
+    }
+    
+    private let openCloseImageView = UIImageView().then {
+        $0.tintColor = .tertiaryLabel
+    }
+    
+    // MARK: - Initializer
     
     init(isOpen: Bool) {
         self.isOpen = isOpen
         super.init(frame: .zero)
-        backgroundColor = .tableViewBackgroundColor
-        
+        setupProperty()
+        setupHierarchy()
         setupLayout()
     }
     
@@ -45,21 +43,31 @@ class FolderButton: UIButton {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupLayout() {
+    // MARK: - Setup Methods
+    
+    private func setupProperty() {
+        backgroundColor = .tableViewBackgroundColor
+        openCloseImageView.image = isOpen ? UIImage(systemName: "chevron.up") : UIImage(systemName: "chevron.down")
+    }
+    
+    private func setupHierarchy() {
         addSubview(folderImageView)
+        addSubview(folderNameLabel)
+        addSubview(openCloseImageView)
+    }
+    
+    private func setupLayout() {
         folderImageView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.width.height.equalTo(30)
             make.leading.equalToSuperview().offset(20)
         }
         
-        addSubview(folderNameLabel)
         folderNameLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalTo(folderImageView.snp.trailing).offset(10)
         }
         
-        addSubview(openCloseImageView)
         openCloseImageView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.trailing.equalToSuperview().offset(-20)

@@ -10,14 +10,19 @@ import WebKit
 
 import SnapKit
 
-class PreloadedWebView: BaseView {
+class PreloadedWebView: UIView {
+    
     var selectedWebsite: URL? {
         didSet {
             getWebView()
         }
     }
     
+    // MARK: - UI Components
+    
     private var webView: WKWebView?
+    
+    // MARK: - Initializer
     
     override init(frame: CGRect) {
         super.init(frame: frame)

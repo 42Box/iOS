@@ -10,26 +10,26 @@ import UIKit
 import SnapKit
 
 class BoxListCell: UITableViewCell {
+    
     var viewModel: BoxListCellViewModel?
     static let reuseIdentifier = "boxListCell"
     
-    private lazy var cellImageView = {
-        let view = UIImageView()
-        view.image = UIImage(systemName: "ellipsis.rectangle.fill")
-        view.tintColor = .label
-        view.contentMode = .scaleAspectFit
-        return view
-    }()
+    // MARK: - UI Components
     
-    private lazy var label = {
-        let label = UILabel()
-        return label
-    }()
+    private let cellImageView =  UIImageView().then {
+        $0.image = UIImage(systemName: "ellipsis.rectangle.fill")
+        $0.tintColor = .label
+        $0.contentMode = .scaleAspectFit
+    }
+    
+    private let label = UILabel()
+    
+    // MARK: - Initializer
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        backgroundColor = .tableViewBackgroundColor
-        
+        setupProperty()
+        setupHierarchy()
         setupLayout()
     }
     
@@ -37,22 +37,33 @@ class BoxListCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupLayout() {
+    // MARK: - Setup Methods
+    
+    private func setupProperty() {
+        backgroundColor = .tableViewBackgroundColor
+    }
+    
+    private func setupHierarchy() {
         contentView.addSubview(cellImageView)
+        contentView.addSubview(label)
+    }
+    
+    private func setupLayout() {
         cellImageView.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(20)
             make.top.bottom.equalToSuperview().inset(10)
             make.width.equalTo(30)
         }
         
-        contentView.addSubview(label)
         label.snp.makeConstraints { make in
             make.top.trailing.bottom.equalToSuperview()
             make.leading.equalTo(cellImageView.snp.trailing).offset(10)
         }
     }
     
-    func configure(_ viewModel: BoxListCellViewModel) {
+    // MARK: - Bind ViewModel
+    
+    func bindViewModel(_ viewModel: BoxListCellViewModel) {
         self.viewModel = viewModel
         label.text = viewModel.name
     }

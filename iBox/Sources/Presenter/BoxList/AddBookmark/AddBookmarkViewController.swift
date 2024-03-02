@@ -7,6 +7,6 @@
 
 import UIKit
 
-class AddBookmarkBottomSheetViewController: BaseBottomSheetViewController<AddBookmarkBottomSheetView> {
+class AddBookmarkBottomSheetViewController: BottomSheetViewController<AddBookmarkBottomSheetView> {
     
 }

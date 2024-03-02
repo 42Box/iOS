@@ -7,18 +7,18 @@
 
 import UIKit
 
-class ProfileViewController: BaseNavigationBarViewController<ProfileView> {
+class ProfileViewController: BaseViewController<ProfileView>, BaseViewControllerProtocol {
     
-    // MARK: - life cycle
+    // MARK: - Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupNavigationBar() // 얘는 왜 여기에 적어줘야 전부 다 적용이 될까 ..? 🧐
+        setupNavigationBar()
     }
     
-    // MARK: - BaseNavigationBarViewControllerProtocol
+    // MARK: - BaseViewControllerProtocol
     
-    override func setupNavigationBar() {
+    func setupNavigationBar() {
         setNavigationBarTitleLabelText("내 정보 수정하기")
         setNavigationBarTitleLabelFont(.systemFont(ofSize: 17, weight: .semibold))
         setNavigationBarBackButtonHidden(false)

@@ -1,5 +1,5 @@
 //
-//  BaseBottomSheetViewController.swift
+//  BottomSheetViewController.swift
 //  iBox
 //
 //  Created by jiyeon on 1/5/24.
@@ -9,13 +9,11 @@ import UIKit
 
 import SnapKit
 
-class BaseBottomSheetViewController<View: BaseView>: UIViewController {
-    
-    // MARK: - properties
+class BottomSheetViewController<View: UIView>: UIViewController {
     
     var bottomSheetHeight: CGFloat
     
-    // MARK: - UI
+    // MARK: - UI Components
     
     let dimmedView = UIView().then {
         $0.backgroundColor = .clear
@@ -34,7 +32,7 @@ class BaseBottomSheetViewController<View: BaseView>: UIViewController {
         $0.backgroundColor = .darkGray
     }
     
-    // MARK: - initializer
+    // MARK: - Initializer
     
     init(bottomSheetHeight: CGFloat) {
         self.bottomSheetHeight = bottomSheetHeight
@@ -46,12 +44,13 @@ class BaseBottomSheetViewController<View: BaseView>: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - life cycle
+    // MARK: - Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureUI()
-        setupGestureRecognizer()
+        setupProperty()
+        setupHierarchy()
+        setupLayout()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -59,34 +58,9 @@ class BaseBottomSheetViewController<View: BaseView>: UIViewController {
         showBottomSheets()
     }
     
-    // MARK: - configure UI
+    // MARK: - Setup Methods
     
-    private func configureUI() {
-        view.addSubview(dimmedView)
-        view.addSubview(sheetView)
-        sheetView.addSubview(indicator)
-        
-        dimmedView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-        
-        sheetView.snp.makeConstraints {
-            $0.top.equalTo(view.snp.bottom)
-            $0.left.right.equalToSuperview()
-            $0.height.equalTo(bottomSheetHeight)
-        }
-        
-        indicator.snp.makeConstraints {
-            $0.width.equalTo(40)
-            $0.height.equalTo(4)
-            $0.top.equalToSuperview().inset(10)
-            $0.centerX.equalToSuperview()
-        }
-    }
-    
-    // MARK: - functions
-    
-    private func setupGestureRecognizer() {
+    private func setupProperty() {
         // TapGesture
         let dimmedTap = UITapGestureRecognizer(target: self, action: #selector(dimmedViewTapped))
         dimmedView.addGestureRecognizer(dimmedTap)
@@ -97,6 +71,33 @@ class BaseBottomSheetViewController<View: BaseView>: UIViewController {
         view.addGestureRecognizer(swipeGesture)
     }
     
+    private func setupHierarchy() {
+        view.addSubview(dimmedView)
+        view.addSubview(sheetView)
+        sheetView.addSubview(indicator)
+    }
+    
+    private func setupLayout() {
+        dimmedView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        sheetView.snp.makeConstraints { make in
+            make.top.equalTo(view.snp.bottom)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(bottomSheetHeight)
+        }
+        
+        indicator.snp.makeConstraints { make in
+            make.width.equalTo(40)
+            make.height.equalTo(4)
+            make.top.equalToSuperview().inset(10)
+            make.centerX.equalToSuperview()
+        }
+    }
+    
+    // MARK: - Action Functions
+    
     @objc private func dimmedViewTapped(_ tapRecognizer: UITapGestureRecognizer) {
         hideBottomSheets()
     }
@@ -104,18 +105,18 @@ class BaseBottomSheetViewController<View: BaseView>: UIViewController {
     @objc private func panGesture(_ recognizer: UISwipeGestureRecognizer) {
         if recognizer.state == .ended {
             switch recognizer.direction {
-            case .down:
-                hideBottomSheets()
-            default:
-                break
+            case .down: hideBottomSheets()
+            default: break
             }
         }
     }
     
+    // MARK: - Bottom Sheet Action
+    
     private func showBottomSheets() {
-        sheetView.snp.remakeConstraints {
-            $0.left.bottom.right.equalToSuperview()
-            $0.height.equalTo(bottomSheetHeight)
+        sheetView.snp.remakeConstraints { make in
+            make.leading.bottom.trailing.equalToSuperview()
+            make.height.equalTo(bottomSheetHeight)
         }
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseIn, animations: {
             self.dimmedView.backgroundColor = .dimmedViewColor
@@ -124,10 +125,10 @@ class BaseBottomSheetViewController<View: BaseView>: UIViewController {
     }
     
     private func hideBottomSheets() {
-        sheetView.snp.remakeConstraints {
-            $0.top.equalTo(view.snp.bottom)
-            $0.left.right.equalToSuperview()
-            $0.height.equalTo(bottomSheetHeight)
+        sheetView.snp.remakeConstraints { make in
+            make.top.equalTo(view.snp.bottom)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(bottomSheetHeight)
         }
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseIn, animations: {
             self.dimmedView.backgroundColor = .clear

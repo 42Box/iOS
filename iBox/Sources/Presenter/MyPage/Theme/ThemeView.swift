@@ -10,17 +10,15 @@ import UIKit
 
 import SnapKit
 
-class ThemeView: BaseView {
-    
-    // MARK: - Properties
+class ThemeView: UIView {
     
     private var viewModel: ThemeViewModel?
     private var cancellables = Set<AnyCancellable>()
     
-    // MARK: - UI
+    // MARK: - UI Components
 
     let tableView = UITableView().then {
-        $0.register(ThemeCell.self, forCellReuseIdentifier: "ThemeCell")
+        $0.register(ThemeCell.self, forCellReuseIdentifier: ThemeCell.reuseIdentifier)
         $0.separatorStyle = .none
         $0.sectionHeaderTopPadding = 0
         $0.backgroundColor = .clear
@@ -30,25 +28,29 @@ class ThemeView: BaseView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupProperties()
+        setupProperty()
+        setupHierarchy()
+        setupLayout()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - BaseViewProtocol
+    // MARK: - Setup Methods
     
-    private func setupProperties() {
+    private func setupProperty() {
         tableView.delegate = self
         tableView.dataSource = self
     }
     
-    override func configureUI() {
+    private func setupHierarchy() {
         addSubview(tableView)
-        
-        tableView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+    }
+    
+    private func setupLayout() {
+        tableView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
     }
     
@@ -68,33 +70,33 @@ class ThemeView: BaseView {
     
 }
 
-extension ThemeView: UITableViewDelegate, UITableViewDataSource {
+extension ThemeView: UITableViewDelegate {
     
-    // 테이블 뷰의 행 개수 설정
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 55
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let viewModel = viewModel else { return }
+        viewModel.selectedIndex = indexPath.row
+    }
+    
+}
+
+extension ThemeView: UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return Theme.allCases.count
     }
     
-    // 테이블 뷰 셀 구성
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let viewModel = viewModel,
-              let cell = tableView.dequeueReusableCell(withIdentifier: "ThemeCell")
+              let cell = tableView.dequeueReusableCell(withIdentifier: ThemeCell.reuseIdentifier)
                 as? ThemeCell else { return UITableViewCell() }
         let theme = Theme.allCases[indexPath.row]
         cell.bind(theme)
         cell.setupSelectButton(viewModel.selectedIndex == indexPath.row)
         return cell
-    }
-    
-    // 셀의 높이 설정
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 55
-    }
-    
-    // 테이블 뷰 셀이 선택되었을 때 실행되는 메서드
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let viewModel = viewModel else { return }
-        viewModel.selectedIndex = indexPath.row
     }
     
 }

@@ -16,15 +16,27 @@ class CustomShareViewController: UIViewController {
     var backgroundView = ShareExtensionBackGroundView()
     var dataURL: String = ""
     
+    // MARK: - Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureUI()
+        setupProperty()
+        setupHierarchy()
+        setupLayout()
         extractSharedURL()
     }
     
-    func configureUI() {
-        self.view.addSubview(backgroundView)
+    // MARK: - Setup Methods
+    
+    private func setupProperty() {
         backgroundView.delegate = self
+    }
+    
+    private func setupHierarchy() {
+        view.addSubview(backgroundView)
+    }
+    
+    private func setupLayout() {
         backgroundView.snp.makeConstraints { make in
             make.trailing.leading.equalToSuperview().inset(20)
             make.center.equalToSuperview()

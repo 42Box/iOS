@@ -8,9 +8,7 @@
 import Combine
 import UIKit
 
-class HomeTabSelectorView: BaseView {
-    
-    // MARK: - Properties
+class HomeTabSelectorView: UIView {
     
     private var viewModel: HomeTabSelectorViewModel?
     private var cancellables = Set<AnyCancellable>()
@@ -28,6 +26,7 @@ class HomeTabSelectorView: BaseView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupProperty()
+        setupHierarchy()
         setupLayout()
     }
     
@@ -42,11 +41,13 @@ class HomeTabSelectorView: BaseView {
         tableView.dataSource = self
     }
     
-    private func setupLayout() {
+    private func setupHierarchy() {
         addSubview(tableView)
-        
-        tableView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+    }
+    
+    private func setupLayout() {
+        tableView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
     }
     
@@ -66,12 +67,10 @@ class HomeTabSelectorView: BaseView {
 
 extension HomeTabSelectorView: UITableViewDelegate {
     
-    // 셀의 높이 설정
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 55
     }
     
-    // 테이블 뷰 셀이 선택되었을 때 실행되는 메서드
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let viewModel = viewModel else { return }
         viewModel.selectedIndex = indexPath.row

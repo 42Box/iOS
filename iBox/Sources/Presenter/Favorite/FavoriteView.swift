@@ -14,10 +14,12 @@ class FavoriteView: PreloadedWebView {
     
     private lazy var webView = WebViewPreloader.shared.getFavoriteView()
     
+    // MARK: - Initializer
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .backgroundColor
-        
+        setupProperty()
+        setupHierarchy()
         setupLayout()
     }
     
@@ -25,9 +27,19 @@ class FavoriteView: PreloadedWebView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupLayout() {
+    // MARK: - Setup Methods
+    
+    private func setupProperty() {
+        backgroundColor = .backgroundColor
+    }
+    
+    private func setupHierarchy() {
         guard let webView else { return }
         addSubview(webView)
+    }
+    
+    private func setupLayout() {
+        guard let webView else { return }
         webView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }

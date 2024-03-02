@@ -15,19 +15,38 @@ protocol BoxListViewDelegate: AnyObject {
     func pushViewController(type: EditType)
 }
 
-class BoxListView: BaseView {
+class BoxListView: UIView {
+    
     var viewModel: BoxListViewModel?
     private var boxListDataSource: UITableViewDiffableDataSource<BoxListSectionViewModel.ID, BoxListCellViewModel.ID>!
     weak var delegate: BoxListViewDelegate?
-    
     private var cancellables = Set<AnyCancellable>()
+    
+    // MARK : - UI Components
+    
+    private let backgroundView = UIView().then {
+        $0.clipsToBounds = true
+        $0.layer.cornerRadius = 20
+        $0.backgroundColor = .tableViewBackgroundColor
+    }
+    
+    private let tableView = UITableView().then {
+        $0.register(BoxListCell.self, forCellReuseIdentifier: BoxListCell.reuseIdentifier)
+        
+        $0.sectionHeaderTopPadding = 0
+        $0.clipsToBounds = true
+        $0.layer.cornerRadius = 20
+        $0.backgroundColor = .clear
+        $0.separatorColor = .clear
+        $0.rowHeight = 50
+    }
+    
+    // MARK: - Initializer
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        backgroundColor = .backgroundColor
-        viewModel = BoxListViewModel()
-        
+        setupProperty()
+        setupHierarchy()
         setupLayout()
         configureDataSource()
         bindViewModel()
@@ -38,39 +57,28 @@ class BoxListView: BaseView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private lazy var backgroundView = {
-        let view = UIView()
-        view.clipsToBounds = true
-        view.layer.cornerRadius = 20
-        view.backgroundColor = .tableViewBackgroundColor
-        
-        view.addSubview(tableView)
-        tableView.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview().offset(10)
-            make.leading.trailing.equalToSuperview()
-        }
-        return view
-    }()
+    // MARK: - Setup Methods
     
-    private lazy var tableView = {
-        let tableView = UITableView()
+    private func setupProperty() {
+        backgroundColor = .backgroundColor
+        viewModel = BoxListViewModel()
         tableView.delegate = self
-        tableView.register(BoxListCell.self, forCellReuseIdentifier: BoxListCell.reuseIdentifier)
-        
-        tableView.sectionHeaderTopPadding = 0
-        tableView.clipsToBounds = true
-        tableView.layer.cornerRadius = 20
-        tableView.backgroundColor = .clear
-        tableView.separatorColor = .clear
-        tableView.rowHeight = 50 
-        return tableView
-    }()
+    }
+    
+    private func setupHierarchy() {
+        addSubview(backgroundView)
+        backgroundView.addSubview(tableView)
+    }
     
     private func setupLayout() {
-        addSubview(backgroundView)
         backgroundView.snp.makeConstraints { make in
             make.top.equalTo(safeAreaLayoutGuide).inset(10)
             make.leading.trailing.bottom.equalTo(safeAreaLayoutGuide).inset(20)
+        }
+        
+        tableView.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview().offset(10)
+            make.leading.trailing.equalToSuperview()
         }
     }
     
@@ -78,7 +86,7 @@ class BoxListView: BaseView {
         boxListDataSource = UITableViewDiffableDataSource(tableView: tableView) { [weak self] tableView, indexPath, itemIdentifier in
             guard let self, let viewModel = self.viewModel else { fatalError() }
             guard let cell = tableView.dequeueReusableCell(withIdentifier: BoxListCell.reuseIdentifier, for: indexPath) as? BoxListCell else { fatalError() }
-            cell.configure(viewModel.viewModel(at: indexPath))
+            cell.bindViewModel(viewModel.viewModel(at: indexPath))
             return cell
         }
     }
@@ -153,5 +161,5 @@ extension BoxListView: UITableViewDelegate {
         let webName = viewModel.boxList[indexPath.section].boxListCellViewModels[indexPath.row].name
         delegate?.didSelectWeb(at: webUrl, withName: webName)
     }
+    
 }
-

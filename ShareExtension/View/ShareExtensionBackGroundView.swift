@@ -62,7 +62,7 @@ class ShareExtensionBackGroundView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+        setupProperty()
         setupHierarchy()
         setupLayout()
         setupButtonAction()
@@ -74,6 +74,12 @@ class ShareExtensionBackGroundView: UIView {
     
     // MARK: - Setup Methods
     
+    private func setupProperty() {
+        backgroundColor = .systemBackground
+        clipsToBounds = true
+        layer.cornerRadius = 10
+    }
+    
     private func setupHierarchy() {
         addSubview(label)
         addSubview(linkLabel)
@@ -82,26 +88,22 @@ class ShareExtensionBackGroundView: UIView {
     }
     
     private func setupLayout() {
-        backgroundColor = .systemBackground
-        clipsToBounds = true
-        layer.cornerRadius = 10
-        
-        label.snp.makeConstraints {
-            $0.top.leading.equalToSuperview().inset(20)
+        label.snp.makeConstraints { make in
+            make.top.leading.equalToSuperview().inset(20)
         }
         
-        linkLabel.snp.makeConstraints {
-            $0.top.equalTo(label.snp.bottom).offset(10)
-            $0.leading.trailing.equalToSuperview().inset(20)
+        linkLabel.snp.makeConstraints { make in
+            make.top.equalTo(label.snp.bottom).offset(10)
+            make.leading.trailing.equalToSuperview().inset(20)
         }
         
-        cancelButton.snp.makeConstraints {
-            $0.trailing.equalTo(openAppButton.snp.leading).offset(-20)
-            $0.centerY.equalTo(openAppButton.snp.centerY)
+        cancelButton.snp.makeConstraints { make in
+            make.trailing.equalTo(openAppButton.snp.leading).offset(-20)
+            make.centerY.equalTo(openAppButton.snp.centerY)
         }
         
-        openAppButton.snp.makeConstraints {
-            $0.trailing.bottom.equalToSuperview().inset(20)
+        openAppButton.snp.makeConstraints { make in
+            make.trailing.bottom.equalToSuperview().inset(20)
         }
     }
     
@@ -114,7 +116,7 @@ class ShareExtensionBackGroundView: UIView {
         linkLabel.text = text
     }
     
-    // MARK: - Actions
+    // MARK: - Action Functions
     
     @objc func cancelButtonTapped() {
         delegate?.didTapCancel()

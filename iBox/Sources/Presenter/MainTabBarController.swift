@@ -9,6 +9,8 @@ import UIKit
 
 class MainTabBarController: UITabBarController {
     
+    // MARK: - Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .backgroundColor
@@ -16,6 +18,8 @@ class MainTabBarController: UITabBarController {
         setupTabBar()
         setupTabBarAppearance()
     }
+    
+    // MARK: - Setup Methods
     
     private func setupTabBar() {
         viewControllers = [

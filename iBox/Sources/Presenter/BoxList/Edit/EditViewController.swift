@@ -11,9 +11,11 @@ protocol EditViewDelegate {
     func pushViewController(type: EditType)
 }
 
-class EditViewController: BaseBottomSheetViewController<EditView> {
+class EditViewController: BottomSheetViewController<EditView> {
     
     var delegate: BoxListViewDelegate?
+    
+    // MARK: - Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
