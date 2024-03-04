@@ -7,9 +7,11 @@
 
 import UIKit
 
-class ThemeCell: UITableViewCell, BaseViewProtocol {
+class ThemeCell: UITableViewCell {
     
-    // MARK: - UI
+    static let reuseIdentifier = "ThemeCell"
+    
+    // MARK: - UI Components
     
     let themeImageView = UIImageView().then {
         $0.tintColor = .label
@@ -23,47 +25,50 @@ class ThemeCell: UITableViewCell, BaseViewProtocol {
         $0.configuration = .plain()
     }
     
-    // MARK: - initializer
+    // MARK: - Initializer
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        configureUI()
-        selectionStyle = .none
+        setupProperty()
+        setupHierarchy()
+        setupLayout()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - BaseViewProtocol
+    // MARK: - Setup Methods
     
-    func configureUI() {
+    private func setupProperty() {
         backgroundColor = .clear
         selectionStyle = .none
-        
+    }
+    
+    private func setupHierarchy() {
         addSubview(themeImageView)
         addSubview(titleLabel)
         addSubview(selectButton)
-        
-        themeImageView.snp.makeConstraints {
-            $0.left.equalToSuperview().inset(20)
-            $0.centerY.equalToSuperview()
-            $0.width.height.equalTo(23)
-        }
-        
-        titleLabel.snp.makeConstraints {
-            $0.left.equalTo(themeImageView.snp.right).offset(10)
-            $0.centerY.equalToSuperview()
-        }
-        
-        selectButton.snp.makeConstraints {
-            $0.right.equalToSuperview().inset(20)
-            $0.centerY.equalToSuperview()
-            $0.width.height.equalTo(20)
-        }
     }
     
-    // MARK: - functions
+    private func setupLayout() {
+        themeImageView.snp.makeConstraints { make in
+            make.leading.equalToSuperview().inset(20)
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(23)
+        }
+        
+        titleLabel.snp.makeConstraints { make in
+            make.leading.equalTo(themeImageView.snp.trailing).offset(10)
+            make.centerY.equalToSuperview()
+        }
+        
+        selectButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(20)
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(20)
+        }
+    }
     
     func bind(_ theme: Theme) {
         titleLabel.text = theme.toString()

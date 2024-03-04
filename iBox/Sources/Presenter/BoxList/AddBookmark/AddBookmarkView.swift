@@ -9,12 +9,33 @@ import UIKit
 
 import SnapKit
 
-class AddBookmarkBottomSheetView: BaseView {
+class AddBookmarkBottomSheetView: UIView {
     
-    // MARK: - configure UI
+    // MARK: - Initializer
     
-    override func configureUI() {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupProperty()
+        setupHierarchy()
+        setupLayout()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Setup Methods
+    
+    private func setupProperty() {
         backgroundColor = .backgroundColor
+    }
+    
+    private func setupHierarchy() {
+        
+    }
+    
+    private func setupLayout() {
+        
     }
     
 }

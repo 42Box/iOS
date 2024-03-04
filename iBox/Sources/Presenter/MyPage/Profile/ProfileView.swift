@@ -7,11 +7,6 @@
 
 import UIKit
 
-class ProfileView: BaseView {
-    
-    // MARK: - BaseViewProtocol
-    
-    override func configureUI() {
-    }
+class ProfileView: UIView {
     
 }

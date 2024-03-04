@@ -7,13 +7,11 @@
 
 import UIKit
 
-class ThemeViewController: BaseNavigationBarViewController<ThemeView> {
-    
-    // MARK: - properties
+class ThemeViewController: BaseViewController<ThemeView>, BaseViewControllerProtocol {
     
     private let viewModel = ThemeViewModel()
     
-    // MARK: - life cycle
+    // MARK: - Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,9 +21,9 @@ class ThemeViewController: BaseNavigationBarViewController<ThemeView> {
         contentView.bineViewModel(viewModel)
     }
     
-    // MARK: - BaseNavigationBarViewControllerProtocol
+    // MARK: - BaseViewControllerProtocol
     
-    override func setupNavigationBar() {
+    func setupNavigationBar() {
         setNavigationBarTitleLabelText("다크 모드 설정")
         setNavigationBarTitleLabelFont(.systemFont(ofSize: 17, weight: .semibold))
         setNavigationBarBackButtonHidden(false)

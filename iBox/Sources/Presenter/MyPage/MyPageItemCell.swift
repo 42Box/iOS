@@ -64,24 +64,24 @@ class MyPageItemCell: UITableViewCell {
     }
     
     private func setupLayout() {
-        titleLabel.snp.makeConstraints {
-            $0.left.equalToSuperview().inset(20)
-            $0.centerY.equalToSuperview()
+        titleLabel.snp.makeConstraints { make in
+            make.leading.equalToSuperview().inset(20)
+            make.centerY.equalToSuperview()
         }
         
-        switchControl.snp.makeConstraints {
-            $0.right.equalToSuperview().inset(30)
-            $0.centerY.equalToSuperview()
+        switchControl.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(30)
+            make.centerY.equalToSuperview()
         }
         
-        descriptionLabel.snp.makeConstraints {
-            $0.right.equalToSuperview().inset(30)
-            $0.centerY.equalToSuperview()
+        descriptionLabel.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(30)
+            make.centerY.equalToSuperview()
         }
         
-        chevronButton.snp.makeConstraints {
-            $0.right.equalToSuperview().inset(20)
-            $0.centerY.equalToSuperview()
+        chevronButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(20)
+            make.centerY.equalToSuperview()
         }
     }
     

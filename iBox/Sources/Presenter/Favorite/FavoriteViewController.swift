@@ -7,19 +7,22 @@
 
 import UIKit
 
-class FavoriteViewController: BaseNavigationBarViewController<FavoriteView> {
+class FavoriteViewController: BaseViewController<FavoriteView>, BaseViewControllerProtocol {
 
+    // MARK: - Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        guard let _ = contentView as? FavoriteView else { return }
+        setupNavigationBar()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         WebViewPreloader.shared.resetFavoriteView()
     }
     
-    override func setupNavigationBar() {
+    // MARK: - BaseViewControllerProtocol
+    
+    func setupNavigationBar() {
         setNavigationBarHidden(true)
     }
 

@@ -7,8 +7,10 @@
 
 import UIKit
 
-class BoxListViewController: BaseNavigationBarViewController<BoxListView> {
+class BoxListViewController: BaseViewController<BoxListView>, BaseViewControllerProtocol {
 
+    // MARK: - Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
@@ -17,12 +19,16 @@ class BoxListViewController: BaseNavigationBarViewController<BoxListView> {
         contentView.delegate = self
     }
     
-    override func setupNavigationBar() {
+    // MARK: - BaseViewControllerProtocol
+    
+    func setupNavigationBar() {
         setNavigationBarTitleLabelText("iBox")
         setNavigationBarMenuButtonHidden(false)
         setNavigationBarAddButtonAction(#selector(addButtonTapped))
         setNavigationBarMoreButtonAction(#selector(moreButtonTapped))
     }
+    
+    // MARK: - Action Functions
     
     @objc private func addButtonTapped() {
         let addBookmarkBottomSheetViewController = AddBookmarkBottomSheetViewController(bottomSheetHeight: 200)
@@ -38,6 +44,7 @@ class BoxListViewController: BaseNavigationBarViewController<BoxListView> {
 }
 
 extension BoxListViewController: BoxListViewDelegate {
+    
     func didSelectWeb(at url: URL, withName name: String) {
         let viewController = PreloadedWebViewController(selectedWebsite: url)
         viewController.title = name
@@ -52,4 +59,5 @@ extension BoxListViewController: BoxListViewDelegate {
             navigationController?.pushViewController(EditBookmarkViewController(), animated: true)
         }
     }
+    
 }

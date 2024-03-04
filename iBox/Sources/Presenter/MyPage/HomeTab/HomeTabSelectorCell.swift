@@ -11,8 +11,6 @@ import SnapKit
 
 class HomeTabSelectorCell: UITableViewCell {
     
-    // MARK: - Properties
-    
     static let reuseIdentifier = "MainTabCell"
     
     // MARK: - UI Components
@@ -29,6 +27,8 @@ class HomeTabSelectorCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupProperty()
+        setupHierarchy()
         setupLayout()
     }
     
@@ -38,22 +38,26 @@ class HomeTabSelectorCell: UITableViewCell {
     
     // MARK: - Setup Methods
     
-    private func setupLayout() {
+    private func setupProperty() {
         backgroundColor = .clear
         selectionStyle = .none
-        
+    }
+    
+    private func setupHierarchy() {
         addSubview(titleLabel)
         addSubview(selectButton)
-        
-        titleLabel.snp.makeConstraints {
-            $0.left.equalToSuperview().inset(20)
-            $0.centerY.equalToSuperview()
+    }
+    
+    private func setupLayout() {
+        titleLabel.snp.makeConstraints { make in
+            make.leading.equalToSuperview().inset(20)
+            make.centerY.equalToSuperview()
         }
         
-        selectButton.snp.makeConstraints {
-            $0.right.equalToSuperview().inset(20)
-            $0.centerY.equalToSuperview()
-            $0.width.height.equalTo(20)
+        selectButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(20)
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(20)
         }
     }
     

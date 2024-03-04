@@ -7,7 +7,7 @@
 
 import UIKit
 
-class EditBookmarkViewController: BaseNavigationBarViewController<EditBookmarkView> {
+class EditBookmarkViewController: BaseViewController<EditBookmarkView>, BaseViewControllerProtocol {
     
     // MARK: - Life Cycle
     
@@ -16,9 +16,9 @@ class EditBookmarkViewController: BaseNavigationBarViewController<EditBookmarkVi
         setupNavigationBar()
     }
     
-    // MARK: - BaseNavigationBarViewControllerProtocol
+    // MARK: - BaseViewControllerProtocol
     
-    override func setupNavigationBar() {
+    func setupNavigationBar() {
         setNavigationBarTitleLabelText("북마크 편집")
         setNavigationBarTitleLabelFont(.systemFont(ofSize: 17, weight: .semibold))
         setNavigationBarBackButtonHidden(false)

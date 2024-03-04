@@ -9,7 +9,7 @@ import UIKit
 
 import SnapKit
 
-class EditView: BaseView {
+class EditView: UIView {
     
     var delegate: EditViewDelegate?
     
