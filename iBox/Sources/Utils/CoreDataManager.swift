@@ -282,60 +282,45 @@ extension CoreDataManager {
         save()
     }
     
-    func moveBookmark(from source: IndexPath, to destination: IndexPath, srcId: UUID) {
+    func moveBookmark(from source: IndexPath, to destination: IndexPath, srcId: UUID, destFolderId: UUID) {
         if source.section == destination.section {
-            guard let bookmarkEntity = getBookmarkEntity(id: srcId) else { return }
-            guard let folderId = bookmarkEntity.folder?.id else { return }
-            let bookmarkEntities = getAllBookmarkEntity(in: folderId)
-            let source = source.row
-            let destination = destination.row
-            if source < destination {
-                var startIndex = source + 1
-                let endIndex = destination
-                var startOrder = bookmarkEntity.order
-                while startIndex <= endIndex {
-                    bookmarkEntities[startIndex].order = startOrder
-                    startOrder += 1
-                    startIndex += 1
-                }
-                bookmarkEntities[source].order = startOrder
-            } else if destination < source {
-                var startIndex = destination
-                let endIndex = source - 1
-                var startOrder = bookmarkEntities[destination].order + 1
-                let newOrder = bookmarkEntities[destination].order
-                while startIndex <= endIndex {
-                    bookmarkEntities[startIndex].order = startOrder
-                    startOrder += 1
-                    startIndex += 1
-                }
-                bookmarkEntities[source].order = newOrder
-            }
+            moveWithinSameFolder(from: source.row, to: destination.row, bookmarkId: srcId, folderId: destFolderId)
         } else {
-            guard let srcBookmarkEntity = getBookmarkEntity(id: srcId) else { return }
-            guard let srcFolderId = srcBookmarkEntity.folder?.id else { return }
-            let deletedOrder = srcBookmarkEntity.order
-            let srcBookmarkEntities = getAllBookmarkEntity(in: srcFolderId).filter{ $0.order > deletedOrder }
-            for bookmarkEntity in srcBookmarkEntities {
-                bookmarkEntity.order -= 1
-            }
-            lastBookmarkOrder[srcFolderId] = (lastBookmarkOrder[srcFolderId] ?? 1) - 1
-            
-            let folderEntities = getAllFolderEntity()
-            let destFolder = folderEntities[destination.section]
-            guard let destFolderId = destFolder.id else { return }
-            let destinationOrder = Int64(destination.row)
-            let destBookmarkEntities = getAllBookmarkEntity(in: destFolderId).filter{ $0.order >= deletedOrder }
-            for bookmarkEntity in destBookmarkEntities {
-                bookmarkEntity.order += 1
-            }
-            lastBookmarkOrder[destFolderId] = (lastBookmarkOrder[destFolderId] ?? 0) + 1
-            
-            
-            srcBookmarkEntity.folder = destFolder
-            srcBookmarkEntity.order = destinationOrder
+            moveToDifferentFolder(from: source, to: destination, bookmarkId: srcId, destFolderId: destFolderId)
         }
         save()
+    }
+    
+    private func moveWithinSameFolder(from sourceIndex: Int, to destinationIndex: Int, bookmarkId: UUID, folderId: UUID) {
+        var bookmarks = getAllBookmarkEntity(in: folderId)
+        let movingBookmark = bookmarks.remove(at: sourceIndex)
+        
+        let adjustedDestinationIndex = sourceIndex < destinationIndex ? destinationIndex - 1 : destinationIndex
+        
+        bookmarks.insert(movingBookmark, at: adjustedDestinationIndex)
+        
+        for (index, bookmark) in bookmarks.enumerated() {
+            bookmark.order = Int64(index)
+        }
+    }
+    
+    private func moveToDifferentFolder(from source: IndexPath, to destination: IndexPath, bookmarkId: UUID, destFolderId: UUID) {
+        guard let movingBookmark = getBookmarkEntity(id: bookmarkId),
+              let srcFolder = movingBookmark.folder,
+              let srcFolderId = srcFolder.id else { return }
+        let srcBookmarks = getAllBookmarkEntity(in: srcFolderId)
+        let destBookmarks = getAllBookmarkEntity(in: destFolderId)
+        let destFolder = getFolderEntity(id: destFolderId)
+        
+        for (index, bookmark) in srcBookmarks.enumerated() where bookmark.order > movingBookmark.order {
+            bookmark.order -= 1
+        }
+        
+        movingBookmark.folder = destFolder
+        movingBookmark.order = Int64(destination.row)
+        for (index, bookmark) in destBookmarks.enumerated() where bookmark.order >= movingBookmark.order {
+            bookmark.order += 1
+        }
     }
     
 }
