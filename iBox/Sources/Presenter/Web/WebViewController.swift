@@ -9,7 +9,7 @@ import UIKit
 
 class WebViewController: BaseViewController<WebView>, BaseViewControllerProtocol {
     
-    var selectedWebsite: String?
+    var selectedWebsite: URL?
 
     // MARK: - Life Cycle
     

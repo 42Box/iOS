@@ -11,16 +11,16 @@ import WebKit
 import SnapKit
 
 class WebView: UIView {
-    var selectedWebsite: String? {
+    var selectedWebsite: URL? {
         didSet {
             loadWebsite()
         }
     }
     
-    private let webView = WKWebView()
-//        .then {
-//        $0.scrollView.contentInsetAdjustmentBehavior = .always
-//    }
+    private let webView = WKWebView().then {
+        $0.isOpaque = false
+        $0.scrollView.contentInsetAdjustmentBehavior = .always
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -31,6 +31,12 @@ class WebView: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        webView.stopLoading()
+        webView.navigationDelegate = nil
+        webView.scrollView.delegate = nil
     }
     
     // MARK: - Setup Methods
@@ -51,7 +57,7 @@ class WebView: UIView {
     }
     
     private func loadWebsite() {
-        guard let website = selectedWebsite, let url = URL(string: website) else { return }
+        guard let url = selectedWebsite else { return }
         webView.load(URLRequest(url: url))
         webView.allowsBackForwardNavigationGestures = true
     }
@@ -59,5 +65,19 @@ class WebView: UIView {
 }
 
 extension WebView: WKNavigationDelegate {
-    
+//    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+//            print("웹뷰 로딩 실패: \(error.localizedDescription)")
+//        }
+//
+//    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+//        print("웹뷰 프로비저널 네비게이션 실패: \(error.localizedDescription)")
+//    }
+//    
+//    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+//        if let url = navigationAction.request.url {
+//            print("웹뷰가 리다이렉트 되는 URL: \(url.absoluteString)")
+//        }
+//        
+//        decisionHandler(.allow)
+//    }
 }

@@ -18,7 +18,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             AppStateManager.shared.isVersionCheckCompleted = result
         }
         
+        preloadFavoriteWeb()
+        versioningHandler.checkAppVersion()
         return true
+    }
+    
+    private func preloadFavoriteWeb() {
+        let favorite = UserDefaultsManager.favorite
+        let favoriteUrl = favorite.url
+        WebViewPreloader.shared.preloadFavoriteView(url: favoriteUrl)
     }
 
     // MARK: UISceneSession Lifecycle
