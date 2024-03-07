@@ -37,8 +37,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let favoriteUrl = favorite.url
         WebViewPreloader.shared.preloadFavoriteView(url: favoriteUrl)
                 
-        window?.rootViewController = MainTabBarController()
-        window?.makeKeyAndVisible() // 윈도우를 화면에 보여줌
+        window?.rootViewController = CustomLaunchScreenViewController()
+        window?.makeKeyAndVisible()
 
         if let urlContext = connectionOptions.urlContexts.first {
             let url = urlContext.url
