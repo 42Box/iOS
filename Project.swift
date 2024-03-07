@@ -27,8 +27,9 @@ class iBoxFactory: ProjectFactory {
     
     private let appInfoPlist: [String: Plist.Value] = [
         "ITSAppUsesNonExemptEncryption": false,
+        "CFBundleDisplayName": "iBox",
         "CFBundleName": "iBox",
-        "CFBundleShortVersionString": "1.2.1",
+        "CFBundleShortVersionString": "1.2.2",
         "CFBundleVersion": "1",
         "UILaunchStoryboardName": "LaunchScreen",
         "UIApplicationSceneManifest": [

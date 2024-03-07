@@ -14,8 +14,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
+        preloadFavoriteWeb()
         versioningHandler.checkAppVersion()
         return true
+    }
+    
+    private func preloadFavoriteWeb() {
+        let favorite = UserDefaultsManager.favorite
+        let favoriteUrl = favorite.url
+        WebViewPreloader.shared.preloadFavoriteView(url: favoriteUrl)
     }
 
     // MARK: UISceneSession Lifecycle

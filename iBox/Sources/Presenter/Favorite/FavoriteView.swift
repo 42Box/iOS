@@ -10,7 +10,7 @@ import WebKit
 
 import SnapKit
 
-class FavoriteView: PreloadedWebView {
+class FavoriteView: UIView {
     
     private lazy var webView = WebViewPreloader.shared.getFavoriteView()
     
