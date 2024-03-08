@@ -17,9 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         versioningHandler.checkAppVersion { result in
             AppStateManager.shared.isVersionCheckCompleted = result
         }
-        
         preloadFavoriteWeb()
-        versioningHandler.checkAppVersion()
+        
         return true
     }
     

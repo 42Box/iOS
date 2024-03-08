@@ -18,6 +18,7 @@ class FolderButton: UIButton {
     private let folderImageView = UIImageView().then {
         $0.image = UIImage(systemName: "folder.fill")
         $0.contentMode = .scaleAspectFit
+        $0.tintColor = .gray
     }
     
     private let folderNameLabel = UILabel().then {
@@ -78,9 +79,9 @@ class FolderButton: UIButton {
         folderNameLabel.text = name
     }
     
-    func setFolderColor(_ color: UIColor) {
-        folderImageView.tintColor = color
-    }
+//    func setFolderColor(_ color: UIColor) {
+//        folderImageView.tintColor = color
+//    }
     
     func toggleStatus() {
         isOpen = !isOpen
