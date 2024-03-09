@@ -47,7 +47,6 @@ extension CoreDataManager {
             let newFolder = FolderEntity(context: context)
             newFolder.id = folder.id
             newFolder.name = folder.name
-//            newFolder.color = folder.color.rawValue
             newFolder.order = lastFolderOrder
             lastFolderOrder += 1
             let bookmarks = NSMutableOrderedSet()
@@ -71,7 +70,6 @@ extension CoreDataManager {
         let newFolder = FolderEntity(context: context)
         newFolder.id = folder.id
         newFolder.name = folder.name
-//        newFolder.color = folder.color.rawValue
         newFolder.order = lastFolderOrder
         lastFolderOrder += 1
         let bookmarks = NSMutableOrderedSet()
@@ -162,10 +160,9 @@ extension CoreDataManager {
         save()
     }
     
-    func updateFolder(id: UUID, name: String, color: String) {
+    func updateFolder(id: UUID, name: String) {
         guard let folder = getFolderEntity(id: id) else { return }
         folder.name = name
-        folder.color = color
         save()
     }
     
