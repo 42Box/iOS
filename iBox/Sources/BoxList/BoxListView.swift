@@ -141,7 +141,6 @@ extension BoxListView: UITableViewDelegate {
         guard let viewModel else { return nil }
         let button = FolderButton(isOpen: viewModel.boxList[section].isOpened)
         button.setFolderName(viewModel.boxList[section].name)
-        button.setFolderColor(viewModel.boxList[section].color.toUIColor())
         button.tag = section
         
         button.addTarget(self, action: #selector(handleOpenClose), for: .touchUpInside)
