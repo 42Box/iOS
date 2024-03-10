@@ -165,14 +165,14 @@ extension BoxListView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         // 액션 정의
         let favoriteAction = UIContextualAction(style: .normal, title: "favorite", handler: {(action, view, completionHandler) in
-            print("favoriteAction") // 실행하고 싶은 내용
+            self.viewModel?.input.send(.setFavorite(indexPath: indexPath))
             completionHandler(true)
         })
         favoriteAction.backgroundColor = .box2
         favoriteAction.image = UIImage(systemName: "heart")
         
         let shareAction = UIContextualAction(style: .normal, title: "share", handler: {(action, view, completionHandler) in
-            let cellViewModel = self.viewModel?.boxList[indexPath.section].boxListCellViewModels[indexPath.row]
+            let cellViewModel = self.viewModel?.viewModel(at: indexPath)
             self.delegate?.pushViewController(url: cellViewModel?.url)
             completionHandler(true)
         })
@@ -180,7 +180,7 @@ extension BoxListView: UITableViewDelegate {
         shareAction.image = UIImage(systemName: "square.and.arrow.up")
         
         let deleteAction = UIContextualAction(style: .normal, title: "delete", handler: {(action, view, completionHandler) in
-            print("deleteAction") // 실행하고 싶은 내용
+            self.viewModel?.input.send(.deleteBookmark(indexPath: indexPath))
             completionHandler(true)
         })
         deleteAction.backgroundColor = .systemGray
