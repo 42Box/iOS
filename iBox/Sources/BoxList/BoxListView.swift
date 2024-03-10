@@ -13,6 +13,7 @@ import SnapKit
 protocol BoxListViewDelegate: AnyObject {
     func didSelectWeb(at url: URL, withName name: String)
     func pushViewController(type: EditType)
+    func pushViewController(url: URL?)
 }
 
 class BoxListView: UIView {
@@ -128,7 +129,7 @@ extension BoxListView: UITableViewDelegate {
         line.backgroundColor = .tertiaryLabel
         return view
     }
-
+    
     public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0.3
     }
@@ -161,4 +162,34 @@ extension BoxListView: UITableViewDelegate {
         delegate?.didSelectWeb(at: webUrl, withName: webName)
     }
     
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        // 액션 정의
+        let favoriteAction = UIContextualAction(style: .normal, title: "favorite", handler: {(action, view, completionHandler) in
+            print("favoriteAction") // 실행하고 싶은 내용
+            completionHandler(true)
+        })
+        favoriteAction.backgroundColor = .box2
+        favoriteAction.image = UIImage(systemName: "heart")
+        
+        let shareAction = UIContextualAction(style: .normal, title: "share", handler: {(action, view, completionHandler) in
+            let cellViewModel = self.viewModel?.boxList[indexPath.section].boxListCellViewModels[indexPath.row]
+            self.delegate?.pushViewController(url: cellViewModel?.url)
+            completionHandler(true)
+        })
+        shareAction.backgroundColor = .box3
+        shareAction.image = UIImage(systemName: "square.and.arrow.up")
+        
+        let deleteAction = UIContextualAction(style: .normal, title: "delete", handler: {(action, view, completionHandler) in
+            print("deleteAction") // 실행하고 싶은 내용
+            completionHandler(true)
+        })
+        deleteAction.backgroundColor = .systemGray
+        deleteAction.image = UIImage(systemName: "trash.fill")
+        
+        // 스와이프 액션 구성
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction, shareAction, favoriteAction])
+        configuration.performsFirstActionWithFullSwipe = false // 완전히 스와이프했을 때 첫 번째 액션이 자동으로 실행되는 것을 막음
+        
+        return configuration
+    }
 }

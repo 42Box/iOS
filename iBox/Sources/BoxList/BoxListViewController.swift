@@ -61,4 +61,10 @@ extension BoxListViewController: BoxListViewDelegate {
         }
     }
     
+    func pushViewController(url: URL?) {
+        guard let url = url else { return }
+        let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        self.present(activityViewController, animated: true)
+    }
+    
 }
