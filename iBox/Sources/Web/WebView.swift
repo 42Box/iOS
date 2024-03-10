@@ -22,6 +22,8 @@ class WebView: UIView {
         $0.scrollView.contentInsetAdjustmentBehavior = .always
     }
     
+    private let refreshControl = UIRefreshControl()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupProperty()
@@ -44,6 +46,8 @@ class WebView: UIView {
     private func setupProperty() {
         backgroundColor = .backgroundColor
         webView.navigationDelegate = self
+        webView.scrollView.refreshControl = refreshControl
+        refreshControl.addTarget(self, action: #selector(handleRefreshControl), for: .valueChanged)
     }
     
     private func setupHierarchy() {
@@ -62,22 +66,29 @@ class WebView: UIView {
         webView.allowsBackForwardNavigationGestures = true
     }
     
+    @objc private func handleRefreshControl() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { [weak self] in
+            self?.webView.reload()
+            self?.refreshControl.endRefreshing()
+        }
+    }
+    
 }
 
 extension WebView: WKNavigationDelegate {
-//    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-//            print("웹뷰 로딩 실패: \(error.localizedDescription)")
-//        }
-//
-//    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-//        print("웹뷰 프로비저널 네비게이션 실패: \(error.localizedDescription)")
-//    }
-//    
-//    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-//        if let url = navigationAction.request.url {
-//            print("웹뷰가 리다이렉트 되는 URL: \(url.absoluteString)")
-//        }
-//        
-//        decisionHandler(.allow)
-//    }
+    //    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+    //            print("웹뷰 로딩 실패: \(error.localizedDescription)")
+    //        }
+    //
+    //    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+    //        print("웹뷰 프로비저널 네비게이션 실패: \(error.localizedDescription)")
+    //    }
+    //
+    //    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    //        if let url = navigationAction.request.url {
+    //            print("웹뷰가 리다이렉트 되는 URL: \(url.absoluteString)")
+    //        }
+    //
+    //        decisionHandler(.allow)
+    //    }
 }
