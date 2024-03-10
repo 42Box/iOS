@@ -16,10 +16,6 @@ class FavoriteViewController: BaseViewController<FavoriteView>, BaseViewControll
         setupNavigationBar()
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        WebViewPreloader.shared.resetFavoriteView()
-    }
-    
     // MARK: - BaseViewControllerProtocol
     
     func setupNavigationBar() {

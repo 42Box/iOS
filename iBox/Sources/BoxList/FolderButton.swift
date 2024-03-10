@@ -79,10 +79,6 @@ class FolderButton: UIButton {
         folderNameLabel.text = name
     }
     
-//    func setFolderColor(_ color: UIColor) {
-//        folderImageView.tintColor = color
-//    }
-    
     func toggleStatus() {
         isOpen = !isOpen
         openCloseImageView.image = isOpen ? UIImage(systemName: "chevron.up") : UIImage(systemName: "chevron.down")
