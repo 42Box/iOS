@@ -14,6 +14,7 @@ class FolderListView: UIView {
     
     // 폴더 엔티티를 저장할 배열
     var folders: [Folder] = []
+    var onFolderSelected: ((Folder) -> Void)?
 
 
     private let tableView: UITableView = {
@@ -51,7 +52,6 @@ class FolderListView: UIView {
     
     func configureUI() {
         backgroundColor = .systemBackground
-//        addSubview(tableView)
         addSubview(stackView)
         setupLayout()
         setupTableView()
@@ -103,6 +103,8 @@ extension FolderListView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // 선택시 로직
         print("항목 \(indexPath.row) 선택됨")
+        let selectedFolder = folders[indexPath.row]
+        onFolderSelected?(selectedFolder)
     }
     
 }

@@ -17,6 +17,18 @@ class FolderListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        bookmarkListView.onFolderSelected = { [weak self] folder in
+            
+            guard let self = self else { return }
+            
+            if let addBookmarkVC = self.navigationController?.viewControllers.first as? AddBookmarkViewController {
+                addBookmarkVC.selectedFolder = folder
+                
+                print("folder: \(folder)")
+                self.navigationController?.popViewController(animated: true)
+            }
+        }
     }
+    
 
 }

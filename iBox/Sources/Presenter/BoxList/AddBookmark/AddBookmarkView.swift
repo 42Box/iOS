@@ -13,6 +13,12 @@ class AddBookmarkView: UIView {
     
     var onButtonTapped: (() -> Void)?
     var onTextChange: ((Bool) -> Void)?     // '추가'버튼 비활성화 관련
+    
+    var selectedFolderName: String? {
+        didSet {
+            selectedFolderLabel.text = selectedFolderName
+        }
+    }
 
     private lazy var textFieldView: UIView = {
         let view = UIView()
@@ -33,7 +39,7 @@ class AddBookmarkView: UIView {
         return label
     }()
     
-    private let nameTextView: UITextView = {
+    let nameTextView: UITextView = {
         let textView = UITextView()
         textView.backgroundColor = .clear
         textView.layer.borderWidth = 0 // 테두리 안보이게
@@ -61,7 +67,7 @@ class AddBookmarkView: UIView {
     }()
 
     
-    private let urlTextView: UITextView = {
+    let urlTextView: UITextView = {
         let textView = UITextView()
         textView.backgroundColor = .clear
         textView.layer.borderWidth = 0 // 테두리 안보이게
@@ -73,7 +79,6 @@ class AddBookmarkView: UIView {
         return textView
     }()
 
-    
     
     private lazy var button: UIButton = {
         let button = UIButton(type: .custom)
@@ -94,11 +99,11 @@ class AddBookmarkView: UIView {
         return label
     }()
     
-    private let selectedFolderLabel: UILabel = {
+    let selectedFolderLabel: UILabel = {
         let label = UILabel()
-        label.text = "aaaa"
         label.font = UIFont.systemFont(ofSize: 17)
         label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        label.textAlignment = .right
         return label
     }()
     
@@ -187,7 +192,7 @@ class AddBookmarkView: UIView {
         selectedFolderLabel.snp.makeConstraints { make in
             make.trailing.equalTo(button.snp.trailing).inset(40)
             make.centerY.equalTo(button.snp.centerY)
-            make.width.equalTo(40)
+            make.width.equalTo(100)
             make.height.equalTo(40)
         }
         
@@ -202,7 +207,7 @@ class AddBookmarkView: UIView {
         GlobalURLManager.shared.incomingURL = nil
     }
     
-    @objc func buttonTapped() {
+    @objc private func buttonTapped() {
         onButtonTapped?()
     }
     
