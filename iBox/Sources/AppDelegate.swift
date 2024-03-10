@@ -14,10 +14,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
+        Task {
+            preloadFavoriteWeb()
+        }
+
         versioningHandler.checkAppVersion { result in
             AppStateManager.shared.isVersionCheckCompleted = result
         }
-        preloadFavoriteWeb()
         
         return true
     }
