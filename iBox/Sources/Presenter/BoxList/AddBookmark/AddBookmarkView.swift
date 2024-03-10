@@ -128,6 +128,10 @@ class AddBookmarkView: UIView {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.endEditing(true)
+    }
 
     private func configureUI() {
         backgroundColor = .systemGroupedBackground
@@ -156,7 +160,6 @@ class AddBookmarkView: UIView {
         nameTextView.snp.makeConstraints { make in
             make.top.equalTo(textFieldView.snp.top).offset(10)
             make.leading.trailing.equalTo(textFieldView).offset(15)
-            make.width.equalTo(textFieldView).inset(10)
             make.height.equalTo(30)
         }
         
@@ -201,7 +204,7 @@ class AddBookmarkView: UIView {
         
         // 선택된 폴더 레이블
         selectedFolderLabel.snp.makeConstraints { make in
-            make.trailing.equalTo(chevronImageView.snp.trailing).inset(20)
+            make.trailing.equalTo(chevronImageView.snp.leading).offset(-10)
             make.centerY.equalTo(button.snp.centerY)
             make.width.equalTo(100)
             make.height.equalTo(40)
@@ -236,11 +239,22 @@ class AddBookmarkView: UIView {
 extension AddBookmarkView: UITextViewDelegate {
     
     func textViewDidChange(_ textView: UITextView) {
-        nameTextViewPlaceHolder.isHidden = !nameTextView.text.isEmpty
-        urlTextViewPlaceHolder.isHidden = !urlTextView.text.isEmpty
+//        nameTextViewPlaceHolder.isHidden = !nameTextView.text.isEmpty
+//        urlTextViewPlaceHolder.isHidden = !urlTextView.text.isEmpty
         
         // 텍스트 변경 시 검사를 수행하고, '추가' 버튼 활성화 상태를 업데이트
         let isBothTextViewsFilled = !nameTextView.text.isEmpty && !urlTextView.text.isEmpty
         onTextChange?(isBothTextViewsFilled)
+        
+        if textView == nameTextView {
+            // nameTextView의 텍스트가 비어있지 않다면, 플레이스홀더를 숨깁니다.
+            nameTextViewPlaceHolder.isHidden = !nameTextView.text.isEmpty
+        }
+
+        if textView == urlTextView {
+            // nameTextView의 텍스트가 비어있지 않다면, 플레이스홀더를 숨깁니다.
+            urlTextViewPlaceHolder.isHidden = !urlTextView.text.isEmpty
+        }
+        
     }
 }
