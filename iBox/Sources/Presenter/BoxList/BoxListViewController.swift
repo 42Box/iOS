@@ -9,6 +9,19 @@ import UIKit
 
 class BoxListViewController: BaseViewController<BoxListView>, BaseViewControllerProtocol {
 
+    var shouldPresentModalAutomatically: Bool = false {
+        didSet {
+            if shouldPresentModalAutomatically {
+                // shouldPresentModalAutomatically가 true로 설정될 때 함수 호출
+                dismiss(animated: false) {
+                    self.addButtonTapped()
+                }
+                // 함수 호출 후 shouldPresentModalAutomatically를 false로 설정
+                shouldPresentModalAutomatically = false
+            }
+        }
+    }
+    
     // MARK: - Life Cycle
     
     override func viewDidLoad() {
@@ -31,8 +44,11 @@ class BoxListViewController: BaseViewController<BoxListView>, BaseViewController
     // MARK: - Action Functions
     
     @objc private func addButtonTapped() {
-        let addBookmarkBottomSheetViewController = AddBookmarkBottomSheetViewController(bottomSheetHeight: 200)
-        present(addBookmarkBottomSheetViewController, animated: false)
+        let addBookmarkViewController = AddBookmarkViewController()
+        let navigationController = UINavigationController(rootViewController: addBookmarkViewController)
+
+        navigationController.modalPresentationStyle = .pageSheet
+        present(navigationController, animated: true, completion: nil)
     }
     
     @objc private func moreButtonTapped() {
