@@ -17,26 +17,27 @@ class FolderListView: UIView {
     var onFolderSelected: ((Folder) -> Void)?
 
 
+    private let infoLabel: UILabel = {
+        let label = UILabel()
+        label.text = "새로운 북마크를 추가할 폴더를 선택해주세요."
+        label.font = UIFont.boldSystemFont(ofSize: 17)
+        label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        label.textAlignment = .center
+        return label
+    }()
+    
     private let tableView: UITableView = {
         let tableView = UITableView()
+        tableView.backgroundColor = .clear
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
     
-    private let infoLabel: UILabel = {
-        let label = UILabel()
-        label.text = "북마크를 추가할 폴더를 선택해주세요"
-        label.font = UIFont.systemFont(ofSize: 17)
-        label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        label.textAlignment = .center // 텍스트 가운데 정렬
-        return label
-    }()
     
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [infoLabel, tableView])
         stackView.axis = .vertical
-        stackView.spacing = 10
-        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.spacing = 20
         return stackView
     }()
     
@@ -51,7 +52,7 @@ class FolderListView: UIView {
     }
     
     func configureUI() {
-        backgroundColor = .systemBackground
+        backgroundColor = .systemGroupedBackground
         addSubview(stackView)
         setupLayout()
         setupTableView()
@@ -91,7 +92,7 @@ extension FolderListView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: FolderListCell.reuseIdentifier, for: indexPath) as! FolderListCell
-        cell.testLabel.text = folders[indexPath.row].name
+        cell.folderNameLabel.text = folders[indexPath.row].name
 
         return cell
     }

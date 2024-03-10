@@ -10,12 +10,16 @@ import UIKit
 class FolderListCell: UITableViewCell {
     
     static let reuseIdentifier = "ListCell"
-
-    let testLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 17)
-        return label
-    }()
+    
+    private let folderImageView = UIImageView().then {
+        $0.image = UIImage(systemName: "folder.fill")
+        $0.contentMode = .scaleAspectFit
+    }
+    
+    let folderNameLabel = UILabel().then {
+        $0.textColor = .label
+        $0.font = .systemFont(ofSize: 17, weight: .regular)
+    }
 
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -28,17 +32,24 @@ class FolderListCell: UITableViewCell {
     }
     
     func configureUI() {
-        self.contentView.addSubview(testLabel)
+        self.contentView.addSubview(folderImageView)
+        self.contentView.addSubview(folderNameLabel)
+        self.backgroundColor = .clear
         
         setupLayout()
         
     }
     
     func setupLayout() {
-       testLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(20) // 왼쪽 여백
-            make.trailing.equalToSuperview().offset(-20) // 오른쪽 여백
-            make.centerY.equalToSuperview() // 세로 중앙 정렬
+        folderImageView.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(30)
+            make.leading.equalToSuperview().offset(20)
+        }
+        
+        folderNameLabel.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.leading.equalTo(folderImageView.snp.trailing).offset(10)
         }
         
     }
