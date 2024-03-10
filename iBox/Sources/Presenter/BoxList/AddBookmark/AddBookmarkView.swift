@@ -102,10 +102,20 @@ class AddBookmarkView: UIView {
     let selectedFolderLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 17)
-        label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        label.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
         label.textAlignment = .right
         return label
     }()
+    
+    private let chevronImageView: UIImageView = {
+        let imageView = UIImageView()
+        let image = UIImage(systemName: "chevron.forward")?.withRenderingMode(.alwaysTemplate)
+        imageView.image = image
+        imageView.tintColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1) //.label // 시스템 라벨 색상을 사용하여 다크 모드와 라이트 모드에서 모두 잘 보이게 합니다.
+        imageView.contentMode = .scaleAspectFit // 이미지가 콘텐츠 비율을 유지하도록 합니다.
+        return imageView
+    }()
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -120,7 +130,6 @@ class AddBookmarkView: UIView {
     }
 
     private func configureUI() {
-//        backgroundColor = .systemBackground
         backgroundColor = .systemGroupedBackground
         addSubview(textFieldView)
         addSubview(nameTextViewPlaceHolder)
@@ -128,6 +137,7 @@ class AddBookmarkView: UIView {
         addSubview(button)
         addSubview(buttonLabel)
         addSubview(selectedFolderLabel)
+        addSubview(chevronImageView)
         setupLayout()
         updateTextFieldWithIncomingURL()
     }
@@ -178,7 +188,7 @@ class AddBookmarkView: UIView {
             make.top.equalTo(textFieldView.snp.bottom).offset(20)
             make.leading.equalTo(self.snp.leading).offset(20)
             make.trailing.equalTo(self.snp.trailing).offset(-20)
-            make.height.equalTo(40)
+            make.height.equalTo(50)
         }
         
         
@@ -189,11 +199,20 @@ class AddBookmarkView: UIView {
             make.height.equalTo(40)
         }
         
+        // 선택된 폴더 레이블
         selectedFolderLabel.snp.makeConstraints { make in
-            make.trailing.equalTo(button.snp.trailing).inset(40)
+            make.trailing.equalTo(chevronImageView.snp.trailing).inset(20)
             make.centerY.equalTo(button.snp.centerY)
             make.width.equalTo(100)
             make.height.equalTo(40)
+        }
+        
+        // 꺽쇠 이미지
+        chevronImageView.snp.makeConstraints { make in
+            make.trailing.equalTo(button.snp.trailing).inset(20)
+            make.centerY.equalTo(button.snp.centerY)
+            make.width.equalTo(17)
+            make.height.equalTo(17)
         }
         
     }
