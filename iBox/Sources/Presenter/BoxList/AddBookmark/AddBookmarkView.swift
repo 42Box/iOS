@@ -217,20 +217,11 @@ class AddBookmarkView: UIView {
 extension AddBookmarkView: UITextViewDelegate {
     
     func textViewDidChange(_ textView: UITextView) {
+        nameTextViewPlaceHolder.isHidden = !nameTextView.text.isEmpty
+        urlTextViewPlaceHolder.isHidden = !urlTextView.text.isEmpty
+        
         // 텍스트 변경 시 검사를 수행하고, '추가' 버튼 활성화 상태를 업데이트
         let isBothTextViewsFilled = !nameTextView.text.isEmpty && !urlTextView.text.isEmpty
         onTextChange?(isBothTextViewsFilled)
-        
-        if textView == nameTextView {
-            // nameTextView의 텍스트가 비어있지 않다면, 플레이스홀더를 숨깁니다.
-            nameTextViewPlaceHolder.isHidden = !nameTextView.text.isEmpty
-        }
-        
-        if textView == urlTextView {
-            // nameTextView의 텍스트가 비어있지 않다면, 플레이스홀더를 숨깁니다.
-            urlTextViewPlaceHolder.isHidden = !urlTextView.text.isEmpty
-        }
     }
-
-    
 }
