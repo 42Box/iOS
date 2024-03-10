@@ -23,6 +23,9 @@ final class UserDefaultsManager {
     
     @UserDefaultsData(key: "isPreload", defaultValue: false)
     static var isPreload: Bool
+    
+    @UserDefaultsData(key: "isLogin", defaultValue: false)
+    static var isLogin: Bool
 
 }
 

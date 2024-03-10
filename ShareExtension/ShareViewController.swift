@@ -110,7 +110,7 @@ extension CustomShareViewController: ShareExtensionBackGroundViewDelegate {
     
     func didTapOpenApp() {
         let sharedData = dataURL
-        let url = URL(string: "iBox://\(sharedData)")!
+        let url = URL(string: "iBox://sharedData/\(sharedData)")!
         
         if openURL(url) {
             print("iBox 앱이 성공적으로 열렸습니다.")
