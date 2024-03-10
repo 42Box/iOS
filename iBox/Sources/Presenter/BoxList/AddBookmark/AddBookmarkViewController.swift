@@ -61,7 +61,28 @@ final class AddBookmarkViewController: UIViewController {
     }
     
     @objc private func cancelButtonTapped() {
-        dismiss(animated: true)
+        
+        // nameTextView와 urlTextView가 모두 비어 있는지 확인
+        let isTextFieldsEmpty = addBookmarkView.nameTextView.text?.isEmpty ?? true && addBookmarkView.urlTextView.text?.isEmpty ?? true
+
+        if isTextFieldsEmpty {
+            // 모든 텍스트 필드가 비어있으면, 바로 dismiss
+            self.dismiss(animated: true, completion: nil)
+        } else {
+            // 하나라도 텍스트 필드에 내용이 있으면, 사용자에게 경고 창 표시
+            let alertController = UIAlertController(title: nil, message: "북마크 추가를 취소하시겠습니까?", preferredStyle: .alert)
+
+            let discardAction = UIAlertAction(title: "변경사항 폐기", style: .destructive) { [weak self] _ in
+                self?.dismiss(animated: true, completion: nil)
+            }
+
+            let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+
+            alertController.addAction(discardAction)
+            alertController.addAction(cancelAction)
+            
+            present(alertController, animated: true, completion: nil)
+        }
     }
     
     @objc private func addButtonTapped() {

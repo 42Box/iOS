@@ -79,8 +79,6 @@ class FolderListView: UIView {
 
         // 모든 폴더 가져오기
         folders = coreDataManager.getFolders()
-        print("folders : \(folders)")
-        
     }
     
 }
