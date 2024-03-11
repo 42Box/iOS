@@ -13,9 +13,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let versioningHandler: VersioningHandler = VersioningHandler()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+        Task {
+            preloadFavoriteWeb()
+        }
+
+        versioningHandler.checkAppVersion { result in
+            AppStateManager.shared.isVersionCheckCompleted = result
+        }
         
-        preloadFavoriteWeb()
-        versioningHandler.checkAppVersion()
         return true
     }
     
@@ -39,5 +45,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 
-}
+    }
 

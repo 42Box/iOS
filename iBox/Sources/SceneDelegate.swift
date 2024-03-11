@@ -22,7 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         insertDefaultDataIfNeeded()
         
-        window?.rootViewController = MainTabBarController()
+        window?.rootViewController = CustomLaunchScreenViewController()
         window?.makeKeyAndVisible() // 윈도우를 화면에 보여줌
 
         if let urlContext = connectionOptions.urlContexts.first {
@@ -39,7 +39,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let isDefaultDataInserted = UserDefaultsManager.isDefaultDataInserted
         if !isDefaultDataInserted {
             let defaultData = [
-                Folder(id: UUID(), name: "42 폴더", color: .gray, bookmarks: [
+                Folder(id: UUID(), name: "42 폴더", bookmarks: [
                     Bookmark(id: UUID(), name: "42 Intra", url: URL(string: "https://profile.intra.42.fr/")!),
                     Bookmark(id: UUID(), name: "42Where", url: URL(string: "https://www.where42.kr/")! ),
                     Bookmark(id: UUID(), name: "42Stat", url: URL(string: "https://stat.42seoul.kr/")!),

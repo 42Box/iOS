@@ -28,10 +28,6 @@ class BoxListSectionViewModel: Identifiable {
         folder.name
     }
     
-    var color: ColorName {
-        folder.color
-    }
-    
     var isOpened: Bool {
         get {
             folder.isOpened
