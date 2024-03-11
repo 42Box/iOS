@@ -12,8 +12,13 @@ class BoxListViewModel {
     
     var boxList = [BoxListSectionViewModel]()
     
+    var folders: [Folder] {
+        boxList.map{ $0.folder }
+    }
+    
     enum Input {
         case viewDidLoad
+        case viewWillAppear
         case folderTapped(section: Int)
     }
     
@@ -32,6 +37,7 @@ class BoxListViewModel {
             case .viewDidLoad:
                 let folders = CoreDataManager.shared.getFolders()
                 self.boxList = folders.map{ BoxListSectionViewModel(folder: $0) }
+            case .viewWillAppear:
                 output.send(.sendBoxList(boxList: boxList))
             case let .folderTapped(section):
                 boxList[section].isOpened.toggle()
@@ -43,6 +49,11 @@ class BoxListViewModel {
     
     func viewModel(at indexPath: IndexPath) -> BoxListCellViewModel {
         return boxList[indexPath.section].boxListCellViewModels[indexPath.row]
+    }
+    
+    func addFolder(_ folder: Folder) {
+        let boxListSectionViewModel = BoxListSectionViewModel(folder: folder)
+        boxList.append(boxListSectionViewModel)
     }
 
 }

@@ -14,8 +14,8 @@ class EditView: UIView {
     var delegate: EditViewDelegate?
     
     private let editItems = [
-        EditItem(type: .folder, imageString: "folder.fill", title: "폴더 편집"),
-        EditItem(type: .bookmark, imageString: "bookmark.fill", title: "북마크 편집")
+        EditItem(type: .folder, imageString: "folder.fill", title: "폴더 관리"),
+        EditItem(type: .bookmark, imageString: "bookmark.fill", title: "북마크 관리")
     ]
     
     // MARK: - UI Components

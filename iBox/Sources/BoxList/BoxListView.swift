@@ -22,7 +22,7 @@ class BoxListView: UIView {
     weak var delegate: BoxListViewDelegate?
     private var cancellables = Set<AnyCancellable>()
     
-    // MARK : - UI Components
+    // MARK: - UI Components
     
     private let backgroundView = UIView().then {
         $0.clipsToBounds = true
@@ -50,7 +50,6 @@ class BoxListView: UIView {
         setupLayout()
         configureDataSource()
         bindViewModel()
-        viewModel?.input.send(.viewDidLoad)
     }
     
     required init?(coder: NSCoder) {

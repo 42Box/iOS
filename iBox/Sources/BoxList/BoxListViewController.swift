@@ -16,7 +16,13 @@ class BoxListViewController: BaseViewController<BoxListView>, BaseViewController
         setupNavigationBar()
         
         guard let contentView = contentView as? BoxListView else { return }
+        contentView.viewModel?.input.send(.viewDidLoad)
         contentView.delegate = self
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        guard let contentView = contentView as? BoxListView else { return }
+        contentView.viewModel?.input.send(.viewWillAppear)
     }
     
     // MARK: - BaseViewControllerProtocol
@@ -55,10 +61,20 @@ extension BoxListViewController: BoxListViewDelegate {
     func pushViewController(type: EditType) {
         switch type {
         case .folder:
-            navigationController?.pushViewController(EditFolderViewController(), animated: true)
+            guard let contentView = contentView as? BoxListView else { return }
+            let editFolderViewController = EditFolderViewController(folders: contentView.viewModel?.folders ?? [])
+            editFolderViewController.delegate = self
+            navigationController?.pushViewController(editFolderViewController, animated: true)
         case .bookmark:
             navigationController?.pushViewController(EditBookmarkViewController(), animated: true)
         }
     }
     
+}
+
+extension BoxListViewController: EditFolderViewControllerDelegate {
+    func addFolder(_ folder: Folder) {
+        guard let contentView = contentView as? BoxListView else { return }
+        contentView.viewModel?.addFolder(folder)
+    }
 }

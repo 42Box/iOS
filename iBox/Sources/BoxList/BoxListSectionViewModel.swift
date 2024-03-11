@@ -8,7 +8,7 @@
 import Foundation
 
 class BoxListSectionViewModel: Identifiable {
-    private var folder: Folder
+    var folder: Folder
     private var originalBoxListCellViewModels: [BoxListCellViewModel]!
     
     init(folder: Folder) {

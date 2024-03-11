@@ -33,7 +33,7 @@ extension UIColor {
     static let box2 = UIColor(hex: 0xFF9548)
     static let box3 = UIColor(hex: 0xFFDC6E)
     static let tableViewBackgroundColor = color(light: .systemGroupedBackground, dark: .systemGray5)
-    static let floderGray = color(light: .systemGray3, dark: .systemGray2)
+    static let folderGray = color(light: .systemGray3, dark: .systemGray2)
     static let webIconColor = color(light: .black, dark: .systemGray)
     static let dimmedViewColor = UIColor.black.withAlphaComponent(0.75)
     static let backgroundColor = color(light: .white, dark: UIColor(hex: 0x242424))
