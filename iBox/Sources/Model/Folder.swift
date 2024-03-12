@@ -11,6 +11,5 @@ struct Folder {
     let id: UUID
     var name: String
     var bookmarks: [Bookmark]
-    var isOpened: Bool = false
 }
 

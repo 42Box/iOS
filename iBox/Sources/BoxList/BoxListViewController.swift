@@ -32,6 +32,7 @@ class BoxListViewController: BaseViewController<BoxListView>, BaseViewController
         setNavigationBarMenuButtonHidden(false)
         setNavigationBarAddButtonAction(#selector(addButtonTapped))
         setNavigationBarMoreButtonAction(#selector(moreButtonTapped))
+        setNavigationBarDoneButtonAction(#selector(doneButtonTapped))
     }
     
     // MARK: - Action Functions
@@ -46,6 +47,13 @@ class BoxListViewController: BaseViewController<BoxListView>, BaseViewController
         editViewController.delegate = self
         present(editViewController, animated: false)
     }
+    
+    @objc private func doneButtonTapped() {
+        guard let contentView = contentView as? BoxListView else { return }
+        contentView.viewModel?.input.send(.toggleEditStatus)
+        setNavigationBarMenuButtonHidden(false)
+        setNavigationBarDoneButtonHidden(true)
+    }
 
 }
 
@@ -59,14 +67,17 @@ extension BoxListViewController: BoxListViewDelegate {
     }
     
     func pushViewController(type: EditType) {
+        guard let contentView = contentView as? BoxListView else { return }
         switch type {
         case .folder:
-            guard let contentView = contentView as? BoxListView else { return }
+            
             let editFolderViewController = EditFolderViewController(folders: contentView.viewModel?.folders ?? [])
             editFolderViewController.delegate = self
             navigationController?.pushViewController(editFolderViewController, animated: true)
         case .bookmark:
-            navigationController?.pushViewController(EditBookmarkViewController(), animated: true)
+            contentView.viewModel?.input.send(.toggleEditStatus)
+            setNavigationBarMenuButtonHidden(true)
+            setNavigationBarDoneButtonHidden(false)
         }
     }
     

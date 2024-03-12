@@ -15,8 +15,9 @@ class WebViewController: BaseViewController<WebView>, BaseViewControllerProtocol
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setupNavigationBar()
         view.backgroundColor = .backgroundColor
-        navigationItem.largeTitleDisplayMode = .never
         
         guard let contentView = contentView as? WebView else { return }
         contentView.selectedWebsite = selectedWebsite

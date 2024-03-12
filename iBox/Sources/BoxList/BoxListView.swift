@@ -19,7 +19,7 @@ protocol BoxListViewDelegate: AnyObject {
 class BoxListView: UIView {
     
     var viewModel: BoxListViewModel?
-    private var boxListDataSource: UITableViewDiffableDataSource<BoxListSectionViewModel.ID, BoxListCellViewModel.ID>!
+    private var boxListDataSource: BoxListDataSource!
     weak var delegate: BoxListViewDelegate?
     private var cancellables = Set<AnyCancellable>()
     
@@ -83,10 +83,24 @@ class BoxListView: UIView {
     }
     
     private func configureDataSource() {
-        boxListDataSource = UITableViewDiffableDataSource(tableView: tableView) { [weak self] tableView, indexPath, itemIdentifier in
+        boxListDataSource = BoxListDataSource(tableView: tableView) { [weak self] tableView, indexPath, itemIdentifier in
             guard let self, let viewModel = self.viewModel else { fatalError() }
             guard let cell = tableView.dequeueReusableCell(withIdentifier: BoxListCell.reuseIdentifier, for: indexPath) as? BoxListCell else { fatalError() }
+            cell.setEditButtonHidden(!viewModel.isEditing)
             cell.bindViewModel(viewModel.viewModel(at: indexPath))
+            cell.onDelete = { [weak self] in
+                guard let self else { return }
+                if let currentIndexPath = tableView.indexPath(for: cell) {
+                    viewModel.deleteBookmark(at: currentIndexPath)
+                }
+            }
+            cell.onEdit = { [weak self] in
+                guard let self else { return }
+                if let currentIndexPath = self.tableView.indexPath(for: cell) {
+                    print("edit \(currentIndexPath)")
+                }
+            }
+
             return cell
         }
     }
@@ -114,7 +128,9 @@ class BoxListView: UIView {
                 switch event {
                 case .sendBoxList(boxList: let boxList):
                     self?.applySnapshot(with: boxList)
-                    
+                case .editStatus(isEditing: let isEditing):
+                    self?.tableView.setEditing(isEditing, animated: true)
+                    self?.tableView.reloadData()
                 }
             }.store(in: &cancellables)
     }
@@ -196,5 +212,21 @@ extension BoxListView: UITableViewDelegate {
         configuration.performsFirstActionWithFullSwipe = false // 완전히 스와이프했을 때 첫 번째 액션이 자동으로 실행되는 것을 막음
         
         return configuration
+    }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .none
+    }
+    
+    func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+        return false
+    }
+    
+}
+
+class BoxListDataSource: UITableViewDiffableDataSource<BoxListSectionViewModel.ID, BoxListCellViewModel.ID> {
+    
+    override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        print("move")
     }
 }

@@ -8,7 +8,11 @@
 import Foundation
 
 class BoxListSectionViewModel: Identifiable {
-    var folder: Folder
+    var folder: Folder {
+        didSet {
+            boxListCellViewModels = folder.bookmarks.map { BoxListCellViewModel(bookmark: $0) }
+        }
+    }
     private var boxListCellViewModels: [BoxListCellViewModel]!
     
     init(folder: Folder) {
@@ -16,25 +20,32 @@ class BoxListSectionViewModel: Identifiable {
         boxListCellViewModels = folder.bookmarks.map { BoxListCellViewModel(bookmark: $0) }
     }
     
-    var boxListCellViewModelsWithStatus: [BoxListCellViewModel] {
-        return isOpened ? boxListCellViewModels : []
-    }
-    
     var id: UUID {
         folder.id
     }
     
     var name: String {
-        folder.name
+        get {
+            folder.name
+        }
+        set {
+            folder.name = newValue
+        }
     }
     
-    var isOpened: Bool {
-        get {
-            folder.isOpened
-        }
-        
-        set {
-            folder.isOpened = newValue
-        }
+    var isOpened: Bool = false
+    
+    
+    var boxListCellViewModelsWithStatus: [BoxListCellViewModel] {
+        return isOpened ? boxListCellViewModels : []
+    }
+    
+    func viewModel(at index: Int) -> BoxListCellViewModel {
+        return boxListCellViewModels[index]
+    }
+    
+    func deleteCell(at index: Int) {
+        boxListCellViewModels.remove(at: index)
     }
 }
+
