@@ -22,7 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         insertDefaultDataIfNeeded()
         
-        window?.rootViewController = MainTabBarController()
+        window?.rootViewController = CustomLaunchScreenViewController()
         window?.makeKeyAndVisible() // 윈도우를 화면에 보여줌
 
         if let urlContext = connectionOptions.urlContexts.first {

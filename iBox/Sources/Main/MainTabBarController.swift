@@ -9,10 +9,13 @@ import UIKit
 
 class MainTabBarController: UITabBarController {
     
+    var previousTabIndex = 0
+    
     // MARK: - Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        delegate = self
         view.backgroundColor = .backgroundColor
         
         setupTabBar()
@@ -44,4 +47,13 @@ class MainTabBarController: UITabBarController {
         appearance.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.clear], for: .selected)
     }
 
+}
+
+extension MainTabBarController: UITabBarControllerDelegate {
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        if tabBarController.selectedIndex == 1 && previousTabIndex == 1 {
+            WebViewPreloader.shared.resetFavoriteView()
+        }
+        previousTabIndex = tabBarController.selectedIndex
+    }
 }
