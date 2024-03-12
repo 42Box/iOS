@@ -15,6 +15,7 @@ class BoxListViewModel {
     var folders: [Folder] {
         boxList.map{ $0.folder }
     }
+    var haveReloadData = false
     
     enum Input {
         case viewDidLoad
@@ -48,12 +49,23 @@ class BoxListViewModel {
     }
     
     func viewModel(at indexPath: IndexPath) -> BoxListCellViewModel {
-        return boxList[indexPath.section].boxListCellViewModels[indexPath.row]
+        return boxList[indexPath.section].boxListCellViewModelsWithStatus[indexPath.row]
     }
     
     func addFolder(_ folder: Folder) {
         let boxListSectionViewModel = BoxListSectionViewModel(folder: folder)
         boxList.append(boxListSectionViewModel)
+        haveReloadData = true
+    }
+    
+    func deleteFolder(at row: Int) {
+        boxList.remove(at: row)
+        haveReloadData = true
+    }
+    
+    func editFolderName(at row: Int, name: String) {
+        boxList[row].folder.name = name
+        haveReloadData = true
     }
 
 }

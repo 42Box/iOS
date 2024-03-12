@@ -9,15 +9,15 @@ import Foundation
 
 class BoxListSectionViewModel: Identifiable {
     var folder: Folder
-    private var originalBoxListCellViewModels: [BoxListCellViewModel]!
+    private var boxListCellViewModels: [BoxListCellViewModel]!
     
     init(folder: Folder) {
         self.folder = folder
-        originalBoxListCellViewModels = folder.bookmarks.map { BoxListCellViewModel(bookmark: $0) }
+        boxListCellViewModels = folder.bookmarks.map { BoxListCellViewModel(bookmark: $0) }
     }
     
-    var boxListCellViewModels: [BoxListCellViewModel] {
-        return isOpened ? originalBoxListCellViewModels : []
+    var boxListCellViewModelsWithStatus: [BoxListCellViewModel] {
+        return isOpened ? boxListCellViewModels : []
     }
     
     var id: UUID {

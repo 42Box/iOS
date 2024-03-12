@@ -7,10 +7,17 @@
 
 import UIKit
 
+protocol EditFolderViewDelegate: AnyObject {
+    func deleteFolder(at: IndexPath)
+    func editFolderName(at: IndexPath, name: String)
+}
+
 class EditFolderView: UIView {
+    weak var delegate: EditFolderViewDelegate?
     
     var viewModel: EditFolderViewModel? {
         didSet {
+            viewModel?.delegate = self
             tableView.reloadData()
         }
     }
@@ -22,8 +29,9 @@ class EditFolderView: UIView {
     }
     
     private let tableView = UITableView().then {
-        $0.register(FolderCell.self, forCellReuseIdentifier: FolderCell.reuserIdentifier)
+        $0.register(EditFolderCell.self, forCellReuseIdentifier: EditFolderCell.reuserIdentifier)
         
+        $0.setEditing(true, animated: true)
         $0.backgroundColor = .clear
         $0.rowHeight = 50
         $0.separatorInset = .init(top: 0, left: 15, bottom: 0, right: 15)
@@ -33,7 +41,7 @@ class EditFolderView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        configureDataSource()
+        configureTableView()
         setupProperty()
         setupHierarchy()
         setupLayout()
@@ -45,8 +53,9 @@ class EditFolderView: UIView {
     
     // MARK: - Setup Methods
     
-    private func configureDataSource() {
+    private func configureTableView() {
         tableView.dataSource = self
+        tableView.delegate = self
     }
     
     private func setupProperty() {
@@ -79,10 +88,48 @@ extension EditFolderView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let viewModel else { fatalError() }
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: FolderCell.reuserIdentifier, for: indexPath) as? FolderCell else { fatalError() }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: EditFolderCell.reuserIdentifier, for: indexPath) as? EditFolderCell else { fatalError() }
+        cell.onDelete = { [weak self] in
+            self?.delegate?.deleteFolder(at: indexPath)
+        }
+        cell.onEdit = { [weak self] in
+            self?.editFolderName(at: indexPath)
+        }
         cell.configure(viewModel.folderName(at: indexPath))
         return cell
     }
     
+    private func editFolderName(at indexPath: IndexPath) {
+        guard let viewModel else { return }
+        delegate?.editFolderName(at: indexPath, name: viewModel.folderName(at: indexPath))
+    }
     
 }
+
+extension EditFolderView: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            print("delete")
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .none
+    }
+    
+    func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+        return false
+    }
+    
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        
+    }
+}
+
+extension EditFolderView: EditFolderViewModelDelegate {
+    func reloadTableView() {
+        tableView.reloadData()
+    }
+    
+}
+

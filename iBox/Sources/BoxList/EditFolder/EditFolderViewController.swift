@@ -9,19 +9,16 @@ import UIKit
 
 protocol EditFolderViewControllerDelegate: AnyObject {
     func addFolder(_ folder: Folder)
+    func deleteFolder(at row: Int)
+    func editFolderName(at row: Int, name: String)
 }
 
 class EditFolderViewController: BaseViewController<EditFolderView>, BaseViewControllerProtocol {
     weak var delegate: EditFolderViewControllerDelegate?
-    private var folders: [Folder] {
-        didSet {
-            setupEditFolderView()
-        }
-    }
     
     init(folders: [Folder]) {
-        self.folders = folders
         super.init(nibName: nil, bundle: nil)
+        setupEditFolderView(folders)
     }
     
     required init?(coder: NSCoder) {
@@ -32,16 +29,16 @@ class EditFolderViewController: BaseViewController<EditFolderView>, BaseViewCont
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupEditFolderView()
         setupNavigationBar()
     }
     
     // MARK: - BaseNavigationBarViewControllerProtocol
     
-    func setupEditFolderView() {
+    func setupEditFolderView(_ folders: [Folder]) {
         guard let contentView = contentView as? EditFolderView else { return }
         let viewModel = EditFolderViewModel(folderList: folders)
         contentView.viewModel = viewModel
+        contentView.delegate = self
     }
     
     func setupNavigationBar() {
@@ -62,12 +59,51 @@ class EditFolderViewController: BaseViewController<EditFolderView>, BaseViewCont
         let okAction = UIAlertAction(title: "확인", style: .default) { [weak self] action in
             guard let name = controller.textFields?.first?.text else { return }
             let folder = Folder(id: UUID(), name: name, bookmarks: [])
-            self?.folders.append(folder)
-            CoreDataManager.shared.addFolder(folder)
+            guard let contentView = self?.contentView as? EditFolderView else { return }
+            contentView.viewModel?.addFolder(folder)
             self?.delegate?.addFolder(folder)
         }
         controller.addAction(cancelAction)
         controller.addAction(okAction)
         self.present(controller, animated: true)
     }
+    
+}
+
+extension EditFolderViewController: EditFolderViewDelegate {
+    func deleteFolder(at indexPath: IndexPath) {
+        recheckDeleteFolder(at: indexPath)
+    }
+    
+    private func recheckDeleteFolder(at indexPath: IndexPath) {
+        let actionSheetController = UIAlertController(title: nil, message: "모든 북마크가 삭제됩니다.", preferredStyle: .actionSheet)
+        let firstAction = UIAlertAction(title: "폴더 삭제", style: .destructive) {[weak self] _ in
+            guard let contentView = self?.contentView as? EditFolderView else { return }
+            contentView.viewModel?.deleteFolder(at: indexPath)
+            self?.delegate?.deleteFolder(at: indexPath.row)
+        }
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+        actionSheetController.addAction(firstAction)
+        actionSheetController.addAction(cancelAction)
+        present(actionSheetController, animated: true)
+    }
+    
+    func editFolderName(at indexPath: IndexPath, name: String) {
+        let controller = UIAlertController(title: "폴더 이름 변경", message: nil, preferredStyle: .alert)
+        controller.addTextField()
+        controller.textFields?.first?.text = name
+        controller.textFields?.first?.autocorrectionType = .no
+        controller.textFields?.first?.spellCheckingType = .no
+        let cancelAction = UIAlertAction(title: "취소", style: .default) { _ in return }
+        let okAction = UIAlertAction(title: "확인", style: .default) { [weak self] action in
+            guard let newName = controller.textFields?.first?.text else { return }
+            guard let contentView = self?.contentView as? EditFolderView else { return }
+            contentView.viewModel?.editFolderName(at: indexPath, name: newName)
+            self?.delegate?.editFolderName(at: indexPath.row, name: newName)
+        }
+        controller.addAction(cancelAction)
+        controller.addAction(okAction)
+        self.present(controller, animated: true)
+    }
+    
 }
