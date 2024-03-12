@@ -22,7 +22,7 @@ class BoxListView: UIView {
     weak var delegate: BoxListViewDelegate?
     private var cancellables = Set<AnyCancellable>()
     
-    // MARK : - UI Components
+    // MARK: - UI Components
     
     private let backgroundView = UIView().then {
         $0.clipsToBounds = true
@@ -50,7 +50,6 @@ class BoxListView: UIView {
         setupLayout()
         configureDataSource()
         bindViewModel()
-        viewModel?.input.send(.viewDidLoad)
     }
     
     required init?(coder: NSCoder) {
@@ -95,9 +94,14 @@ class BoxListView: UIView {
         var snapshot = NSDiffableDataSourceSnapshot<BoxListSectionViewModel.ID, BoxListCellViewModel.ID>()
         snapshot.appendSections(with.map{ $0.id })
         for folder in with {
-            snapshot.appendItems(folder.boxListCellViewModels.map { $0.id }, toSection: folder.id)
+            snapshot.appendItems(folder.boxListCellViewModelsWithStatus.map { $0.id }, toSection: folder.id)
         }
-        boxListDataSource.apply(snapshot, animatingDifferences: true)
+        if viewModel?.haveReloadData ?? false {
+            boxListDataSource.applySnapshotUsingReloadData(snapshot)
+            viewModel?.haveReloadData = false
+        } else {
+            boxListDataSource.apply(snapshot, animatingDifferences: true)
+        }
     }
     
     private func bindViewModel() {
@@ -109,6 +113,7 @@ class BoxListView: UIView {
                 switch event {
                 case .sendBoxList(boxList: let boxList):
                     self?.applySnapshot(with: boxList)
+                    
                 }
             }.store(in: &cancellables)
     }
@@ -125,12 +130,12 @@ extension BoxListView: UITableViewDelegate {
             make.leading.trailing.equalToSuperview().inset(15)
         }
         view.backgroundColor = .clear
-        line.backgroundColor = .tertiaryLabel
+        line.backgroundColor = .quaternaryLabel
         return view
     }
 
     public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 0.3
+        return 0.7
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -156,8 +161,8 @@ extension BoxListView: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let viewModel else { return }
-        let webUrl = viewModel.boxList[indexPath.section].boxListCellViewModels[indexPath.row].url
-        let webName = viewModel.boxList[indexPath.section].boxListCellViewModels[indexPath.row].name
+        let webUrl = viewModel.boxList[indexPath.section].boxListCellViewModelsWithStatus[indexPath.row].url
+        let webName = viewModel.boxList[indexPath.section].boxListCellViewModelsWithStatus[indexPath.row].name
         delegate?.didSelectWeb(at: webUrl, withName: webName)
     }
     

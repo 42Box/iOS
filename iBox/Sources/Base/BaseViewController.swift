@@ -169,6 +169,18 @@ class BaseViewController<View: UIView>: UIViewController {
         navigationBar.moreButton.isHidden = hidden
     }
     
+    func setNavigationBarAddButtonHidden(_ hidden: Bool) {
+        navigationBar.addButton.isHidden = hidden
+        
+        if !hidden {
+            navigationBar.addButton.snp.remakeConstraints { make in
+                make.trailing.equalToSuperview().inset(20)
+                make.centerY.equalToSuperview()
+                make.width.height.equalTo(24)
+            }
+        }
+    }
+    
     func setNavigationBarAddButtonAction(_ selector: Selector) {
         navigationBar.addButton.addTarget(self, action: selector, for: .touchUpInside)
     }
