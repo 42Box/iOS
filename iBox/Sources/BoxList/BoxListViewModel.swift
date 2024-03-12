@@ -21,6 +21,8 @@ class BoxListViewModel {
         case viewDidLoad
         case viewWillAppear
         case folderTapped(section: Int)
+        case deleteBookmark(indexPath: IndexPath)
+        case setFavorite(indexPath: IndexPath)
     }
     
     enum Output {
@@ -43,6 +45,10 @@ class BoxListViewModel {
             case let .folderTapped(section):
                 boxList[section].isOpened.toggle()
                 output.send(.sendBoxList(boxList: boxList))
+            case let .deleteBookmark(indexPath):
+                print("\(viewModel(at: indexPath).name) 지울게용")
+            case let .setFavorite(indexPath):
+                print("\(viewModel(at: indexPath).name) favorite 할게용")
             }
         }.store(in: &cancellables)
         return output.eraseToAnyPublisher()
