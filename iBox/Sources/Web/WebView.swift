@@ -27,6 +27,8 @@ class WebView: UIView {
         $0.scrollView.contentInsetAdjustmentBehavior = .always
     }
     
+    private let refreshControl = UIRefreshControl()
+  
     private let progressView = UIProgressView().then {
         $0.progressViewStyle = .bar
         $0.tintColor = .label
@@ -58,6 +60,8 @@ class WebView: UIView {
     private func setupProperty() {
         backgroundColor = .backgroundColor
         webView.navigationDelegate = self
+        webView.scrollView.refreshControl = refreshControl
+        refreshControl.addTarget(self, action: #selector(handleRefreshControl), for: .valueChanged)
         progressObserver = webView.observe(\.estimatedProgress, options: .new) { [weak self] webView, _ in
             self?.progressView.setProgress(Float(webView.estimatedProgress), animated: true)
         }
@@ -85,6 +89,13 @@ class WebView: UIView {
         webView.allowsBackForwardNavigationGestures = true
     }
     
+    @objc private func handleRefreshControl() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { [weak self] in
+            self?.webView.reload()
+            self?.refreshControl.endRefreshing()
+        }
+    }
+    
 }
 
 extension WebView: WKNavigationDelegate {
@@ -96,7 +107,7 @@ extension WebView: WKNavigationDelegate {
             self.progressView.isHidden = true
         }
     }
-    
+  
     //    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
     //            print("웹뷰 로딩 실패: \(error.localizedDescription)")
     //        }
