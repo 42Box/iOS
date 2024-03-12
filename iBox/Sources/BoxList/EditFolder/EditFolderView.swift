@@ -10,6 +10,7 @@ import UIKit
 protocol EditFolderViewDelegate: AnyObject {
     func deleteFolder(at: IndexPath)
     func editFolderName(at: IndexPath, name: String)
+    func moveFolder(from: Int, to: Int)
 }
 
 class EditFolderView: UIView {
@@ -90,10 +91,16 @@ extension EditFolderView: UITableViewDataSource {
         guard let viewModel else { fatalError() }
         guard let cell = tableView.dequeueReusableCell(withIdentifier: EditFolderCell.reuserIdentifier, for: indexPath) as? EditFolderCell else { fatalError() }
         cell.onDelete = { [weak self] in
-            self?.delegate?.deleteFolder(at: indexPath)
+            guard let self else { return }
+            if let currentIndexPath = self.tableView.indexPath(for: cell) {
+                self.delegate?.deleteFolder(at: currentIndexPath)
+            }
         }
         cell.onEdit = { [weak self] in
-            self?.editFolderName(at: indexPath)
+            guard let self else { return }
+            if let currentIndexPath = self.tableView.indexPath(for: cell) {
+                self.editFolderName(at: currentIndexPath)
+            }
         }
         cell.configure(viewModel.folderName(at: indexPath))
         return cell
@@ -107,11 +114,6 @@ extension EditFolderView: UITableViewDataSource {
 }
 
 extension EditFolderView: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            print("delete")
-        }
-    }
     
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         return .none
@@ -122,14 +124,29 @@ extension EditFolderView: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        
+        guard let viewModel else { return }
+        viewModel.reorderFolder(srcIndexPath: sourceIndexPath, destIndexPath: destinationIndexPath)
+        delegate?.moveFolder(from: sourceIndexPath.row, to: destinationIndexPath.row)
     }
 }
 
 extension EditFolderView: EditFolderViewModelDelegate {
+    func reloadRow(_ indexPath: IndexPath) {
+        tableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+    
+    func deleteRow(_ indexPath: IndexPath) {
+        tableView.deleteRows(at: [indexPath], with: .automatic)
+    }
+    
+    func addRow() {
+        guard let viewModel else { return }
+        let indexPath = IndexPath(row: viewModel.folderCount - 1, section: 0)
+        tableView.insertRows(at: [indexPath], with: .automatic)
+    }
+    
     func reloadTableView() {
         tableView.reloadData()
     }
-    
 }
 

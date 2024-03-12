@@ -73,6 +73,11 @@ extension BoxListViewController: BoxListViewDelegate {
 }
 
 extension BoxListViewController: EditFolderViewControllerDelegate {
+    func moveFolder(from: Int, to: Int) {
+        guard let contentView = contentView as? BoxListView else { return }
+        contentView.viewModel?.moveFolder(from: from, to: to)
+    }
+    
     func editFolderName(at row: Int, name: String) {
         guard let contentView = contentView as? BoxListView else { return }
         contentView.viewModel?.editFolderName(at: row, name: name)

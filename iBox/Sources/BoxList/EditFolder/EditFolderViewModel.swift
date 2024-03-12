@@ -9,7 +9,10 @@ import Combine
 import Foundation
 
 protocol EditFolderViewModelDelegate: AnyObject {
+    func reloadRow(_ indexPath: IndexPath)
+    func deleteRow(_ indexPath: IndexPath)
     func reloadTableView()
+    func addRow()
 }
 
 class EditFolderViewModel {
@@ -29,22 +32,30 @@ class EditFolderViewModel {
     func addFolder(_ folder: Folder) {
         CoreDataManager.shared.addFolder(folder)
         folderList.append(folder)
-        delegate?.reloadTableView()
+        delegate?.addRow()
     }
     
     func deleteFolder(at indexPath: IndexPath) {
         CoreDataManager.shared.deleteFolder(id: folderList[indexPath.row].id)
         folderList.remove(at: indexPath.row)
-        delegate?.reloadTableView()
+        delegate?.deleteRow(indexPath)
     }
     
     func editFolderName(at indexPath: IndexPath, name: String) {
         CoreDataManager.shared.updateFolder(id: folderList[indexPath.row].id, name: name)
         folderList[indexPath.row].name = name
-        delegate?.reloadTableView()
+        delegate?.reloadRow(indexPath)
     }
     
     func folderName(at indexPath: IndexPath) -> String {
         return folderList[indexPath.row].name
+    }
+    
+    func reorderFolder(srcIndexPath: IndexPath, destIndexPath: IndexPath) {
+        let mover = folderList.remove(at: srcIndexPath.row)
+        folderList.insert(mover, at: destIndexPath.row)
+        CoreDataManager.shared.moveFolder(from: srcIndexPath.row, to: destIndexPath.row)
+        print(folderList.map{ $0.name })
+//        delegate?.reloadTableView()
     }
 }

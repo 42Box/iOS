@@ -67,5 +67,11 @@ class BoxListViewModel {
         boxList[row].folder.name = name
         haveReloadData = true
     }
+    
+    func moveFolder(from: Int, to: Int) {
+        let mover = boxList.remove(at: from)
+        boxList.insert(mover, at: to)
+        haveReloadData = true
+    }
 
 }

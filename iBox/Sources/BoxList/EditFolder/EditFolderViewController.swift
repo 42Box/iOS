@@ -11,6 +11,7 @@ protocol EditFolderViewControllerDelegate: AnyObject {
     func addFolder(_ folder: Folder)
     func deleteFolder(at row: Int)
     func editFolderName(at row: Int, name: String)
+    func moveFolder(from: Int, to: Int)
 }
 
 class EditFolderViewController: BaseViewController<EditFolderView>, BaseViewControllerProtocol {
@@ -51,10 +52,7 @@ class EditFolderViewController: BaseViewController<EditFolderView>, BaseViewCont
     
     @objc private func addButtonTapped() {
         let controller = UIAlertController(title: "새로운 폴더", message: "이 폴더의 이름을 입력하십시오.", preferredStyle: .alert)
-        controller.addTextField()
-        controller.textFields?.first?.text = "새로운 폴더"
-        controller.textFields?.first?.autocorrectionType = .no
-        controller.textFields?.first?.spellCheckingType = .no
+        
         let cancelAction = UIAlertAction(title: "취소", style: .default) { _ in return }
         let okAction = UIAlertAction(title: "확인", style: .default) { [weak self] action in
             guard let name = controller.textFields?.first?.text else { return }
@@ -65,12 +63,31 @@ class EditFolderViewController: BaseViewController<EditFolderView>, BaseViewCont
         }
         controller.addAction(cancelAction)
         controller.addAction(okAction)
+        okAction.isEnabled = false
+        
+        controller.addTextField() { textField in
+            NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: textField, queue: OperationQueue.main, using:
+                    {_ in
+                        let textCount = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines).count ?? 0
+                        let textIsNotEmpty = textCount > 0
+                        
+                        okAction.isEnabled = textIsNotEmpty
+                    
+                })
+        }
+        controller.textFields?.first?.placeholder = "이름"
+        controller.textFields?.first?.autocorrectionType = .no
+        controller.textFields?.first?.spellCheckingType = .no
         self.present(controller, animated: true)
     }
     
 }
 
 extension EditFolderViewController: EditFolderViewDelegate {
+    func moveFolder(from: Int, to: Int) {
+        delegate?.moveFolder(from: from, to: to)
+    }
+    
     func deleteFolder(at indexPath: IndexPath) {
         recheckDeleteFolder(at: indexPath)
     }
@@ -90,10 +107,7 @@ extension EditFolderViewController: EditFolderViewDelegate {
     
     func editFolderName(at indexPath: IndexPath, name: String) {
         let controller = UIAlertController(title: "폴더 이름 변경", message: nil, preferredStyle: .alert)
-        controller.addTextField()
-        controller.textFields?.first?.text = name
-        controller.textFields?.first?.autocorrectionType = .no
-        controller.textFields?.first?.spellCheckingType = .no
+        
         let cancelAction = UIAlertAction(title: "취소", style: .default) { _ in return }
         let okAction = UIAlertAction(title: "확인", style: .default) { [weak self] action in
             guard let newName = controller.textFields?.first?.text else { return }
@@ -103,6 +117,22 @@ extension EditFolderViewController: EditFolderViewDelegate {
         }
         controller.addAction(cancelAction)
         controller.addAction(okAction)
+        okAction.isEnabled = true
+        
+        controller.addTextField() { textField in
+            NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: textField, queue: OperationQueue.main, using:
+                    {_ in
+                        let textCount = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines).count ?? 0
+                        let textIsNotEmpty = textCount > 0
+                        
+                        okAction.isEnabled = textIsNotEmpty
+                    
+                })
+        }
+        controller.textFields?.first?.text = name
+        controller.textFields?.first?.autocorrectionType = .no
+        controller.textFields?.first?.spellCheckingType = .no
+        
         self.present(controller, animated: true)
     }
     
