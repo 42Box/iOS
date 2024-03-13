@@ -1,5 +1,5 @@
 //
-//  MyPageViewController.swift
+//  SettingsViewController.swift
 //  iBox
 //
 //  Created by 이지현 on 12/27/23.
@@ -7,14 +7,14 @@
 
 import UIKit
 
-protocol MyPageViewDelegate {
-    func pushViewController(_ type: MyPageType)
+protocol SettingsViewDelegate {
+    func pushViewController(_ type: SettingsType)
     func pushViewController(_ viewController: UIViewController)
 }
 
-final class MyPageViewController: BaseViewController<MyPageView>, BaseViewControllerProtocol {
+final class SettingsViewController: BaseViewController<SettingsView>, BaseViewControllerProtocol {
     
-    private let viewModel = MyPageViewModel()
+    private let viewModel = SettingsViewModel()
     
     // MARK: - Life Cycle
     
@@ -22,7 +22,7 @@ final class MyPageViewController: BaseViewController<MyPageView>, BaseViewContro
         super.viewDidLoad()
         setupNavigationBar()
         
-        guard let contentView = contentView as? MyPageView else { return }
+        guard let contentView = contentView as? SettingsView else { return }
         contentView.delegate = self
         contentView.bindViewModel(viewModel)
     }
@@ -35,14 +35,14 @@ final class MyPageViewController: BaseViewController<MyPageView>, BaseViewContro
     // MARK: - BaseViewControllerProtocol
     
     func setupNavigationBar() {
-        setNavigationBarTitleLabelText("마이 페이지")
+        setNavigationBarTitleLabelText("설정")
     }
     
 }
 
-extension MyPageViewController: MyPageViewDelegate {
+extension SettingsViewController: SettingsViewDelegate {
     
-    func pushViewController(_ type: MyPageType) {
+    func pushViewController(_ type: SettingsType) {
         switch type {
         case .theme:
             navigationController?.pushViewController(ThemeViewController(), animated: true)

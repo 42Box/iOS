@@ -1,5 +1,5 @@
 //
-//  ProfileView.swift
+//  SettingsView.swift
 //  iBox
 //
 //  Created by jiyeon on 1/3/24.
@@ -8,16 +8,16 @@
 import Combine
 import UIKit
 
-final class MyPageView: UIView {
+final class SettingsView: UIView {
     
-    var delegate: MyPageViewDelegate?
-    private var viewModel: MyPageViewModel?
+    var delegate: SettingsViewDelegate?
+    private var viewModel: SettingsViewModel?
     private var cancellables = Set<AnyCancellable>()
     
     // MARK: - UI Components
 
     let tableView = UITableView().then {
-        $0.register(MyPageItemCell.self, forCellReuseIdentifier: MyPageItemCell.reuseIdentifier)
+        $0.register(SettingsItemCell.self, forCellReuseIdentifier: SettingsItemCell.reuseIdentifier)
         $0.separatorStyle = .none
         $0.sectionHeaderTopPadding = 0
         $0.backgroundColor = .clear
@@ -55,7 +55,7 @@ final class MyPageView: UIView {
     
     // MARK: - Bind ViewModel
     
-    func bindViewModel(_ viewModel: MyPageViewModel) {
+    func bindViewModel(_ viewModel: SettingsViewModel) {
         self.viewModel = viewModel
         viewModel.transform(input: viewModel.input.eraseToAnyPublisher())
             .receive(on: RunLoop.main)
@@ -76,7 +76,7 @@ final class MyPageView: UIView {
     
 }
 
-extension MyPageView: UITableViewDelegate {
+extension SettingsView: UITableViewDelegate {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         guard let viewModel = viewModel else { return 0 }
@@ -99,15 +99,15 @@ extension MyPageView: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let viewModel = viewModel else { return }
-        let myPageItem = viewModel.sectionViewModels[indexPath.section].cellViewModels[indexPath.row].myPageItem
-        if (myPageItem.type != MyPageType.preload) {
-            delegate?.pushViewController(myPageItem.type)
+        let settingsItem = viewModel.sectionViewModels[indexPath.section].cellViewModels[indexPath.row].settingsItem
+        if (settingsItem.type != SettingsType.preload) {
+            delegate?.pushViewController(settingsItem.type)
         }
     }
     
 }
 
-extension MyPageView: UITableViewDataSource {
+extension SettingsView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let viewModel = viewModel else { return 0 }
@@ -116,8 +116,8 @@ extension MyPageView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let viewModel = viewModel,
-              let cell = tableView.dequeueReusableCell(withIdentifier: MyPageItemCell.reuseIdentifier)
-                as? MyPageItemCell else { return UITableViewCell() }
+              let cell = tableView.dequeueReusableCell(withIdentifier: SettingsItemCell.reuseIdentifier)
+                as? SettingsItemCell else { return UITableViewCell() }
         let cellViewModel = viewModel.sectionViewModels[indexPath.section].cellViewModels[indexPath.row]
         cell.bindViewModel(cellViewModel)
         if cellViewModel.flag != nil {

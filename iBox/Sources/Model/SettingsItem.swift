@@ -1,5 +1,5 @@
 //
-//  MyPageItem.swift
+//  SettingsItem.swift
 //  iBox
 //
 //  Created by jiyeon on 1/3/24.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum MyPageType {
+enum SettingsType {
     case theme
     case homeTab
     case preload
@@ -28,8 +28,8 @@ enum MyPageType {
 
 }
 
-struct MyPageItem {
-    var type: MyPageType
+struct SettingsItem {
+    var type: SettingsType
     var description: String?
     var flag: Bool?
 }

@@ -1,5 +1,5 @@
 //
-//  MyPageItemCell.swift
+//  SettingsItemCell.swift
 //  iBox
 //
 //  Created by jiyeon on 1/3/24.
@@ -9,10 +9,10 @@ import UIKit
 
 import SnapKit
 
-class MyPageItemCell: UITableViewCell {
+class SettingsItemCell: UITableViewCell {
     
-    static let reuseIdentifier = "MyPageItemCell"
-    private var viewModel: MyPageCellViewModel?
+    static let reuseIdentifier = "SettingsItemCell"
+    private var viewModel: SettingsCellViewModel?
     
     // MARK: - UI Components
     
@@ -87,7 +87,7 @@ class MyPageItemCell: UITableViewCell {
     
     // MARK: - Bind ViewModel
     
-    func bindViewModel(_ viewModel: MyPageCellViewModel) {
+    func bindViewModel(_ viewModel: SettingsCellViewModel) {
         self.viewModel = viewModel
         titleLabel.text = viewModel.title
         
