@@ -8,13 +8,15 @@
 import UIKit
 import Social
 import UniformTypeIdentifiers
+
 import SnapKit
+import SwiftSoup
 
 @objc(CustomShareViewController)
 class CustomShareViewController: UIViewController {
     
     var backgroundView = ShareExtensionBackGroundView()
-    var dataURL: String = ""
+    var dataURL: String?
     
     // MARK: - Life Cycle
     
@@ -64,7 +66,7 @@ class CustomShareViewController: UIViewController {
             self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
         })
     }
-
+    
     @objc func openURL(_ url: URL) -> Bool {
         self.hideExtensionWithCompletionHandler(completion: { _ in
             self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
@@ -100,6 +102,51 @@ class CustomShareViewController: UIViewController {
             }
         }
     }
+    
+    func fetchAndParseMetadata(from url: URL, completion: @escaping (Metadata) -> Void) {
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, error == nil else {
+                print("Failed to fetch data: \(String(describing: error))")
+                return
+            }
+            
+            if let htmlContent = String(data: data, encoding: .utf8) {
+                do {
+                    let doc: Document = try SwiftSoup.parse(htmlContent)
+                    let title: String? = try doc.title()
+                    
+                    let faviconSelectors = ["link[rel='shortcut icon']", "link[rel='icon']", "link[rel='apple-touch-icon']"]
+                    var faviconUrl: String? = nil
+                    
+                    for selector in faviconSelectors {
+                        if let faviconLink: Element = try doc.select(selector).first() {
+                            if var href = try? faviconLink.attr("href"), !href.isEmpty {
+                                if href.starts(with: "/") {
+                                    href = url.scheme! + "://" + url.host! + href
+                                } else if !href.starts(with: "http") {
+                                    href = url.scheme! + "://" + url.host! + "/" + href
+                                }
+                                faviconUrl = href
+                                break
+                            }
+                        }
+                    }
+                    
+                    if faviconUrl == nil {
+                        faviconUrl = url.scheme! + "://" + url.host! + "/favicon.ico"
+                    }
+
+                    let metadata = Metadata(title: title, faviconUrl: faviconUrl, url: url.absoluteString)
+
+                    DispatchQueue.main.async {
+                        completion(metadata)
+                    }
+                } catch {
+                    print("Failed to parse HTML: \(error.localizedDescription)")
+                }
+            }
+        }.resume()
+    }
 }
 
 extension CustomShareViewController: ShareExtensionBackGroundViewDelegate {
@@ -109,16 +156,25 @@ extension CustomShareViewController: ShareExtensionBackGroundViewDelegate {
     }
     
     func didTapOpenApp() {
-        let sharedData = dataURL
-        let url = URL(string: "iBox://\(sharedData)")!
-        
-        if openURL(url) {
-            print("iBox 앱이 성공적으로 열렸습니다.")
-        } else {
-            print("iBox 앱을 열 수 없습니다.")
+        guard let sharedURL = dataURL, let url = URL(string: sharedURL) else {
+            print("Share extension error")
+            return
         }
         
-        print(url)
+        fetchAndParseMetadata(from: url) { metadata in
+            let encodedTitle = metadata.title?.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
+            let encodedData = metadata.url?.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
+            let encodedFaviconUrl = metadata.faviconUrl?.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
+            let urlString = "iBox://url?title=\(encodedTitle)&data=\(encodedData)&faviconUrl=\(encodedFaviconUrl)"
+            
+            print(urlString)
+            if let openUrl = URL(string: urlString) {
+                if self.openURL(openUrl) {
+                    print("iBox 앱이 성공적으로 열렸습니다.")
+                } else {
+                    print("iBox 앱을 열 수 없습니다.")
+                }
+            }
+        }
     }
-    
 }
