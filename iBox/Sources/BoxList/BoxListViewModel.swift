@@ -26,12 +26,13 @@ class BoxListViewModel {
         case deleteBookmark(indexPath: IndexPath)
         case setFavorite(indexPath: IndexPath)
         case moveBookmark(from: IndexPath, to: IndexPath)
+        case openFolderIfNeeded(folderIndex: Int)
     }
     
     enum Output {
         case sendBoxList(boxList: [BoxListSectionViewModel])
         case reloadSections(idArray: [BoxListSectionViewModel.ID])
-        case reloadRow(id: BoxListCellViewModel.ID)
+        case reloadRows(idArray: [BoxListCellViewModel.ID])
         case editStatus(isEditing: Bool)
     }
     
@@ -64,6 +65,8 @@ class BoxListViewModel {
                 print("\(viewModel(at: indexPath).name) favorite 할게용")
             case .moveBookmark(from: let from, to: let to):
                 reorderBookmark(srcIndexPath: from, destIndexPath: to)
+            case .openFolderIfNeeded(folderIndex: let folderIndex):
+                openFolder(folderIndex)
             }
         }.store(in: &cancellables)
         return output.eraseToAnyPublisher()
@@ -88,7 +91,7 @@ class BoxListViewModel {
         let bookmarkId = boxList[indexPath.section].viewModel(at: indexPath.row).id
         CoreDataManager.shared.updateBookmark(id: bookmarkId, name: name, url: url)
         boxList[indexPath.section].updateCell(at: indexPath.row, bookmark: Bookmark(id: bookmarkId, name: name, url: url))
-        output.send(.reloadRow(id: bookmarkId))
+        output.send(.reloadRows(idArray: [bookmarkId]))
     }
     
     func reorderBookmark(srcIndexPath: IndexPath, destIndexPath: IndexPath) {
@@ -97,6 +100,14 @@ class BoxListViewModel {
         
         let destFolderId = boxList[destIndexPath.section].id
         CoreDataManager.shared.moveBookmark(from: srcIndexPath, to: destIndexPath, srcId: mover.id, destFolderId: destFolderId)
+    }
+    
+    func openFolder(_ folderIndex: Int) {
+        let destFolderId = boxList[folderIndex].id
+        if boxList[folderIndex].openSectionIfNeeded() {
+            output.send(.reloadSections(idArray: [destFolderId]))
+            output.send(.sendBoxList(boxList: boxList))
+        }
     }
     
     func addFolder(_ folder: Folder) {

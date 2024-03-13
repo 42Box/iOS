@@ -8,12 +8,15 @@
 import Foundation
 
 class BoxListSectionViewModel: Identifiable {
-    var folder: Folder {
+    var folder: Folder
+    
+    private var boxListCellViewModels: [BoxListCellViewModel]! {
         didSet {
-            boxListCellViewModels = folder.bookmarks.map { BoxListCellViewModel(bookmark: $0) }
+            folder.bookmarks = boxListCellViewModels.map {
+                Bookmark(id: $0.id, name: $0.name, url: $0.url)
+            }
         }
     }
-    private var boxListCellViewModels: [BoxListCellViewModel]!
     
     init(folder: Folder) {
         self.folder = folder
@@ -57,9 +60,15 @@ class BoxListSectionViewModel: Identifiable {
     
     func insertCell(_ cell: BoxListCellViewModel, at index: Int) {
         boxListCellViewModels.insert(cell, at: index)
+    }
+    
+    @discardableResult
+    func openSectionIfNeeded() -> Bool {
         if !isOpened {
             isOpened = true
+            return true
         }
+        return false
     }
 }
 
