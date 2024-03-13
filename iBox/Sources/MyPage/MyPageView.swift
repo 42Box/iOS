@@ -36,7 +36,7 @@ final class MyPageView: UIView {
         $0.configuration?.preferredSymbolConfigurationForImage = .init(pointSize: 10, weight: .bold)
         $0.tintColor = .systemGray3
     }
-
+    
     let tableView = UITableView().then {
         $0.register(MyPageItemCell.self, forCellReuseIdentifier: MyPageItemCell.reuseIdentifier)
         $0.separatorStyle = .none
@@ -125,7 +125,12 @@ final class MyPageView: UIView {
     // MARK: - Action Functions
     
     @objc private func profileViewTapped() {
-        delegate?.pushViewController(ProfileViewController())
+        
+        if !UserDefaultsManager.isLogin {
+            delegate?.pushViewController(LoginViewController())
+        } else {
+            delegate?.pushViewController(ProfileViewController())
+        }
     }
     
     @objc private func handleSwitchControlTap(_ controlSwitch: UISwitch) {
