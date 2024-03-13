@@ -48,12 +48,12 @@ extension SettingsViewController: SettingsViewDelegate {
             navigationController?.pushViewController(ThemeViewController(), animated: true)
         case .homeTab:
             navigationController?.pushViewController(HomeTabSelectorViewController(), animated: true)
+        case .reset:
+            navigationController?.pushViewController(ResetViewController(), animated: true)
         case .guide:
-            print("이용 가이드 탭 !")
+            print("앱 소개 탭 !")
         case .feedback:
             print("앱 피드백 탭 !")
-        case .developer:
-            print("개발자 정보 탭 !")
         default: break
         }
     }

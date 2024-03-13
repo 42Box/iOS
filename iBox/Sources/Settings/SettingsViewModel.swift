@@ -47,9 +47,9 @@ class SettingsViewModel {
             SettingsCellViewModel(SettingsItem(type: .preload, flag: UserDefaultsManager.isPreload))
         ]))
         sectionViewModels.append(SettingsSectionViewModel(cellViewModels: [
+            SettingsCellViewModel(SettingsItem(type: .reset)),
             SettingsCellViewModel(SettingsItem(type: .guide)),
-            SettingsCellViewModel(SettingsItem(type: .feedback)),
-            SettingsCellViewModel(SettingsItem(type: .developer))
+            SettingsCellViewModel(SettingsItem(type: .feedback))
         ]))
     }
     
