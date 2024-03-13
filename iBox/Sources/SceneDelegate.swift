@@ -31,7 +31,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
             print("Opened URL: \(url)")
             
-            // 앱이 실행되기 전에 url이 들어오는 경우 Logic
+            URLdecoder.handleCustomURL(url)
         }
     }
     
@@ -62,6 +62,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             print("Opened URL: \(url)")
             
             // 앱 실행 중에 url이 들어오는 경우 Logic
+            
+            URLdecoder.handleCustomURL(url)
         }
     }
 
