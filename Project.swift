@@ -22,7 +22,8 @@ class iBoxFactory: ProjectFactory {
     ]
     
     let iBoxShareExtensionDependencies: [TargetDependency] = [
-        .external(name: "SnapKit")
+        .external(name: "SnapKit"),
+        .external(name: "SwiftSoup")
     ]
     
     private let appInfoPlist: [String: Plist.Value] = [
