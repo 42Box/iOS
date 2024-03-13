@@ -92,23 +92,6 @@ class BoxListViewModel {
         
         let destFolderId = boxList[destIndexPath.section].id
         CoreDataManager.shared.moveBookmark(from: srcIndexPath, to: destIndexPath, srcId: mover.id, destFolderId: destFolderId)
-        
-
-        //            let src = self.itemIdentifier(for: srcip)!
-        //            var snap = self.snapshot()
-        //            if let dest = self.itemIdentifier(for: destip) {
-        //
-        //            if snap.indexOfItem(src)! > snap.indexOfItem(dest)! {
-        //                snap.moveItem(src, beforeItem:dest)
-        //            } else {
-        //                snap.moveItem(src, afterItem:dest)
-        //            }
-        //        } else {
-        //            snap.deleteItems([src])
-        //            snap.appendItems([src], toSection: snap.sectionIdentifiers[destip.section])
-        //        }
-        //        self.apply(snap, animatingDifferences: false)
-                
     }
     
     func addFolder(_ folder: Folder) {
