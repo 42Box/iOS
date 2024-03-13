@@ -56,46 +56,69 @@ final class OAuthAPI {
         return url
     }
     
-    private func createTokenExchangeParameters(code: String) -> (contentLength: String, content: Data?) {
-        let parameters: [String: String] = [
-            "grant_type": "authorization_code",
+    private func createTokenExchangeParameters(grantType: String, code: String?, refreshToken: String?) -> Data? {
+        var parameters: [String: String] = [
+            "grant_type": grantType,
             "client_id": clientId ?? "",
             "client_secret": clientSecret ?? "",
-            "code": code,
             "redirect_uri": redirectURI ?? ""
         ]
+        if grantType == "authorization_code" { parameters["code"] = code }
+        else if grantType == "refreshToken" { parameters["refresh_token"] = refreshToken }
         let paramData = try! JSONSerialization.data(withJSONObject: parameters, options: [])
-        return (String(paramData.count), paramData)
+        return paramData
     }
-
-    func exchangeCodeForToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
+    
+    func exchangeCodeForToken(code: String, completion: @escaping (Result<AccessToken, Error>) -> Void) {
         var request = URLRequest(url: URL(string: "https://api.intra.42.fr/oauth/token")!)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        let paramData = createTokenExchangeParameters(code: code)
-        request.setValue(paramData.contentLength, forHTTPHeaderField: "Content-Length")
-        request.httpBody = paramData.content
-
+        
+        let parameters = createTokenExchangeParameters(grantType: "authorization_code", code: code, refreshToken: nil)
+        request.httpBody = parameters
+        
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard response is HTTPURLResponse else {
+                completion(.failure(NSError(domain: "InvalidResponse", code: 0, userInfo: nil)))
+                return
+            }
+            
             guard let data = data, error == nil else {
                 completion(.failure(error!))
                 return
             }
-
             completion(self.processTokenExchangeResponse(data))
         }
         
         task.resume()
     }
     
-    private func processTokenExchangeResponse(_ data: Data) -> Result<String, Error> {
-        do {
-            if let accessToken = String(data: data, encoding: .utf8) {
-                return .success(accessToken)
-            } else {
-                throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not decode token"])
+    func refreshAccessToken(completion: @escaping (Result<AccessToken, Error>) -> Void) {
+        var request = URLRequest(url: URL(string: "https://api.intra.42.fr/oauth/token")!)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let refreshToken = KeychainManager.shared.read(for: "refreshToken")
+        let parameters = createTokenExchangeParameters(grantType: "refreshToken", code: nil, refreshToken: refreshToken)
+        request.httpBody = parameters
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                completion(.failure(error!))
+                return
             }
+            completion(self.processTokenExchangeResponse(data))
+        }
+        
+        task.resume()
+    }
+
+    
+    private func processTokenExchangeResponse(_ data: Data) -> Result<AccessToken, Error> {
+        do {
+            let decoder = JSONDecoder()
+            let accessTokenResponse = try decoder.decode(AccessToken.self, from: data)
+            return .success(accessTokenResponse)
         } catch {
             return .failure(error)
         }
