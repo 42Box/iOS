@@ -57,6 +57,9 @@ class BoxListSectionViewModel: Identifiable {
     
     func insertCell(_ cell: BoxListCellViewModel, at index: Int) {
         boxListCellViewModels.insert(cell, at: index)
-    } 
+        if !isOpened {
+            isOpened = true
+        }
+    }
 }
 

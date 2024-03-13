@@ -112,12 +112,7 @@ class BoxListView: UIView {
         for folder in with {
             snapshot.appendItems(folder.boxListCellViewModelsWithStatus.map { $0.id }, toSection: folder.id)
         }
-        if viewModel?.haveReloadData ?? false {
-            boxListDataSource.applySnapshotUsingReloadData(snapshot)
-            viewModel?.haveReloadData = false
-        } else {
-            boxListDataSource.apply(snapshot, animatingDifferences: true)
-        }
+        boxListDataSource.apply(snapshot, animatingDifferences: true)
     }
     
     private func bindViewModel() {
@@ -132,6 +127,14 @@ class BoxListView: UIView {
                 case .editStatus(isEditing: let isEditing):
                     self?.tableView.setEditing(isEditing, animated: true)
                     self?.tableView.reloadData()
+                case .reloadSections(idArray: let idArray):
+                    guard var snapshot = self?.boxListDataSource.snapshot() else { return }
+                    snapshot.reloadSections(idArray)
+                    self?.boxListDataSource.apply(snapshot)
+                case .reloadRow(id: let id):
+                    guard var snapshot = self?.boxListDataSource.snapshot() else { return }
+                    snapshot.reloadItems([id])
+                    self?.boxListDataSource.apply(snapshot)
                 }
             }.store(in: &cancellables)
     }

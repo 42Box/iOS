@@ -55,7 +55,6 @@ class EditFolderViewModel {
         let mover = folderList.remove(at: srcIndexPath.row)
         folderList.insert(mover, at: destIndexPath.row)
         CoreDataManager.shared.moveFolder(from: srcIndexPath.row, to: destIndexPath.row)
-        print(folderList.map{ $0.name })
 //        delegate?.reloadTableView()
     }
 }

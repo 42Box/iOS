@@ -15,7 +15,7 @@ class BoxListViewModel {
     var folders: [Folder] {
         boxList.map{ $0.folder }
     }
-    var haveReloadData = false
+    var sectionsToReload = Set<BoxListSectionViewModel.ID>()
     var isEditing = false
     
     enum Input {
@@ -30,6 +30,8 @@ class BoxListViewModel {
     
     enum Output {
         case sendBoxList(boxList: [BoxListSectionViewModel])
+        case reloadSections(idArray: [BoxListSectionViewModel.ID])
+        case reloadRow(id: BoxListCellViewModel.ID)
         case editStatus(isEditing: Bool)
     }
     
@@ -49,6 +51,10 @@ class BoxListViewModel {
                 boxList = folders.map{ BoxListSectionViewModel(folder: $0) }
             case .viewWillAppear:
                 output.send(.sendBoxList(boxList: boxList))
+                if !sectionsToReload.isEmpty {
+                    output.send(.reloadSections(idArray: Array(sectionsToReload)))
+                    sectionsToReload.removeAll()
+                }
             case let .folderTapped(section):
                 boxList[section].isOpened.toggle()
                 output.send(.sendBoxList(boxList: boxList))
@@ -82,8 +88,7 @@ class BoxListViewModel {
         let bookmarkId = boxList[indexPath.section].viewModel(at: indexPath.row).id
         CoreDataManager.shared.updateBookmark(id: bookmarkId, name: name, url: url)
         boxList[indexPath.section].updateCell(at: indexPath.row, bookmark: Bookmark(id: bookmarkId, name: name, url: url))
-        haveReloadData = true
-        output.send(.sendBoxList(boxList: boxList))
+        output.send(.reloadRow(id: bookmarkId))
     }
     
     func reorderBookmark(srcIndexPath: IndexPath, destIndexPath: IndexPath) {
@@ -97,23 +102,21 @@ class BoxListViewModel {
     func addFolder(_ folder: Folder) {
         let boxListSectionViewModel = BoxListSectionViewModel(folder: folder)
         boxList.append(boxListSectionViewModel)
-        haveReloadData = true
     }
     
     func deleteFolder(at row: Int) {
+        sectionsToReload.remove(boxList[row].id)
         boxList.remove(at: row)
-        haveReloadData = true
     }
     
     func editFolderName(at row: Int, name: String) {
         boxList[row].name = name
-        haveReloadData = true
+        sectionsToReload.update(with: boxList[row].id)
     }
     
     func moveFolder(from: Int, to: Int) {
         let mover = boxList.remove(at: from)
         boxList.insert(mover, at: to)
-        haveReloadData = true
     }
 
 }
