@@ -8,7 +8,9 @@
 import AuthenticationServices
 
 final class OAuthManager: NSObject {
-    var authSession: ASWebAuthenticationSession?
+    static let shared = OAuthManager()
+    
+    private var authSession: ASWebAuthenticationSession?
     
     func startAuth() {
         guard let authURL = OAuthAPI.shared.createAuthURL() else {
@@ -31,9 +33,12 @@ final class OAuthManager: NSObject {
             OAuthAPI.shared.exchangeCodeForToken(code: code) { result in
                 switch result {
                 case .success(let accessToken):
-                    print("Access Token: \(accessToken)")
+                    self.tokenToKeychainManager(accessToken: accessToken)
+                    WebViewPreloader.shared.injectTokenIntoFavoriteView()
+                    WebViewPreloader.shared.injectAccessTokenAsCookie()
                 case .failure(let error):
                     print("Error exchanging code for token: \(error.localizedDescription)")
+                    
                 }
             }
         }
@@ -44,6 +49,28 @@ final class OAuthManager: NSObject {
     private func extractCode(from url: URL) -> String? {
         let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
         return components?.queryItems?.first(where: { $0.name == "code" })?.value
+    }
+    
+    private func tokenToKeychainManager(accessToken: AccessToken) {
+        dump("Access Token: \(accessToken)")
+        
+        let accessTokenSaved = KeychainManager.shared.save(token: accessToken.accessToken, for: "accessToken")
+        let tokenTypeSaved = KeychainManager.shared.save(token: accessToken.tokenType, for: "tokenType")
+        let expiresInSaved = KeychainManager.shared.save(token: "\(accessToken.expiresIn)", for: "expiresIn")
+        let refreshTokenSaved = KeychainManager.shared.save(token: accessToken.refreshToken, for: "refreshToken")
+        let scopeSaved = KeychainManager.shared.save(token: accessToken.scope, for: "scope")
+        let createdAtSaved = KeychainManager.shared.save(token: "\(accessToken.createdAt)", for: "createdAt")
+        let secretValidUntilSaved = accessToken.secretValidUntil != nil ? KeychainManager.shared.save(token: "\(accessToken.secretValidUntil!)", for: "secretValidUntil") : true
+
+        if accessTokenSaved && tokenTypeSaved && expiresInSaved && refreshTokenSaved && scopeSaved && createdAtSaved && secretValidUntilSaved {
+            print("Success: All tokens were successfully saved to Keychain.")
+        } else {
+            print("Error: Failed to save some tokens to Keychain.")
+        }
+    }
+    
+    func getToken(for key: String) -> String? {
+        return KeychainManager.shared.read(for: key)
     }
 }
 
