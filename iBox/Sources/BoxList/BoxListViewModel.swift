@@ -64,10 +64,22 @@ class BoxListViewModel {
         return boxList[indexPath.section].boxListCellViewModelsWithStatus[indexPath.row]
     }
     
+    func bookmark(at indexPath: IndexPath) -> Bookmark {
+        return boxList[indexPath.section].viewModel(at: indexPath.row).bookmark
+    }
+    
     func deleteBookmark(at indexPath: IndexPath) {
         let bookmarkId = boxList[indexPath.section].viewModel(at: indexPath.row).id
         CoreDataManager.shared.deleteBookmark(id: bookmarkId)
         boxList[indexPath.section].deleteCell(at: indexPath.row)
+        output.send(.sendBoxList(boxList: boxList))
+    }
+    
+    func editBookmark(at indexPath: IndexPath, name: String, url: URL) {
+        let bookmarkId = boxList[indexPath.section].viewModel(at: indexPath.row).id
+        CoreDataManager.shared.updateBookmark(id: bookmarkId, name: name, url: url)
+        boxList[indexPath.section].updateCell(at: indexPath.row, bookmark: Bookmark(id: bookmarkId, name: name, url: url))
+        haveReloadData = true
         output.send(.sendBoxList(boxList: boxList))
     }
     

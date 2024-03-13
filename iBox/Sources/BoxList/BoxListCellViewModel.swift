@@ -8,20 +8,22 @@
 import Foundation
 
 class BoxListCellViewModel: Identifiable {
-    private let bookmark: Bookmark
+    var bookmark: Bookmark
     
     init(bookmark: Bookmark) {
         self.bookmark = bookmark
-        self.name = bookmark.name
-        self.url = bookmark.url
     }
     
     var id: UUID {
         bookmark.id
     }
     
-    var name: String
+    var name: String {
+        bookmark.name
+    }
 
-    var url: URL
+    var url: URL {
+        bookmark.url
+    }
     
 }

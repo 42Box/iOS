@@ -14,6 +14,7 @@ protocol BoxListViewDelegate: AnyObject {
     func didSelectWeb(at url: URL, withName name: String)
     func pushViewController(type: EditType)
     func pushViewController(url: URL?)
+    func presentEditBookmarkController(at indexPath: IndexPath)
 }
 
 class BoxListView: UIView {
@@ -97,7 +98,7 @@ class BoxListView: UIView {
             cell.onEdit = { [weak self] in
                 guard let self else { return }
                 if let currentIndexPath = self.tableView.indexPath(for: cell) {
-                    print("edit \(currentIndexPath)")
+                    delegate?.presentEditBookmarkController(at: currentIndexPath)
                 }
             }
 
@@ -134,6 +135,7 @@ class BoxListView: UIView {
                 }
             }.store(in: &cancellables)
     }
+    
 }
 
 extension BoxListView: UITableViewDelegate {
