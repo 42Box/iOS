@@ -84,7 +84,7 @@ class BoxListView: UIView {
     }
     
     private func configureDataSource() {
-        boxListDataSource = BoxListDataSource(tableView: tableView) { [weak self] tableView, indexPath, itemIdentifier in
+        boxListDataSource = BoxListDataSource(tableView: tableView, viewModel: viewModel) { [weak self] tableView, indexPath, itemIdentifier in
             guard let self, let viewModel = self.viewModel else { fatalError() }
             guard let cell = tableView.dequeueReusableCell(withIdentifier: BoxListCell.reuseIdentifier, for: indexPath) as? BoxListCell else { fatalError() }
             cell.setEditButtonHidden(!viewModel.isEditing)
@@ -227,8 +227,31 @@ extension BoxListView: UITableViewDelegate {
 }
 
 class BoxListDataSource: UITableViewDiffableDataSource<BoxListSectionViewModel.ID, BoxListCellViewModel.ID> {
+    weak var viewModel:BoxListViewModel?
+    
+    init(tableView: UITableView, viewModel: BoxListViewModel?, cellProvider: @escaping CellProvider) {
+        self.viewModel = viewModel
+        super.init(tableView: tableView, cellProvider: cellProvider)
+    }
     
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        print("move")
+        guard let viewModel else { return }
+        viewModel.input.send(.moveBookmark(from: sourceIndexPath, to: destinationIndexPath))
+        
+            let src = self.itemIdentifier(for: sourceIndexPath)!
+            var snap = self.snapshot()
+            if let dest = self.itemIdentifier(for: destinationIndexPath) {
+            
+            if snap.indexOfItem(src)! > snap.indexOfItem(dest)! {
+                snap.moveItem(src, beforeItem:dest)
+            } else {
+                snap.moveItem(src, afterItem:dest)
+            }
+        } else {
+            snap.deleteItems([src])
+            snap.appendItems([src], toSection: snap.sectionIdentifiers[destinationIndexPath.section])
+        }
+        self.apply(snap, animatingDifferences: false)
+        
     }
 }

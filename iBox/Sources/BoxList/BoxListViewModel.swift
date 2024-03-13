@@ -25,6 +25,7 @@ class BoxListViewModel {
         case folderTapped(section: Int)
         case deleteBookmark(indexPath: IndexPath)
         case setFavorite(indexPath: IndexPath)
+        case moveBookmark(from: IndexPath, to: IndexPath)
     }
     
     enum Output {
@@ -55,6 +56,8 @@ class BoxListViewModel {
                 deleteBookmark(at: indexPath)
             case let .setFavorite(indexPath):
                 print("\(viewModel(at: indexPath).name) favorite 할게용")
+            case .moveBookmark(from: let from, to: let to):
+                reorderBookmark(srcIndexPath: from, destIndexPath: to)
             }
         }.store(in: &cancellables)
         return output.eraseToAnyPublisher()
@@ -81,6 +84,31 @@ class BoxListViewModel {
         boxList[indexPath.section].updateCell(at: indexPath.row, bookmark: Bookmark(id: bookmarkId, name: name, url: url))
         haveReloadData = true
         output.send(.sendBoxList(boxList: boxList))
+    }
+    
+    func reorderBookmark(srcIndexPath: IndexPath, destIndexPath: IndexPath) {
+        let mover = boxList[srcIndexPath.section].deleteCell(at: srcIndexPath.row)
+        boxList[destIndexPath.section].insertCell(mover, at: destIndexPath.row)
+        
+        let destFolderId = boxList[destIndexPath.section].id
+        CoreDataManager.shared.moveBookmark(from: srcIndexPath, to: destIndexPath, srcId: mover.id, destFolderId: destFolderId)
+        
+
+        //            let src = self.itemIdentifier(for: srcip)!
+        //            var snap = self.snapshot()
+        //            if let dest = self.itemIdentifier(for: destip) {
+        //
+        //            if snap.indexOfItem(src)! > snap.indexOfItem(dest)! {
+        //                snap.moveItem(src, beforeItem:dest)
+        //            } else {
+        //                snap.moveItem(src, afterItem:dest)
+        //            }
+        //        } else {
+        //            snap.deleteItems([src])
+        //            snap.appendItems([src], toSection: snap.sectionIdentifiers[destip.section])
+        //        }
+        //        self.apply(snap, animatingDifferences: false)
+                
     }
     
     func addFolder(_ folder: Folder) {

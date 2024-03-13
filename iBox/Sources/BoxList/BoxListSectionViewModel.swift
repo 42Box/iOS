@@ -44,12 +44,19 @@ class BoxListSectionViewModel: Identifiable {
         return boxListCellViewModels[index]
     }
     
-    func deleteCell(at index: Int) {
+    @discardableResult
+    func deleteCell(at index: Int) -> BoxListCellViewModel {
+        let cell = boxListCellViewModels[index]
         boxListCellViewModels.remove(at: index)
+        return cell
     }
     
     func updateCell(at index: Int, bookmark: Bookmark) {
         boxListCellViewModels[index].bookmark = bookmark
     }
+    
+    func insertCell(_ cell: BoxListCellViewModel, at index: Int) {
+        boxListCellViewModels.insert(cell, at: index)
+    } 
 }
 
