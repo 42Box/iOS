@@ -68,7 +68,7 @@ extension MainTabBarController: UITabBarControllerDelegate {
     
     private func startImageRotation() {
         stopImageRotation() // 현재 진행 중인 타이머가 있다면 중지
-        imageChangeTimer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(updateTabBarImage), userInfo: nil, repeats: true)
+        imageChangeTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(updateTabBarImage), userInfo: nil, repeats: true)
     }
     
     private func stopImageRotation() {
