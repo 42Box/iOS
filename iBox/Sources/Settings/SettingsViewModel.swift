@@ -1,5 +1,5 @@
 //
-//  MyPageViewModel.swift
+//  SettingsViewModel.swift
 //  iBox
 //
 //  Created by jiyeon on 2/22/24.
@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-class MyPageViewModel {
+class SettingsViewModel {
     
     enum Input {
         case viewWillAppear
@@ -24,7 +24,7 @@ class MyPageViewModel {
     let input = PassthroughSubject<Input, Never>()
     private let output = PassthroughSubject<Output, Never>()
     private var cancellables = Set<AnyCancellable>()
-    var sectionViewModels = [MyPageSectionViewModel]()
+    var sectionViewModels = [SettingsSectionViewModel]()
     
     func transform(input: AnyPublisher<Input, Never>) -> AnyPublisher<Output, Never> {
         input.sink { [weak self] event in
@@ -41,15 +41,15 @@ class MyPageViewModel {
     }
     
     private func updateSectionViewModels() {
-        sectionViewModels.append(MyPageSectionViewModel(cellViewModels: [
-            MyPageCellViewModel(MyPageItem(type: .theme, description: UserDefaultsManager.theme.toString())),
-            MyPageCellViewModel(MyPageItem(type: .homeTab, description: HomeTabType.allCases[UserDefaultsManager.homeTabIndex].toString())),
-            MyPageCellViewModel(MyPageItem(type: .preload, flag: UserDefaultsManager.isPreload))
+        sectionViewModels.append(SettingsSectionViewModel(cellViewModels: [
+            SettingsCellViewModel(SettingsItem(type: .theme, description: UserDefaultsManager.theme.toString())),
+            SettingsCellViewModel(SettingsItem(type: .homeTab, description: HomeTabType.allCases[UserDefaultsManager.homeTabIndex].toString())),
+            SettingsCellViewModel(SettingsItem(type: .preload, flag: UserDefaultsManager.isPreload))
         ]))
-        sectionViewModels.append(MyPageSectionViewModel(cellViewModels: [
-            MyPageCellViewModel(MyPageItem(type: .guide)),
-            MyPageCellViewModel(MyPageItem(type: .feedback)),
-            MyPageCellViewModel(MyPageItem(type: .developer))
+        sectionViewModels.append(SettingsSectionViewModel(cellViewModels: [
+            SettingsCellViewModel(SettingsItem(type: .reset)),
+            SettingsCellViewModel(SettingsItem(type: .guide)),
+            SettingsCellViewModel(SettingsItem(type: .feedback))
         ]))
     }
     
