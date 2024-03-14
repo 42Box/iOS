@@ -16,7 +16,7 @@ class ResetView: UIView {
     // MARK: - UI Components
     
     let label = UILabel().then {
-        $0.text = "경고: 이 작업을 진행하면 모든 폴더 및 북마크 정보가 영구적으로 삭제됩니다. 한번 초기화된 데이터는 복구할 수 없으니, 진행하기 전에 중요한 정보가 없는지 다시 한번 확인해 주시기 바랍니다."
+        $0.text = "경고: 이 작업을 진행하면 저장하신 모든 폴더 및 북마크 정보가 영구적으로 삭제되고 기본값으로 초기화됩니다. 진행하기 전에 중요한 정보가 없는지 다시 한번 확인해 주시기 바랍니다."
         $0.numberOfLines = 0
         $0.font = .systemFont(ofSize: 15)
     }
