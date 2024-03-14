@@ -21,7 +21,7 @@ class FolderListView: UIView {
         let label = UILabel()
         label.text = "새로운 북마크를 추가할 폴더를 선택해주세요."
         label.font = UIFont.boldSystemFont(ofSize: 17)
-        label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        label.textColor = .label
         label.textAlignment = .center
         return label
     }()

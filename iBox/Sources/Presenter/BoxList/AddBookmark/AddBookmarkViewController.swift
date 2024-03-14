@@ -33,7 +33,7 @@ final class AddBookmarkViewController: UIViewController {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
         
-        navigationController?.navigationBar.tintColor = .blue
+        navigationController?.navigationBar.tintColor = .label
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.compactAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
@@ -70,7 +70,8 @@ final class AddBookmarkViewController: UIViewController {
             self.dismiss(animated: true, completion: nil)
         } else {
             // 하나라도 텍스트 필드에 내용이 있으면, 사용자에게 경고 창 표시
-            let alertController = UIAlertController(title: nil, message: "북마크 추가를 취소하시겠습니까?", preferredStyle: .alert)
+            let alertController = UIAlertController(title: nil, message: "취소하시겠습니까?", preferredStyle: .alert)
+
 
             let discardAction = UIAlertAction(title: "변경사항 폐기", style: .destructive) { [weak self] _ in
                 self?.dismiss(animated: true, completion: nil)

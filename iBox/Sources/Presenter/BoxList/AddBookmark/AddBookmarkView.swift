@@ -22,7 +22,7 @@ class AddBookmarkView: UIView {
 
     private lazy var textFieldView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor.backgroundColor
         view.layer.cornerRadius = 20
         view.clipsToBounds = true
         view.addSubview(nameTextView)
@@ -35,7 +35,7 @@ class AddBookmarkView: UIView {
         let label = UILabel()
         label.text = "북마크 이름"
         label.font = UIFont.systemFont(ofSize: 18)
-        label.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
+        label.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
         return label
     }()
     
@@ -45,7 +45,7 @@ class AddBookmarkView: UIView {
         textView.layer.borderWidth = 0 // 테두리 안보이게
         textView.textContainerInset = UIEdgeInsets(top: 7, left: 0, bottom: 0, right: 0)
         textView.font = UIFont.systemFont(ofSize: 16)
-        textView.textColor = UIColor.black
+        textView.textColor = .label
         textView.isScrollEnabled = true
         return textView
     }()
@@ -62,7 +62,7 @@ class AddBookmarkView: UIView {
         let label = UILabel()
         label.text = "URL"
         label.font = UIFont.systemFont(ofSize: 18)
-        label.textColor = #colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)
+        label.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
         return label
     }()
 
@@ -70,19 +70,19 @@ class AddBookmarkView: UIView {
     let urlTextView: UITextView = {
         let textView = UITextView()
         textView.backgroundColor = .clear
-        textView.layer.borderWidth = 0 // 테두리 안보이게
+        textView.layer.borderWidth = 0
         textView.textContainerInset = UIEdgeInsets(top: 7, left: 0, bottom: 0, right: 0)
         textView.font = UIFont.systemFont(ofSize: 16)
-        textView.textColor = UIColor.black
         textView.isScrollEnabled = true
-//        textView.text = "Enter URL"
+        textView.textColor = .label
+        textView.isScrollEnabled = true
         return textView
     }()
 
     
     private lazy var button: UIButton = {
         let button = UIButton(type: .custom)
-        button.backgroundColor = .white
+        button.backgroundColor = UIColor.backgroundColor
         button.layer.cornerRadius = 10
         button.clipsToBounds = true
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
@@ -95,7 +95,7 @@ class AddBookmarkView: UIView {
         let label = UILabel()
         label.text = "목록"
         label.font = UIFont.systemFont(ofSize: 17)
-        label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        label.textColor = .label
         return label
     }()
     
@@ -111,8 +111,8 @@ class AddBookmarkView: UIView {
         let imageView = UIImageView()
         let image = UIImage(systemName: "chevron.forward")?.withRenderingMode(.alwaysTemplate)
         imageView.image = image
-        imageView.tintColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1) //.label // 시스템 라벨 색상을 사용하여 다크 모드와 라이트 모드에서 모두 잘 보이게 합니다.
-        imageView.contentMode = .scaleAspectFit // 이미지가 콘텐츠 비율을 유지하도록 합니다.
+        imageView.tintColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+        imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
@@ -223,36 +223,36 @@ class AddBookmarkView: UIView {
     
     private func updateTextFieldWithIncomingURL() {
         // GlobalURLManager의 incomingURL을 텍스트 필드에 설정
-        urlTextView.text = GlobalURLManager.shared.incomingURL?.absoluteString
+        if let incomingURL = GlobalURLManager.shared.incomingURL?.absoluteString, !incomingURL.isEmpty {
+            urlTextView.text = incomingURL
+            urlTextViewPlaceHolder.isHidden = true
+        } else {
+            urlTextView.text = ""
+            urlTextViewPlaceHolder.isHidden = false
+        }
 
-        // URL을 텍스트 필드에 설정한 후 GlobalURLManager의 incomingURL을 nil로 설정
         GlobalURLManager.shared.incomingURL = nil
     }
     
     @objc private func buttonTapped() {
         onButtonTapped?()
     }
-    
 }
 
 
 extension AddBookmarkView: UITextViewDelegate {
     
     func textViewDidChange(_ textView: UITextView) {
-//        nameTextViewPlaceHolder.isHidden = !nameTextView.text.isEmpty
-//        urlTextViewPlaceHolder.isHidden = !urlTextView.text.isEmpty
         
         // 텍스트 변경 시 검사를 수행하고, '추가' 버튼 활성화 상태를 업데이트
         let isBothTextViewsFilled = !nameTextView.text.isEmpty && !urlTextView.text.isEmpty
         onTextChange?(isBothTextViewsFilled)
         
         if textView == nameTextView {
-            // nameTextView의 텍스트가 비어있지 않다면, 플레이스홀더를 숨깁니다.
             nameTextViewPlaceHolder.isHidden = !nameTextView.text.isEmpty
         }
 
         if textView == urlTextView {
-            // nameTextView의 텍스트가 비어있지 않다면, 플레이스홀더를 숨깁니다.
             urlTextViewPlaceHolder.isHidden = !urlTextView.text.isEmpty
         }
         
