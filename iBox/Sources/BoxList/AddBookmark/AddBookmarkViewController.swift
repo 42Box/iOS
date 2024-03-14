@@ -33,7 +33,7 @@ final class AddBookmarkViewController: UIViewController {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
         
-        navigationController?.navigationBar.tintColor = .label
+        navigationController?.navigationBar.tintColor = .box
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.compactAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
@@ -43,6 +43,13 @@ final class AddBookmarkViewController: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "취소", style: .plain, target: self, action: #selector(cancelButtonTapped))
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "추가", style: .plain, target: self, action: #selector(addButtonTapped))
         navigationItem.rightBarButtonItem?.isEnabled = false    // 처음에 '추가' 버튼 비활성화
+        
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.boldSystemFont(ofSize: 17) 
+        ]
+
+        navigationItem.leftBarButtonItem?.setTitleTextAttributes(attributes, for: .normal)
+        navigationItem.rightBarButtonItem?.setTitleTextAttributes(attributes, for: .normal)
     }
     
     private func setupAddBookmarkView() {
@@ -70,14 +77,14 @@ final class AddBookmarkViewController: UIViewController {
             self.dismiss(animated: true, completion: nil)
         } else {
             // 하나라도 텍스트 필드에 내용이 있으면, 사용자에게 경고 창 표시
-            let alertController = UIAlertController(title: nil, message: "취소하시겠습니까?", preferredStyle: .alert)
+            let alertController = UIAlertController(title: nil, message: "변경사항 폐기", preferredStyle: .alert)
 
 
-            let discardAction = UIAlertAction(title: "변경사항 폐기", style: .destructive) { [weak self] _ in
+            let discardAction = UIAlertAction(title: "예", style: .destructive) { [weak self] _ in
                 self?.dismiss(animated: true, completion: nil)
             }
 
-            let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+            let cancelAction = UIAlertAction(title: "아니오", style: .cancel)
 
             alertController.addAction(discardAction)
             alertController.addAction(cancelAction)
