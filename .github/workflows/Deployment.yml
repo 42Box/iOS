@@ -1,0 +1,72 @@
+# Author by chanhihi
+# Date 2024.03.03
+
+name: Deployment
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+  build:
+    name: Deploy on macOS 12 - Archive / Release for iOS
+    runs-on: macos-latest
+    env:
+      XCODE_VERSION: "15.2.0"
+      SWIFT_VERSION: "5.9.2"
+      XCODE_PROJECT: "iBox.xcodeproj"
+      XCODE_SCHEME: "iBox"
+      XCODE_ARCHIVE_PATH: "iBox.xcarchive"
+      XCODE_ARCHIVE_EXPORT_PATH: "./archive"
+      XCODE_EXPORT_PATH: "./artifacts"
+      TUIST_VERSION: "3.36.2"
+      APP_STORE_CONNECT_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set Xcode version
+        run: sudo xcode-select -s '/Applications/Xcode_15.2.0.app/Contents/Developer'
+
+      - name: Setup Swift
+        uses: swift-actions/setup-swift@v1
+        with:
+          swift-version: ${{ env.SWIFT_VERSION }}
+
+      - name: Install Tuist
+        run: sudo curl -Ls https://install.tuist.io | bash
+
+      - name: Generate Xcode project with Tuist
+        run: tuist local ${{ env.TUIST_VERSION }} && tuist generate
+
+      - name: Archive for iOS (Main App and Share Extension)
+        run: |
+          xcodebuild archive -project $XCODE_PROJECT -scheme $XCODE_SCHEME -archivePath "$XCODE_ARCHIVE_EXPORT_PATH"/"$XCODE_ARCHIVE_PATH" -sdk iphoneos BUILD_LIBRARY_FOR_DISTRIBUTION=YES SKIP_INSTALL=NO
+          
+      - name: Export IPA
+        run: |
+          xcodebuild -exportArchive -archivePath "$XCODE_ARCHIVE_EXPORT_PATH"/"$XCODE_ARCHIVE_PATH" -exportOptionsPlist ExportOptions.plist -exportPath "$XCODE_EXPORT_PATH"
+        
+      - name: Tagging
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.CHANHIHI }}
+
+      - name: Draft Release
+        id: draft_release
+        uses: release-drafter/release-drafter@v5
+        with:
+          config-name: Release-note.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.CHANHIHI }}
+          
+      - name: Upload IPA
+        uses: actions/upload-artifact@v2
+        with:
+          name: Box42-${{ steps.tag_version.outputs.new_tag }}
+          path: ${{ env.XCODE_EXPORT_PATH }}/*.ipa

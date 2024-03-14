@@ -22,13 +22,15 @@ class iBoxFactory: ProjectFactory {
     ]
     
     let iBoxShareExtensionDependencies: [TargetDependency] = [
-        .external(name: "SnapKit")
+        .external(name: "SnapKit"),
+        .external(name: "SwiftSoup")
     ]
     
     private let appInfoPlist: [String: Plist.Value] = [
         "ITSAppUsesNonExemptEncryption": false,
+        "CFBundleDisplayName": "iBox",
         "CFBundleName": "iBox",
-        "CFBundleShortVersionString": "1.2.1",
+        "CFBundleShortVersionString": "1.2.2",
         "CFBundleVersion": "1",
         "UILaunchStoryboardName": "LaunchScreen",
         "UIApplicationSceneManifest": [

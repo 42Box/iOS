@@ -8,10 +8,9 @@
 import Foundation
 
 struct Folder {
-    var id: UUID
-    let name: String
-    let color: ColorName
-    let bookmarks: [Bookmark]
+    let id: UUID
+    var name: String
+    var bookmarks: [Bookmark]
     var isOpened: Bool = false
 }
 

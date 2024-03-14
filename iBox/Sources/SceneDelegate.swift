@@ -22,22 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         insertDefaultDataIfNeeded()
         
-        // 나중에 userDefaults에 저장해두고 꺼내와서 preload하기
-        let urlsToPreload = [
-            URL(string: "https://profile.intra.42.fr/")!,
-            URL(string: "https://www.where42.kr/")!,
-            URL(string: "https://stat.42seoul.kr/")!,
-            URL(string: "https://42library.kr/")!,
-            URL(string: "https://cabi.42seoul.io/")!,
-            URL(string: "https://24hoursarenotenough.42seoul.kr/")!
-        ]
-        WebViewPreloader.shared.preload(urls: urlsToPreload)
-        
-        let favorite = UserDefaultsManager.favorite
-        let favoriteUrl = favorite.url
-        WebViewPreloader.shared.preloadFavoriteView(url: favoriteUrl)
-                
-        window?.rootViewController = MainTabBarController()
+        window?.rootViewController = CustomLaunchScreenViewController()
         window?.makeKeyAndVisible() // 윈도우를 화면에 보여줌
 
         if let urlContext = connectionOptions.urlContexts.first {
@@ -46,7 +31,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
             print("Opened URL: \(url)")
             
-            // 앱이 실행되기 전에 url이 들어오는 경우 Logic
+            // URLdecoder.handleCustomURL(url)
             GlobalURLManager.shared.incomingURL = url
 
             if let windowScene = scene as? UIWindowScene,
@@ -65,8 +50,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private func insertDefaultDataIfNeeded() {
         let isDefaultDataInserted = UserDefaultsManager.isDefaultDataInserted
         if !isDefaultDataInserted {
-            var defaultData = [
-                Folder(id: UUID(), name: "42 폴더", color: .gray, bookmarks: [
+            let defaultData = [
+                Folder(id: UUID(), name: "42 폴더", bookmarks: [
                     Bookmark(id: UUID(), name: "42 Intra", url: URL(string: "https://profile.intra.42.fr/")!),
                     Bookmark(id: UUID(), name: "42Where", url: URL(string: "https://www.where42.kr/")! ),
                     Bookmark(id: UUID(), name: "42Stat", url: URL(string: "https://stat.42seoul.kr/")!),
@@ -88,6 +73,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
             print("Opened URL: \(url)")
             // 앱 실행 중에 url이 들어오는 경우 Logic
+            // URLdecoder.handleCustomURL(url)
             GlobalURLManager.shared.incomingURL = url
 
             if let windowScene = scene as? UIWindowScene,
@@ -100,6 +86,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     boxListViewController.shouldPresentModalAutomatically = true
                 }
             }
+            
         }
     }
 
