@@ -20,102 +20,78 @@ class AddBookmarkView: UIView {
         }
     }
 
-    private lazy var textFieldView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.backgroundColor
-        view.layer.cornerRadius = 20
-        view.clipsToBounds = true
-        view.addSubview(nameTextView)
-        view.addSubview(separatorView)
-        view.addSubview(urlTextView)
-        return view
-    }()
-    
-    private let nameTextViewPlaceHolder: UILabel = {
-        let label = UILabel()
-        label.text = "북마크 이름"
-        label.font = UIFont.systemFont(ofSize: 18)
-        label.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
-        return label
-    }()
-    
-    let nameTextView: UITextView = {
-        let textView = UITextView()
-        textView.backgroundColor = .clear
-        textView.layer.borderWidth = 0 // 테두리 안보이게
-        textView.textContainerInset = UIEdgeInsets(top: 7, left: 0, bottom: 0, right: 0)
-        textView.font = UIFont.systemFont(ofSize: 16)
-        textView.textColor = .label
-        textView.isScrollEnabled = true
-        return textView
-    }()
-    
+    // MARK: - UI Components
 
+    private lazy var textFieldView: UIView = UIView().then {
+        $0.backgroundColor = UIColor.backgroundColor
+        $0.layer.cornerRadius = 20
+        $0.clipsToBounds = true
+        $0.addSubview(nameTextView)
+        $0.addSubview(separatorView)
+        $0.addSubview(urlTextView)
+    }
     
-    private let separatorView: UIView = {
-        let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-        return view
-    }()
+    private let nameTextViewPlaceHolder = UILabel().then {
+        $0.text = "북마크 이름"
+        $0.font = UIFont.systemFont(ofSize: 18)
+        $0.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+    }
     
-    private let urlTextViewPlaceHolder: UILabel = {
-        let label = UILabel()
-        label.text = "URL"
-        label.font = UIFont.systemFont(ofSize: 18)
-        label.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
-        return label
-    }()
-
+    let nameTextView = UITextView().then {
+        $0.backgroundColor = .clear
+        $0.layer.borderWidth = 0
+        $0.textContainerInset = UIEdgeInsets(top: 7, left: 0, bottom: 0, right: 0)
+        $0.font = UIFont.systemFont(ofSize: 16)
+        $0.textColor = .label
+        $0.isScrollEnabled = true
+    }
     
-    let urlTextView: UITextView = {
-        let textView = UITextView()
-        textView.backgroundColor = .clear
-        textView.layer.borderWidth = 0
-        textView.textContainerInset = UIEdgeInsets(top: 7, left: 0, bottom: 0, right: 0)
-        textView.font = UIFont.systemFont(ofSize: 16)
-        textView.isScrollEnabled = true
-        textView.textColor = .label
-        textView.isScrollEnabled = true
-        return textView
-    }()
-
+    private let separatorView = UIView().then {
+        $0.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+    }
     
-    private lazy var button: UIButton = {
-        let button = UIButton(type: .custom)
-        button.backgroundColor = UIColor.backgroundColor
-        button.layer.cornerRadius = 10
-        button.clipsToBounds = true
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        button.isEnabled = true
-        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-        return button
-    }()
-
-    private let buttonLabel: UILabel = {
-        let label = UILabel()
-        label.text = "목록"
-        label.font = UIFont.systemFont(ofSize: 17)
-        label.textColor = .label
-        return label
-    }()
+    private let urlTextViewPlaceHolder = UILabel().then {
+        $0.text = "URL"
+        $0.font = UIFont.systemFont(ofSize: 18)
+        $0.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+    }
     
-    let selectedFolderLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 17)
-        label.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
-        label.textAlignment = .right
-        return label
-    }()
+    let urlTextView = UITextView().then {
+        $0.backgroundColor = .clear
+        $0.layer.borderWidth = 0 // 테두리 없음
+        $0.textContainerInset = UIEdgeInsets(top: 7, left: 0, bottom: 0, right: 0)
+        $0.font = UIFont.systemFont(ofSize: 16)
+        $0.textColor = .label
+        $0.isScrollEnabled = true
+    }
     
-    private let chevronImageView: UIImageView = {
-        let imageView = UIImageView()
+    private lazy var button = UIButton(type: .custom).then {
+        $0.backgroundColor = UIColor.backgroundColor
+        $0.layer.cornerRadius = 10
+        $0.clipsToBounds = true
+        $0.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        $0.isEnabled = true
+        $0.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+    }
+    
+    private let buttonLabel = UILabel().then {
+        $0.text = "목록"
+        $0.font = UIFont.systemFont(ofSize: 17)
+        $0.textColor = .label
+    }
+    
+    let selectedFolderLabel = UILabel().then {
+        $0.font = UIFont.systemFont(ofSize: 17)
+        $0.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+        $0.textAlignment = .right
+    }
+    
+    private let chevronImageView = UIImageView().then {
         let image = UIImage(systemName: "chevron.forward")?.withRenderingMode(.alwaysTemplate)
-        imageView.image = image
-        imageView.tintColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
-        imageView.contentMode = .scaleAspectFit
-        return imageView
-    }()
-    
+        $0.image = image
+        $0.tintColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+        $0.contentMode = .scaleAspectFit
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -148,7 +124,6 @@ class AddBookmarkView: UIView {
     
     private func setupLayout() {
         
-        // 텍스트 필드뷰
         textFieldView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(100)
             make.height.equalTo(150)
@@ -156,7 +131,7 @@ class AddBookmarkView: UIView {
             make.trailing.equalToSuperview().offset(-20)
         }
         
-        // name 텍스트뷰
+        // nameTextView
         nameTextView.snp.makeConstraints { make in
             make.top.equalTo(textFieldView.snp.top).offset(10)
             make.leading.trailing.equalTo(textFieldView).offset(15)
@@ -174,7 +149,7 @@ class AddBookmarkView: UIView {
             make.height.equalTo(1)
         }
         
-        // url 텍스트뷰
+        // urlTextView
         urlTextView.snp.makeConstraints { make in
             make.top.equalTo(separatorView.snp.bottom).offset(10)
             make.leading.trailing.equalTo(nameTextView)
@@ -186,7 +161,7 @@ class AddBookmarkView: UIView {
             make.leading.equalTo(urlTextView.snp.leading).offset(5)
         }
         
-        // 버튼
+        // button
         button.snp.makeConstraints { make in
             make.top.equalTo(textFieldView.snp.bottom).offset(20)
             make.leading.equalTo(self.snp.leading).offset(20)
@@ -202,7 +177,6 @@ class AddBookmarkView: UIView {
             make.height.equalTo(40)
         }
         
-        // 선택된 폴더 레이블
         selectedFolderLabel.snp.makeConstraints { make in
             make.trailing.equalTo(chevronImageView.snp.leading).offset(-10)
             make.centerY.equalTo(button.snp.centerY)
@@ -210,7 +184,6 @@ class AddBookmarkView: UIView {
             make.height.equalTo(40)
         }
         
-        // 꺽쇠 이미지
         chevronImageView.snp.makeConstraints { make in
             make.trailing.equalTo(button.snp.trailing).inset(20)
             make.centerY.equalTo(button.snp.centerY)
@@ -219,7 +192,6 @@ class AddBookmarkView: UIView {
         }
         
     }
-    
     
     private func updateTextFieldWithIncomingURL() {
         // GlobalURLManager의 incomingURL을 텍스트 필드에 설정
