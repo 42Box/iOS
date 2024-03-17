@@ -91,14 +91,14 @@ class BoxListView: UIView {
             cell.bindViewModel(viewModel.viewModel(at: indexPath))
             cell.onDelete = { [weak self] in
                 guard let self else { return }
-                if let currentIndexPath = tableView.indexPath(for: cell) {
-                    viewModel.deleteBookmark(at: currentIndexPath)
+                if let currentIndexPath = self.tableView.indexPath(for: cell) {
+                    self.viewModel?.deleteBookmark(at: currentIndexPath)
                 }
             }
             cell.onEdit = { [weak self] in
                 guard let self else { return }
-                if let currentIndexPath = tableView.indexPath(for: cell) {
-                    delegate?.presentEditBookmarkController(at: currentIndexPath)
+                if let currentIndexPath = self.tableView.indexPath(for: cell) {
+                    self.delegate?.presentEditBookmarkController(at: currentIndexPath)
                 }
             }
 
@@ -232,14 +232,12 @@ extension BoxListView: UITableViewDelegate {
 }
 
 extension BoxListView: BoxListDataSourceDelegate {
-    func openFolderIfNeeded(_ folderIndex: Int) {
-        viewModel?.input.send(.openFolderIfNeeded(folderIndex: folderIndex))
+    func openFolderIfNeeded(_ folderIndex: Int) {        viewModel?.input.send(.openFolderIfNeeded(folderIndex: folderIndex))
     }
     
     func moveCell(at sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         viewModel?.input.send(.moveBookmark(from: sourceIndexPath, to: destinationIndexPath))
     }
-    
     
 }
 
@@ -255,16 +253,12 @@ class BoxListDataSource: UITableViewDiffableDataSource<BoxListSectionViewModel.I
         
         delegate?.moveCell(at: sourceIndexPath, to: destinationIndexPath)
         
-        guard let src = self.itemIdentifier(for: sourceIndexPath) else { return }
-        var snap = self.snapshot()
-        if let dest = self.itemIdentifier(for: destinationIndexPath) {
-            guard let srcIndex = snap.indexOfItem(src),
-                  let destIndex = snap.indexOfItem(dest) else { return }
-            if srcIndex > destIndex {
-                snap.moveItem(src, beforeItem:dest)
-            } else {
-                snap.moveItem(src, afterItem:dest)
-            }
+        guard let src = itemIdentifier(for: sourceIndexPath),
+            sourceIndexPath != destinationIndexPath else { return }
+        
+        var snap = snapshot()
+        if let dest = itemIdentifier(for: destinationIndexPath) {
+            snap.moveItem(src, beforeItem:dest)
         } else {
             snap.deleteItems([src])
             snap.appendItems([src], toSection: snap.sectionIdentifiers[destinationIndexPath.section])

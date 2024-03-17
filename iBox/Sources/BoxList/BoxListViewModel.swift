@@ -73,7 +73,7 @@ class BoxListViewModel {
     }
     
     func viewModel(at indexPath: IndexPath) -> BoxListCellViewModel {
-        return boxList[indexPath.section].boxListCellViewModelsWithStatus[indexPath.row]
+        return boxList[indexPath.section].boxListCellViewModels[indexPath.row]
     }
     
     func bookmark(at indexPath: IndexPath) -> Bookmark {

@@ -10,7 +10,7 @@ import Foundation
 class BoxListSectionViewModel: Identifiable {
     var folder: Folder
     
-    private var boxListCellViewModels: [BoxListCellViewModel]! {
+    var boxListCellViewModels: [BoxListCellViewModel] {
         didSet {
             folder.bookmarks = boxListCellViewModels.map {
                 Bookmark(id: $0.id, name: $0.name, url: $0.url)
@@ -46,7 +46,7 @@ class BoxListSectionViewModel: Identifiable {
     func viewModel(at index: Int) -> BoxListCellViewModel {
         return boxListCellViewModels[index]
     }
-    
+        
     @discardableResult
     func deleteCell(at index: Int) -> BoxListCellViewModel {
         let cell = boxListCellViewModels[index]

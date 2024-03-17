@@ -56,6 +56,12 @@ class BoxListCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        viewModel = nil
+        onDelete = nil
+        onEdit = nil
+    }
+    
     // MARK: - Setup Methods
     
     private func setupProperty() {
