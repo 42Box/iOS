@@ -44,18 +44,13 @@ class FolderListCell: UITableViewCell {
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().offset(20)
             make.width.height.equalTo(30)
-            make.top.greaterThanOrEqualToSuperview().offset(10) // 최소 상단 여백 추가
-            make.bottom.lessThanOrEqualToSuperview().offset(-10) // 최소 하단 여백 추가
         }
         
         folderNameLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalTo(folderImageView.snp.trailing).offset(10)
-            make.trailing.lessThanOrEqualToSuperview().offset(-20) // 오른쪽 여백 추가
-            make.top.greaterThanOrEqualToSuperview().offset(10) // 최소 상단 여백 추가
-            make.bottom.lessThanOrEqualToSuperview().offset(-10) // 최소 하단 여백 추가
+            make.trailing.lessThanOrEqualToSuperview().offset(-20)
         }
-        
     }
     
 }
