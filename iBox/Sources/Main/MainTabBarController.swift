@@ -28,7 +28,7 @@ class MainTabBarController: UITabBarController {
         viewControllers = [
             setupViewController(viewController: BoxListViewController(), image: UIImage(systemName: "square.grid.2x2.fill")),
             setupViewController(viewController: FavoriteViewController(), image: UIImage(systemName: "heart.fill")),
-            setupViewController(viewController: MyPageViewController(), image: UIImage(systemName: "person.fill"))
+            setupViewController(viewController: SettingsViewController(), image: UIImage(systemName: "gearshape.fill"))
         ]
         tabBar.tintColor = .box
         tabBar.backgroundColor = .backgroundColor
@@ -46,14 +46,16 @@ class MainTabBarController: UITabBarController {
         appearance.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.clear], for: .normal)
         appearance.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.clear], for: .selected)
     }
-
+    
 }
 
 extension MainTabBarController: UITabBarControllerDelegate {
+    
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         if tabBarController.selectedIndex == 1 && previousTabIndex == 1 {
             WebViewPreloader.shared.resetFavoriteView()
         }
         previousTabIndex = tabBarController.selectedIndex
     }
+    
 }
