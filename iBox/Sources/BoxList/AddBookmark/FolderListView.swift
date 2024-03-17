@@ -9,37 +9,29 @@ import UIKit
 
 class FolderListView: UIView {
 
-    // CoreDataManager
     let coreDataManager = CoreDataManager.shared
     
-    // 폴더 엔티티를 저장할 배열
     var folders: [Folder] = []
     var onFolderSelected: ((Folder) -> Void)?
 
+    // MARK: - UI Components
 
-    private let infoLabel: UILabel = {
-        let label = UILabel()
-        label.text = "새로운 북마크를 추가할 폴더를 선택해주세요."
-        label.font = UIFont.boldSystemFont(ofSize: 17)
-        label.textColor = .label
-        label.textAlignment = .center
-        return label
-    }()
+    private let infoLabel = UILabel().then {
+        $0.text = "새로운 북마크를 추가할 폴더를 선택해주세요."
+        $0.font = UIFont.boldSystemFont(ofSize: 17)
+        $0.textColor = .label
+        $0.textAlignment = .center
+    }
     
-    private let tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.backgroundColor = .clear
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        return tableView
-    }()
+    private let tableView = UITableView().then {
+        $0.backgroundColor = .clear
+        $0.translatesAutoresizingMaskIntoConstraints = false
+    }
     
-    
-    private lazy var stackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [infoLabel, tableView])
-        stackView.axis = .vertical
-        stackView.spacing = 20
-        return stackView
-    }()
+    private lazy var stackView = UIStackView(arrangedSubviews: [infoLabel, tableView]).then {
+        $0.axis = .vertical
+        $0.spacing = 20
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -57,20 +49,15 @@ class FolderListView: UIView {
         setupLayout()
         setupTableView()
     }
-   
 
     func setupLayout() {
-        
         stackView.snp.makeConstraints { make in
             make.top.equalTo(self.safeAreaLayoutGuide.snp.top).offset(20) // Adjust as necessary
             make.bottom.equalTo(self.safeAreaLayoutGuide.snp.bottom)
             make.leading.equalTo(self.snp.leading)
             make.trailing.equalTo(self.snp.trailing)
         }
-        
     }
-    
-    var num = 0
     
     func setupTableView() {
         self.tableView.dataSource = self
@@ -94,16 +81,11 @@ extension FolderListView: UITableViewDataSource {
 
         return cell
     }
-    
-    
 }
 
 extension FolderListView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // 선택시 로직
-        print("항목 \(indexPath.row) 선택됨")
         let selectedFolder = folders[indexPath.row]
         onFolderSelected?(selectedFolder)
     }
-    
 }
