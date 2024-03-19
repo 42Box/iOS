@@ -14,6 +14,7 @@ class NavigationBar: UIView {
     var titleLabel = UILabel()
     var addButton = UIButton()
     var moreButton = UIButton()
+    var doneButton = UIButton()
 }
 
 protocol BaseViewControllerProtocol {
@@ -40,6 +41,9 @@ class BaseViewController<View: UIView>: UIViewController {
         $0.moreButton.configuration = .plain()
         $0.moreButton.configuration?.image = UIImage(systemName: "ellipsis.circle")
         $0.moreButton.configuration?.preferredSymbolConfigurationForImage = .init(weight: .bold)
+        $0.doneButton.configuration = .plain()
+        $0.doneButton.configuration?.baseForegroundColor = .label
+        $0.doneButton.configuration?.attributedTitle = AttributedString("완료", attributes: AttributeContainer([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18, weight: .semibold)]))
     }
     
     let contentView: UIView = View()
@@ -63,6 +67,7 @@ class BaseViewController<View: UIView>: UIViewController {
         setNavigationBarTitleLabelFont(titleFont)
         setNavigationBarBackButtonHidden(true)
         setNavigationBarMenuButtonHidden(true)
+        setNavigationBarDoneButtonHidden(true)
         
         navigationBar.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
     }
@@ -74,6 +79,7 @@ class BaseViewController<View: UIView>: UIViewController {
         navigationBar.addSubview(navigationBar.titleLabel)
         navigationBar.addSubview(navigationBar.addButton)
         navigationBar.addSubview(navigationBar.moreButton)
+        navigationBar.addSubview(navigationBar.doneButton)
         view.addSubview(contentView)
     }
     
@@ -109,6 +115,11 @@ class BaseViewController<View: UIView>: UIViewController {
             make.trailing.equalTo(navigationBar.moreButton.snp.leading).offset(-20)
             make.centerY.equalToSuperview()
             make.width.height.equalTo(24)
+        }
+        
+        navigationBar.doneButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(20)
+            make.centerY.equalToSuperview()
         }
         
         contentView.snp.makeConstraints { make in
@@ -181,12 +192,20 @@ class BaseViewController<View: UIView>: UIViewController {
         }
     }
     
+    func setNavigationBarDoneButtonHidden(_ hidden: Bool) {
+        navigationBar.doneButton.isHidden = hidden
+    }
+    
     func setNavigationBarAddButtonAction(_ selector: Selector) {
         navigationBar.addButton.addTarget(self, action: selector, for: .touchUpInside)
     }
     
     func setNavigationBarMoreButtonAction(_ selector: Selector) {
         navigationBar.moreButton.addTarget(self, action: selector, for: .touchUpInside)
+    }
+    
+    func setNavigationBarDoneButtonAction(_ selector: Selector) {
+        navigationBar.doneButton.addTarget(self, action: selector, for: .touchUpInside)
     }
     
     func setNavigationBarTitleLabelText(_ text: String?) {

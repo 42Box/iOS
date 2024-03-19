@@ -15,18 +15,25 @@ class BoxListViewModel {
     var folders: [Folder] {
         boxList.map{ $0.folder }
     }
-    var haveReloadData = false
+    var sectionsToReload = Set<BoxListSectionViewModel.ID>()
+    var isEditing = false
     
     enum Input {
+        case toggleEditStatus
         case viewDidLoad
         case viewWillAppear
         case folderTapped(section: Int)
         case deleteBookmark(indexPath: IndexPath)
         case setFavorite(indexPath: IndexPath)
+        case moveBookmark(from: IndexPath, to: IndexPath)
+        case openFolderIfNeeded(folderIndex: Int)
     }
     
     enum Output {
         case sendBoxList(boxList: [BoxListSectionViewModel])
+        case reloadSections(idArray: [BoxListSectionViewModel.ID])
+        case reloadRows(idArray: [BoxListCellViewModel.ID])
+        case editStatus(isEditing: Bool)
     }
     
     let input = PassthroughSubject<Input, Never>()
@@ -37,47 +44,90 @@ class BoxListViewModel {
         input.sink { [weak self] event in
             guard let self else { return }
             switch event {
+            case .toggleEditStatus:
+                isEditing.toggle()
+                output.send(.editStatus(isEditing: isEditing))
             case .viewDidLoad:
                 let folders = CoreDataManager.shared.getFolders()
-                self.boxList = folders.map{ BoxListSectionViewModel(folder: $0) }
+                boxList = folders.map{ BoxListSectionViewModel(folder: $0) }
             case .viewWillAppear:
                 output.send(.sendBoxList(boxList: boxList))
+                if !sectionsToReload.isEmpty {
+                    output.send(.reloadSections(idArray: Array(sectionsToReload)))
+                    sectionsToReload.removeAll()
+                }
             case let .folderTapped(section):
                 boxList[section].isOpened.toggle()
                 output.send(.sendBoxList(boxList: boxList))
             case let .deleteBookmark(indexPath):
-                print("\(viewModel(at: indexPath).name) 지울게용")
+                deleteBookmark(at: indexPath)
             case let .setFavorite(indexPath):
                 print("\(viewModel(at: indexPath).name) favorite 할게용")
+            case .moveBookmark(from: let from, to: let to):
+                reorderBookmark(srcIndexPath: from, destIndexPath: to)
+            case .openFolderIfNeeded(folderIndex: let folderIndex):
+                openFolder(folderIndex)
             }
         }.store(in: &cancellables)
         return output.eraseToAnyPublisher()
     }
     
     func viewModel(at indexPath: IndexPath) -> BoxListCellViewModel {
-        return boxList[indexPath.section].boxListCellViewModelsWithStatus[indexPath.row]
+        return boxList[indexPath.section].boxListCellViewModels[indexPath.row]
+    }
+    
+    func bookmark(at indexPath: IndexPath) -> Bookmark {
+        return boxList[indexPath.section].viewModel(at: indexPath.row).bookmark
+    }
+    
+    func deleteBookmark(at indexPath: IndexPath) {
+        let bookmarkId = boxList[indexPath.section].viewModel(at: indexPath.row).id
+        CoreDataManager.shared.deleteBookmark(id: bookmarkId)
+        boxList[indexPath.section].deleteCell(at: indexPath.row)
+        output.send(.sendBoxList(boxList: boxList))
+    }
+    
+    func editBookmark(at indexPath: IndexPath, name: String, url: URL) {
+        let bookmarkId = boxList[indexPath.section].viewModel(at: indexPath.row).id
+        CoreDataManager.shared.updateBookmark(id: bookmarkId, name: name, url: url)
+        boxList[indexPath.section].updateCell(at: indexPath.row, bookmark: Bookmark(id: bookmarkId, name: name, url: url))
+        output.send(.reloadRows(idArray: [bookmarkId]))
+    }
+    
+    func reorderBookmark(srcIndexPath: IndexPath, destIndexPath: IndexPath) {
+        let mover = boxList[srcIndexPath.section].deleteCell(at: srcIndexPath.row)
+        boxList[destIndexPath.section].insertCell(mover, at: destIndexPath.row)
+        
+        let destFolderId = boxList[destIndexPath.section].id
+        CoreDataManager.shared.moveBookmark(from: srcIndexPath, to: destIndexPath, srcId: mover.id, destFolderId: destFolderId)
+    }
+    
+    func openFolder(_ folderIndex: Int) {
+        let destFolderId = boxList[folderIndex].id
+        if boxList[folderIndex].openSectionIfNeeded() {
+            output.send(.reloadSections(idArray: [destFolderId]))
+            output.send(.sendBoxList(boxList: boxList))
+        }
     }
     
     func addFolder(_ folder: Folder) {
         let boxListSectionViewModel = BoxListSectionViewModel(folder: folder)
         boxList.append(boxListSectionViewModel)
-        haveReloadData = true
     }
     
     func deleteFolder(at row: Int) {
+        sectionsToReload.remove(boxList[row].id)
         boxList.remove(at: row)
-        haveReloadData = true
     }
     
     func editFolderName(at row: Int, name: String) {
-        boxList[row].folder.name = name
-        haveReloadData = true
+        boxList[row].name = name
+        sectionsToReload.update(with: boxList[row].id)
     }
     
     func moveFolder(from: Int, to: Int) {
         let mover = boxList.remove(at: from)
         boxList.insert(mover, at: to)
-        haveReloadData = true
     }
 
 }

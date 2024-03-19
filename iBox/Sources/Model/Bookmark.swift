@@ -9,6 +9,6 @@ import Foundation
 
 struct Bookmark: Codable {
     let id: UUID
-    let name: String
-    let url: URL
+    var name: String
+    var url: URL
 }

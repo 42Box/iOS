@@ -32,6 +32,7 @@ class BoxListViewController: BaseViewController<BoxListView>, BaseViewController
         setNavigationBarMenuButtonHidden(false)
         setNavigationBarAddButtonAction(#selector(addButtonTapped))
         setNavigationBarMoreButtonAction(#selector(moreButtonTapped))
+        setNavigationBarDoneButtonAction(#selector(doneButtonTapped))
     }
     
     // MARK: - Action Functions
@@ -46,10 +47,68 @@ class BoxListViewController: BaseViewController<BoxListView>, BaseViewController
         editViewController.delegate = self
         present(editViewController, animated: false)
     }
+    
+    @objc private func doneButtonTapped() {
+        guard let contentView = contentView as? BoxListView else { return }
+        contentView.viewModel?.input.send(.toggleEditStatus)
+        setNavigationBarMenuButtonHidden(false)
+        setNavigationBarDoneButtonHidden(true)
+    }
 
 }
 
 extension BoxListViewController: BoxListViewDelegate {
+    func presentEditBookmarkController(at indexPath: IndexPath) {
+        guard let contentView = contentView as? BoxListView else { return }
+        
+        let controller = UIAlertController(title: "북마크 편집", message: nil, preferredStyle: .alert)
+        
+        let cancelAction = UIAlertAction(title: "취소", style: .default) { _ in return }
+        let okAction = UIAlertAction(title: "확인", style: .default) { [weak self] action in
+            guard let newName = controller.textFields?.first?.text else { return }
+            guard let newUrlString = controller.textFields?.last?.text,
+            let newUrl = URL(string: newUrlString) else { return }
+            
+            contentView.viewModel?.editBookmark(at: indexPath, name: newName, url: newUrl)
+        }
+        controller.addAction(cancelAction)
+        controller.addAction(okAction)
+        okAction.isEnabled = true
+        
+        controller.addTextField() { textField in
+            NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: textField, queue: OperationQueue.main, using:
+                    {_ in
+                        let textCount = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines).count ?? 0
+                        let textIsNotEmpty = textCount > 0
+                        
+                        okAction.isEnabled = textIsNotEmpty
+                    
+                })
+        }
+        controller.addTextField() { textField in
+            NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: textField, queue: OperationQueue.main, using:
+                    {_ in
+                        let textCount = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines).count ?? 0
+                        let textIsNotEmpty = textCount > 0
+                        
+                        okAction.isEnabled = textIsNotEmpty
+                    
+                })
+        }
+        
+        guard let bookmark = contentView.viewModel?.bookmark(at: indexPath) else { return }
+        
+        controller.textFields?.first?.text = bookmark.name
+        controller.textFields?.first?.autocorrectionType = .no
+        controller.textFields?.first?.spellCheckingType = .no
+        
+        controller.textFields?.last?.text = bookmark.url.absoluteString
+        controller.textFields?.last?.autocorrectionType = .no
+        controller.textFields?.last?.spellCheckingType = .no
+        
+        self.present(controller, animated: true)
+    }
+    
     
     func didSelectWeb(at url: URL, withName name: String) {
         let viewController = WebViewController()
@@ -59,14 +118,17 @@ extension BoxListViewController: BoxListViewDelegate {
     }
     
     func pushViewController(type: EditType) {
+        guard let contentView = contentView as? BoxListView else { return }
         switch type {
         case .folder:
-            guard let contentView = contentView as? BoxListView else { return }
+            
             let editFolderViewController = EditFolderViewController(folders: contentView.viewModel?.folders ?? [])
             editFolderViewController.delegate = self
             navigationController?.pushViewController(editFolderViewController, animated: true)
         case .bookmark:
-            navigationController?.pushViewController(EditBookmarkViewController(), animated: true)
+            contentView.viewModel?.input.send(.toggleEditStatus)
+            setNavigationBarMenuButtonHidden(true)
+            setNavigationBarDoneButtonHidden(false)
         }
     }
     

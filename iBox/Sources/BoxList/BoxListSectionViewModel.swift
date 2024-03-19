@@ -9,15 +9,18 @@ import Foundation
 
 class BoxListSectionViewModel: Identifiable {
     var folder: Folder
-    private var boxListCellViewModels: [BoxListCellViewModel]!
+    
+    var boxListCellViewModels: [BoxListCellViewModel] {
+        didSet {
+            folder.bookmarks = boxListCellViewModels.map {
+                Bookmark(id: $0.id, name: $0.name, url: $0.url)
+            }
+        }
+    }
     
     init(folder: Folder) {
         self.folder = folder
         boxListCellViewModels = folder.bookmarks.map { BoxListCellViewModel(bookmark: $0) }
-    }
-    
-    var boxListCellViewModelsWithStatus: [BoxListCellViewModel] {
-        return isOpened ? boxListCellViewModels : []
     }
     
     var id: UUID {
@@ -25,16 +28,47 @@ class BoxListSectionViewModel: Identifiable {
     }
     
     var name: String {
-        folder.name
+        get {
+            folder.name
+        }
+        set {
+            folder.name = newValue
+        }
     }
     
-    var isOpened: Bool {
-        get {
-            folder.isOpened
-        }
+    var isOpened: Bool = false
+    
+    
+    var boxListCellViewModelsWithStatus: [BoxListCellViewModel] {
+        return isOpened ? boxListCellViewModels : []
+    }
+    
+    func viewModel(at index: Int) -> BoxListCellViewModel {
+        return boxListCellViewModels[index]
+    }
         
-        set {
-            folder.isOpened = newValue
+    @discardableResult
+    func deleteCell(at index: Int) -> BoxListCellViewModel {
+        let cell = boxListCellViewModels[index]
+        boxListCellViewModels.remove(at: index)
+        return cell
+    }
+    
+    func updateCell(at index: Int, bookmark: Bookmark) {
+        boxListCellViewModels[index].bookmark = bookmark
+    }
+    
+    func insertCell(_ cell: BoxListCellViewModel, at index: Int) {
+        boxListCellViewModels.insert(cell, at: index)
+    }
+    
+    @discardableResult
+    func openSectionIfNeeded() -> Bool {
+        if !isOpened {
+            isOpened = true
+            return true
         }
+        return false
     }
 }
+

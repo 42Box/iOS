@@ -14,12 +14,13 @@ protocol BoxListViewDelegate: AnyObject {
     func didSelectWeb(at url: URL, withName name: String)
     func pushViewController(type: EditType)
     func pushViewController(url: URL?)
+    func presentEditBookmarkController(at indexPath: IndexPath)
 }
 
 class BoxListView: UIView {
     
     var viewModel: BoxListViewModel?
-    private var boxListDataSource: UITableViewDiffableDataSource<BoxListSectionViewModel.ID, BoxListCellViewModel.ID>!
+    private var boxListDataSource: BoxListDataSource!
     weak var delegate: BoxListViewDelegate?
     private var cancellables = Set<AnyCancellable>()
     
@@ -31,7 +32,7 @@ class BoxListView: UIView {
         $0.backgroundColor = .tableViewBackgroundColor
     }
     
-    private let tableView = UITableView().then {
+    private let tableView = UITableView(frame: .zero, style: .grouped).then {
         $0.register(BoxListCell.self, forCellReuseIdentifier: BoxListCell.reuseIdentifier)
         
         $0.sectionHeaderTopPadding = 0
@@ -83,26 +84,36 @@ class BoxListView: UIView {
     }
     
     private func configureDataSource() {
-        boxListDataSource = UITableViewDiffableDataSource(tableView: tableView) { [weak self] tableView, indexPath, itemIdentifier in
+        boxListDataSource = BoxListDataSource(tableView: tableView) { [weak self] tableView, indexPath, itemIdentifier in
             guard let self, let viewModel = self.viewModel else { fatalError() }
             guard let cell = tableView.dequeueReusableCell(withIdentifier: BoxListCell.reuseIdentifier, for: indexPath) as? BoxListCell else { fatalError() }
+            cell.setEditButtonHidden(!viewModel.isEditing)
             cell.bindViewModel(viewModel.viewModel(at: indexPath))
+            cell.onDelete = { [weak self] in
+                guard let self else { return }
+                if let currentIndexPath = self.tableView.indexPath(for: cell) {
+                    self.viewModel?.deleteBookmark(at: currentIndexPath)
+                }
+            }
+            cell.onEdit = { [weak self] in
+                guard let self else { return }
+                if let currentIndexPath = self.tableView.indexPath(for: cell) {
+                    self.delegate?.presentEditBookmarkController(at: currentIndexPath)
+                }
+            }
+
             return cell
         }
+        boxListDataSource.delegate = self
     }
     
-    private func applySnapshot(with: [BoxListSectionViewModel]) {
+    private func applySnapshot(with sections: [BoxListSectionViewModel]) {
         var snapshot = NSDiffableDataSourceSnapshot<BoxListSectionViewModel.ID, BoxListCellViewModel.ID>()
-        snapshot.appendSections(with.map{ $0.id })
-        for folder in with {
-            snapshot.appendItems(folder.boxListCellViewModelsWithStatus.map { $0.id }, toSection: folder.id)
+        snapshot.appendSections(sections.map{ $0.id })
+        for section in sections {
+            snapshot.appendItems(section.boxListCellViewModelsWithStatus.map { $0.id }, toSection: section.id)
         }
-        if viewModel?.haveReloadData ?? false {
-            boxListDataSource.applySnapshotUsingReloadData(snapshot)
-            viewModel?.haveReloadData = false
-        } else {
-            boxListDataSource.apply(snapshot, animatingDifferences: true)
-        }
+        boxListDataSource.apply(snapshot, animatingDifferences: true)
     }
     
     private func bindViewModel() {
@@ -114,10 +125,22 @@ class BoxListView: UIView {
                 switch event {
                 case .sendBoxList(boxList: let boxList):
                     self?.applySnapshot(with: boxList)
-                    
+                case .editStatus(isEditing: let isEditing):
+                    self?.tableView.setEditing(isEditing, animated: true)
+                    guard let snapshot = self?.boxListDataSource.snapshot() else { return }
+                    self?.boxListDataSource.applySnapshotUsingReloadData(snapshot)
+                case .reloadSections(idArray: let idArray):
+                    guard var snapshot = self?.boxListDataSource.snapshot() else { return }
+                    snapshot.reloadSections(idArray)
+                    self?.boxListDataSource.apply(snapshot)
+                case .reloadRows(idArray: let idArray):
+                    guard var snapshot = self?.boxListDataSource.snapshot() else { return }
+                    snapshot.reloadItems(idArray)
+                    self?.boxListDataSource.apply(snapshot)
                 }
             }.store(in: &cancellables)
     }
+    
 }
 
 extension BoxListView: UITableViewDelegate {
@@ -130,7 +153,7 @@ extension BoxListView: UITableViewDelegate {
             make.top.bottom.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(15)
         }
-        view.backgroundColor = .clear
+        view.backgroundColor = .backgroundColor
         line.backgroundColor = .quaternaryLabel
         return view
     }
@@ -196,5 +219,53 @@ extension BoxListView: UITableViewDelegate {
         configuration.performsFirstActionWithFullSwipe = false // 완전히 스와이프했을 때 첫 번째 액션이 자동으로 실행되는 것을 막음
         
         return configuration
+    }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .none
+    }
+    
+    func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+        return false
+    }
+    
+}
+
+extension BoxListView: BoxListDataSourceDelegate {
+    func openFolderIfNeeded(_ folderIndex: Int) {        viewModel?.input.send(.openFolderIfNeeded(folderIndex: folderIndex))
+    }
+    
+    func moveCell(at sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        viewModel?.input.send(.moveBookmark(from: sourceIndexPath, to: destinationIndexPath))
+    }
+    
+}
+
+protocol BoxListDataSourceDelegate: AnyObject {
+    func moveCell(at sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath)
+    func openFolderIfNeeded(_ folderIndex: Int)
+}
+
+class BoxListDataSource: UITableViewDiffableDataSource<BoxListSectionViewModel.ID, BoxListCellViewModel.ID> {
+    weak var delegate: BoxListDataSourceDelegate?
+    
+    override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        
+        delegate?.moveCell(at: sourceIndexPath, to: destinationIndexPath)
+        
+        guard let src = itemIdentifier(for: sourceIndexPath),
+            sourceIndexPath != destinationIndexPath else { return }
+        
+        var snap = snapshot()
+        if let dest = itemIdentifier(for: destinationIndexPath) {
+            snap.moveItem(src, beforeItem:dest)
+        } else {
+            snap.deleteItems([src])
+            snap.appendItems([src], toSection: snap.sectionIdentifiers[destinationIndexPath.section])
+        }
+        
+        self.apply(snap, animatingDifferences: false)
+        
+        delegate?.openFolderIfNeeded(destinationIndexPath.section)
     }
 }

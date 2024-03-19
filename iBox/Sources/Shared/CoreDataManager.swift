@@ -309,13 +309,13 @@ extension CoreDataManager {
         let destBookmarks = getAllBookmarkEntity(in: destFolderId)
         let destFolder = getFolderEntity(id: destFolderId)
         
-        for (index, bookmark) in srcBookmarks.enumerated() where bookmark.order > movingBookmark.order {
+        for bookmark in srcBookmarks where bookmark.order > movingBookmark.order {
             bookmark.order -= 1
         }
         
         movingBookmark.folder = destFolder
         movingBookmark.order = Int64(destination.row)
-        for (index, bookmark) in destBookmarks.enumerated() where bookmark.order >= movingBookmark.order {
+        for bookmark in destBookmarks where bookmark.order >= movingBookmark.order {
             bookmark.order += 1
         }
     }
