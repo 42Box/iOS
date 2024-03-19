@@ -51,6 +51,9 @@ class iBoxFactory: ProjectFactory {
                 "CFBundleTypeRole": "Editor"
             ]
         ],
+        "NSAppTransportSecurity": [
+            "NSAllowsArbitraryLoadsInWebContent": true
+        ]
     ]
     
     private let shareExtensionInfoPlist: [String: Plist.Value] = [
