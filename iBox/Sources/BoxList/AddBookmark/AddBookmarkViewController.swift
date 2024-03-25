@@ -164,7 +164,7 @@ final class AddBookmarkViewController: UIViewController {
 
     func updateFolderList() {
         if let folderListVC = navigationController?.viewControllers.first(where: { $0 is FolderListViewController }) as? FolderListViewController {
-            folderListVC.bookmarkListView.reloadFolderList()
+            folderListVC.folderListView.reloadFolderList()
         }
     }
 }
