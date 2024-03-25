@@ -42,7 +42,7 @@ final class AddBookmarkViewController: UIViewController {
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "취소", style: .plain, target: self, action: #selector(cancelButtonTapped))
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "추가", style: .plain, target: self, action: #selector(addButtonTapped))
-        navigationItem.rightBarButtonItem?.isEnabled = false    // 처음에 '추가' 버튼 비활성화
+        navigationItem.rightBarButtonItem?.isEnabled = false
         
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 17) 
@@ -69,14 +69,11 @@ final class AddBookmarkViewController: UIViewController {
     
     @objc private func cancelButtonTapped() {
         
-        // nameTextView와 urlTextView가 모두 비어 있는지 확인
         let isTextFieldsEmpty = addBookmarkView.nameTextView.text?.isEmpty ?? true && addBookmarkView.urlTextView.text?.isEmpty ?? true
 
         if isTextFieldsEmpty {
-            // 모든 텍스트 필드가 비어있으면, 바로 dismiss
             self.dismiss(animated: true, completion: nil)
         } else {
-            // 하나라도 텍스트 필드에 내용이 있으면, 사용자에게 경고 창 표시
             let alertController = UIAlertController(title: nil, message: "변경사항 폐기", preferredStyle: .alert)
 
 
