@@ -10,7 +10,6 @@ import UIKit
 class FolderListView: UIView {
 
     let coreDataManager = CoreDataManager.shared
-    
     var folders: [Folder] = []
     var onFolderSelected: ((Folder) -> Void)?
 
@@ -33,23 +32,30 @@ class FolderListView: UIView {
         $0.spacing = 20
     }
     
+    // MARK: - Initializer
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        configureUI()
-        
+        setupProperty()
+        setupHierarchy()
+        setupLayout()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configureUI() {
+    // MARK: - Setup Methods
+    
+    func setupProperty() {
         backgroundColor = .systemGroupedBackground
-        addSubview(stackView)
-        setupLayout()
         setupTableView()
     }
 
+    func setupHierarchy() {
+        addSubview(stackView)
+    }
+    
     func setupLayout() {
         stackView.snp.makeConstraints { make in
             make.top.equalTo(self.safeAreaLayoutGuide.snp.top).offset(20) // Adjust as necessary
@@ -64,7 +70,6 @@ class FolderListView: UIView {
         self.tableView.delegate = self
         self.tableView.register(FolderListCell.self, forCellReuseIdentifier: FolderListCell.reuseIdentifier)
 
-        // 모든 폴더 가져오기
         folders = coreDataManager.getFolders()
     }
     
