@@ -86,7 +86,10 @@ extension FolderListView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: FolderListCell.reuseIdentifier, for: indexPath) as! FolderListCell
-        cell.folderNameLabel.text = folders[indexPath.row].name
+        let folder = folders[indexPath.row]
+
+        let isSelectedFolder = UserDefaultsManager.selectedFolder.id == folder.id
+        cell.configureWith(folder: folder, isSelected: isSelectedFolder)
 
         return cell
     }

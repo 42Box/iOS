@@ -23,6 +23,13 @@ class FolderListCell: UITableViewCell {
         $0.textColor = .label
         $0.font = .systemFont(ofSize: 17, weight: .regular)
     }
+    
+    private let checkImageView = UIImageView().then {
+        $0.image = UIImage(systemName: "checkmark")
+        $0.contentMode = .scaleAspectFit
+        $0.tintColor = .box
+        $0.isHidden = true
+    }
 
     // MARK: - Initializer
 
@@ -46,6 +53,7 @@ class FolderListCell: UITableViewCell {
     private func setupHierarchy() {
         self.contentView.addSubview(folderImageView)
         self.contentView.addSubview(folderNameLabel)
+        self.contentView.addSubview(checkImageView)
     }
     
     func setupLayout() {
@@ -65,6 +73,16 @@ class FolderListCell: UITableViewCell {
             make.bottom.lessThanOrEqualToSuperview().offset(-10)
         }
         
+        checkImageView.snp.makeConstraints { make in
+             make.centerY.equalToSuperview()
+             make.trailing.equalToSuperview().offset(-20)
+             make.width.height.equalTo(24)
+         }
+    }
+    
+    func configureWith(folder: Folder, isSelected: Bool) {
+        folderNameLabel.text = folder.name
+        checkImageView.isHidden = !isSelected
     }
     
 }
