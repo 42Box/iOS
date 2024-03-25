@@ -63,7 +63,10 @@ final class AddBookmarkViewController: UIViewController {
     }
     
     private func updateSelectedFolder() {
-        selectedFolder = selectedFolder ?? CoreDataManager.shared.getFolders().first
+        selectedFolder = UserDefaultsManager.selectedFolder
+        if selectedFolder == nil {
+            selectedFolder = CoreDataManager.shared.getFolders().first
+        }
         addBookmarkView.selectedFolderName = selectedFolder?.name
     }
     

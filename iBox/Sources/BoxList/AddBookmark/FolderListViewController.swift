@@ -23,6 +23,7 @@ class FolderListViewController: UIViewController {
             
             if let addBookmarkVC = self.navigationController?.viewControllers.first as? AddBookmarkViewController {
                 addBookmarkVC.selectedFolder = folder
+                UserDefaultsManager.selectedFolder = folder
                 
                 self.navigationController?.popViewController(animated: true)
             }
