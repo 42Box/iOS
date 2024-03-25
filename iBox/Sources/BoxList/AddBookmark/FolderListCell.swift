@@ -11,6 +11,8 @@ class FolderListCell: UITableViewCell {
     
     static let reuseIdentifier = "ListCell"
     
+    // MARK: - UI Components
+
     private let folderImageView = UIImageView().then {
         $0.image = UIImage(systemName: "folder.fill")
         $0.contentMode = .scaleAspectFit
@@ -22,21 +24,28 @@ class FolderListCell: UITableViewCell {
         $0.font = .systemFont(ofSize: 17, weight: .regular)
     }
 
-    
+    // MARK: - Initializer
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
-        configureUI()
+        setupProperty()
+        setupHierarchy()
+        setupLayout()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configureUI() {
+    // MARK: - Setup Methods
+    
+    private func setupProperty() {
+        self.backgroundColor = .clear
+    }
+
+    private func setupHierarchy() {
         self.contentView.addSubview(folderImageView)
         self.contentView.addSubview(folderNameLabel)
-        self.backgroundColor = .clear
-        setupLayout()
     }
     
     func setupLayout() {
