@@ -64,10 +64,13 @@ class FolderListView: UIView {
         self.tableView.delegate = self
         self.tableView.register(FolderListCell.self, forCellReuseIdentifier: FolderListCell.reuseIdentifier)
 
-        // 모든 폴더 가져오기
         folders = coreDataManager.getFolders()
     }
-    
+   
+    func reloadFolderList() {
+        folders = coreDataManager.getFolders()
+        tableView.reloadData()
+    }
 }
 
 extension FolderListView: UITableViewDataSource {
