@@ -14,7 +14,7 @@ class FolderListCell: UITableViewCell {
     private let folderImageView = UIImageView().then {
         $0.image = UIImage(systemName: "folder.fill")
         $0.contentMode = .scaleAspectFit
-        $0.tintColor = .folderGray
+        $0.tintColor = .gray
     }
     
     let folderNameLabel = UILabel().then {

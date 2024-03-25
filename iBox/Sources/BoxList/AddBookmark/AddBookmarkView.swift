@@ -34,7 +34,7 @@ class AddBookmarkView: UIView {
     private let nameTextViewPlaceHolder = UILabel().then {
         $0.text = "북마크 이름"
         $0.font = UIFont.systemFont(ofSize: 18)
-        $0.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+        $0.textColor = .systemGray3
     }
     
     let nameTextView = UITextView().then {
@@ -47,18 +47,18 @@ class AddBookmarkView: UIView {
     }
     
     private let separatorView = UIView().then {
-        $0.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+        $0.backgroundColor = .systemGray3
     }
     
     private let urlTextViewPlaceHolder = UILabel().then {
         $0.text = "URL"
         $0.font = UIFont.systemFont(ofSize: 18)
-        $0.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+        $0.textColor = .systemGray3
     }
     
     let urlTextView = UITextView().then {
         $0.backgroundColor = .clear
-        $0.layer.borderWidth = 0 // 테두리 없음
+        $0.layer.borderWidth = 0
         $0.textContainerInset = UIEdgeInsets(top: 7, left: 0, bottom: 0, right: 0)
         $0.font = UIFont.systemFont(ofSize: 16)
         $0.textColor = .label
@@ -82,14 +82,14 @@ class AddBookmarkView: UIView {
     
     let selectedFolderLabel = UILabel().then {
         $0.font = UIFont.systemFont(ofSize: 17)
-        $0.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+        $0.textColor = .systemGray
         $0.textAlignment = .right
     }
     
     private let chevronImageView = UIImageView().then {
         let image = UIImage(systemName: "chevron.forward")?.withRenderingMode(.alwaysTemplate)
         $0.image = image
-        $0.tintColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+        $0.tintColor = .systemGray
         $0.contentMode = .scaleAspectFit
     }
     
