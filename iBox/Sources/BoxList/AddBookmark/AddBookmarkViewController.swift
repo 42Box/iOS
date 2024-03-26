@@ -63,7 +63,12 @@ final class AddBookmarkViewController: UIViewController {
     }
     
     private func updateSelectedFolder() {
-        selectedFolder = selectedFolder ?? CoreDataManager.shared.getFolders().first
+        selectedFolder = UserDefaultsManager.selectedFolder
+        
+        if selectedFolder?.name == "" {
+            selectedFolder = CoreDataManager.shared.getFolders().first
+        }
+        
         addBookmarkView.selectedFolderName = selectedFolder?.name
     }
     
@@ -91,7 +96,6 @@ final class AddBookmarkViewController: UIViewController {
     }
     
     @objc private func addButtonTapped() {
-        
         guard let name = addBookmarkView.nameTextView.text, !name.isEmpty,
               let urlString = addBookmarkView.urlTextView.text, !urlString.isEmpty,
               let url = URL(string: urlString) else {
@@ -114,7 +118,55 @@ final class AddBookmarkViewController: UIViewController {
     private func openFolderSelection() {
         let folderListViewController = FolderListViewController()
         folderListViewController.title = "목록"
+        
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addFolderAction))
+        folderListViewController.navigationItem.rightBarButtonItem = addButton
+        
         navigationController?.pushViewController(folderListViewController, animated: true)
     }
     
+    @objc func addFolderAction() {
+        let controller = UIAlertController(title: "새로운 폴더", message: "이 폴더의 이름을 입력하십시오.", preferredStyle: .alert)
+        
+        controller.addTextField { textField in
+            textField.placeholder = "폴더 이름"
+            textField.autocorrectionType = .no
+            textField.spellCheckingType = .no
+        }
+        
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        let addAction = UIAlertAction(title: "추가", style: .default) { [unowned controller, weak self] _ in
+            guard let textField = controller.textFields?.first,
+                  let folderName = textField.text, !folderName.trimmingCharacters(in: .whitespaces).isEmpty else {
+                return
+            }
+            
+            let newFolder = Folder(id: UUID(), name: folderName, bookmarks: [])
+            self?.coreDataManager.addFolder(newFolder)
+            
+            self?.updateFolderList()
+        }
+        
+        controller.addAction(cancelAction)
+        controller.addAction(addAction)
+        
+        NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: controller.textFields?.first, queue: .main) { notification in
+            if let textField = notification.object as? UITextField,
+               let text = textField.text, !text.trimmingCharacters(in: .whitespaces).isEmpty {
+                addAction.isEnabled = true
+            } else {
+                addAction.isEnabled = false
+            }
+        }
+        
+        addAction.isEnabled = false
+        
+        present(controller, animated: true)
+    }
+
+    func updateFolderList() {
+        if let folderListVC = navigationController?.viewControllers.first(where: { $0 is FolderListViewController }) as? FolderListViewController {
+            folderListVC.folderListView.reloadFolderList()
+        }
+    }
 }
