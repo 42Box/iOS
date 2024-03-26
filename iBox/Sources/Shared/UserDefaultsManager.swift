@@ -12,8 +12,8 @@ final class UserDefaultsManager {
     @UserDefaultsData(key: "theme", defaultValue: Theme.system)
     static var theme: Theme
     
-    @UserDefaultsData(key: "favorite", defaultValue: Bookmark(id: UUID(), name: "42 Intra", url: URL(string: "https://profile.intra.42.fr/")!))
-    static var favorite: Bookmark
+    @UserDefaultsData(key: "favoriteId", defaultValue: nil)
+    static var favoriteId: UUID?
     
     @UserDefaultsData(key: "homeTabIndex", defaultValue: 0)
     static var homeTabIndex: Int

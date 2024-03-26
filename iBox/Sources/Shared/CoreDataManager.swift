@@ -199,6 +199,15 @@ extension CoreDataManager {
 // 북마크 관련
 extension CoreDataManager {
     
+    func getBookmarkUrl(_ bookmarkId: UUID) -> URL? {
+        let entity = getBookmarkEntity(id: bookmarkId)
+        if let entity {
+            return entity.url
+        } else {
+            return nil
+        }
+    }
+    
     func addBookmark(_ bookmark: Bookmark, folderId: UUID) {
         let context = persistentContainer.viewContext
         
