@@ -31,7 +31,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
             print("Opened URL: \(url)")
             
-            URLdecoder.handleCustomURL(url)
+            // URLdecoder.handleCustomURL(url)
+            GlobalURLManager.shared.incomingURL = url
+
+            if let windowScene = scene as? UIWindowScene,
+               let tabBarController = windowScene.windows.first?.rootViewController as? UITabBarController {
+                tabBarController.selectedIndex = 0 // 첫 번째 탭으로 이동
+
+                // 첫 번째 탭(FirstViewController)에 있는 shouldPresentModalAutomatically를 true로 설정
+                if let navigationController = tabBarController.selectedViewController as? UINavigationController,
+                   let boxListViewController = navigationController.viewControllers.first as? BoxListViewController {
+                    boxListViewController.shouldPresentModalAutomatically = true
+                }
+            }
         }
     }
     
@@ -60,10 +72,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             guard url.scheme == "iBox" else { return }
 
             print("Opened URL: \(url)")
-            
             // 앱 실행 중에 url이 들어오는 경우 Logic
+            // URLdecoder.handleCustomURL(url)
+            GlobalURLManager.shared.incomingURL = url
+
+            if let windowScene = scene as? UIWindowScene,
+               let tabBarController = windowScene.windows.first?.rootViewController as? UITabBarController {
+                tabBarController.selectedIndex = 0 // 첫 번째 탭으로 이동
+
+                // 첫 번째 탭(FirstViewController)에 있는 shouldPresentModalAutomatically를 true로 설정
+                if let navigationController = tabBarController.selectedViewController as? UINavigationController,
+                   let boxListViewController = navigationController.viewControllers.first as? BoxListViewController {
+                    boxListViewController.shouldPresentModalAutomatically = true
+                }
+            }
             
-            URLdecoder.handleCustomURL(url)
         }
     }
 
