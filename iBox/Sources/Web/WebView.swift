@@ -78,8 +78,7 @@ class WebView: UIView {
         }
         
         progressView.snp.makeConstraints { make in
-            make.bottom.leading.trailing.equalToSuperview()
-            make.height.equalTo(2)
+            make.top.leading.trailing.equalToSuperview()
         }
     }
     
@@ -103,7 +102,7 @@ extension WebView: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         progressView.setProgress(1.0, animated: true)
         // 약간의 딜레이를 주어서 프로그레스 바가 완전히 차도록 함
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.progressView.isHidden = true
         }
     }
