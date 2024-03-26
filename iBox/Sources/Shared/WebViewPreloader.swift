@@ -49,7 +49,8 @@ class WebViewPreloader {
     
     func setFavoriteUrl(url: URL?) {
         if let favoriteView {
-            if url == favoriteView.url {
+            if url == favoriteView.url || 
+                (url == nil && favoriteView.url == defaultUrl ) {
                 return
             } else {
                 self.favoriteView?.url = url ?? defaultUrl
