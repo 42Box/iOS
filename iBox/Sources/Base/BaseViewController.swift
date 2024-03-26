@@ -25,7 +25,7 @@ class BaseViewController<View: UIView>: UIViewController {
     
     let backgroundColor: UIColor = .backgroundColor
     let tintColor: UIColor = .label
-    let titleFont: UIFont = .systemFont(ofSize: 20, weight: .semibold)
+    let titleFont: UIFont = .titleFont
     
     // MARK: - UI Components
     
@@ -34,16 +34,16 @@ class BaseViewController<View: UIView>: UIViewController {
     let navigationBar = NavigationBar().then {
         $0.backButton.configuration = .plain()
         $0.backButton.configuration?.image = UIImage(systemName: "chevron.left")
-        $0.backButton.configuration?.preferredSymbolConfigurationForImage = .init(weight: .bold)
+        $0.backButton.configuration?.preferredSymbolConfigurationForImage = .init(weight: .semibold)
         $0.addButton.configuration = .plain()
         $0.addButton.configuration?.image = UIImage(systemName: "plus")
-        $0.addButton.configuration?.preferredSymbolConfigurationForImage = .init(weight: .bold)
+        $0.addButton.configuration?.preferredSymbolConfigurationForImage = .init(weight: .semibold)
         $0.moreButton.configuration = .plain()
         $0.moreButton.configuration?.image = UIImage(systemName: "ellipsis.circle")
-        $0.moreButton.configuration?.preferredSymbolConfigurationForImage = .init(weight: .bold)
+        $0.moreButton.configuration?.preferredSymbolConfigurationForImage = .init(weight: .semibold)
         $0.doneButton.configuration = .plain()
         $0.doneButton.configuration?.baseForegroundColor = .label
-        $0.doneButton.configuration?.attributedTitle = AttributedString("완료", attributes: AttributeContainer([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18, weight: .semibold)]))
+        $0.doneButton.configuration?.attributedTitle = AttributedString("완료", attributes: AttributeContainer([NSAttributedString.Key.font: UIFont.semiboldLabelFont]))
     }
     
     let contentView: UIView = View()

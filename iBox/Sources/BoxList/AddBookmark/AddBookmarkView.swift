@@ -30,7 +30,7 @@ class AddBookmarkView: UIView {
     
     private let nameTextViewPlaceHolder = UILabel().then {
         $0.text = "북마크 이름"
-        $0.font = UIFont.systemFont(ofSize: 18)
+        $0.font = .cellTitleFont
         $0.textColor = .systemGray3
     }
     
@@ -38,7 +38,7 @@ class AddBookmarkView: UIView {
         $0.backgroundColor = .clear
         $0.layer.borderWidth = 0
         $0.textContainerInset = UIEdgeInsets(top: 7, left: 0, bottom: 0, right: 0)
-        $0.font = UIFont.systemFont(ofSize: 16)
+        $0.font = .cellTitleFont
         $0.textColor = .label
         $0.isScrollEnabled = true
     }
@@ -49,7 +49,7 @@ class AddBookmarkView: UIView {
     
     private let urlTextViewPlaceHolder = UILabel().then {
         $0.text = "URL"
-        $0.font = UIFont.systemFont(ofSize: 18)
+        $0.font = .cellTitleFont
         $0.textColor = .systemGray3
     }
     
@@ -57,7 +57,7 @@ class AddBookmarkView: UIView {
         $0.backgroundColor = .clear
         $0.layer.borderWidth = 0
         $0.textContainerInset = UIEdgeInsets(top: 7, left: 0, bottom: 0, right: 0)
-        $0.font = UIFont.systemFont(ofSize: 16)
+        $0.font = .cellTitleFont
         $0.textColor = .label
         $0.isScrollEnabled = true
     }
@@ -66,18 +66,18 @@ class AddBookmarkView: UIView {
         $0.backgroundColor = UIColor.backgroundColor
         $0.layer.cornerRadius = 10
         $0.clipsToBounds = true
-        $0.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        $0.titleLabel?.font = .cellTitleFont
         $0.isEnabled = true
     }
     
     private let buttonLabel = UILabel().then {
         $0.text = "목록"
-        $0.font = UIFont.systemFont(ofSize: 17)
+        $0.font = .cellTitleFont
         $0.textColor = .label
     }
     
     let selectedFolderLabel = UILabel().then {
-        $0.font = UIFont.systemFont(ofSize: 17)
+        $0.font = .descriptionFont
         $0.textColor = .systemGray
         $0.textAlignment = .right
     }

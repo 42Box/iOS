@@ -25,7 +25,7 @@ class HomeTabSelectorViewController: BaseViewController<HomeTabSelectorView>, Ba
     
     func setupNavigationBar() {
         setNavigationBarTitleLabelText("홈화면 설정하기")
-        setNavigationBarTitleLabelFont(.systemFont(ofSize: 17, weight: .semibold))
+        setNavigationBarTitleLabelFont(.subTitlefont)
         setNavigationBarBackButtonHidden(false)
     }
     

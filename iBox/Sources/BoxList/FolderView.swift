@@ -16,7 +16,7 @@ class FolderView: UIView {
     
     private let folderNameLabel = UILabel().then {
         $0.textColor = .label
-        $0.font = .systemFont(ofSize: 18, weight: .semibold)
+        $0.font = .boldLabelFont
     }
     
     init() {

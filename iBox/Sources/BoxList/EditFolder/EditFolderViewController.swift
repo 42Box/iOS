@@ -44,7 +44,7 @@ class EditFolderViewController: BaseViewController<EditFolderView>, BaseViewCont
     
     func setupNavigationBar() {
         setNavigationBarTitleLabelText("폴더 관리")
-        setNavigationBarTitleLabelFont(.systemFont(ofSize: 17, weight: .semibold))
+        setNavigationBarTitleLabelFont(.semiboldLabelFont)
         setNavigationBarAddButtonHidden(false)
         setNavigationBarBackButtonHidden(false)
         setNavigationBarAddButtonAction(#selector(addButtonTapped))

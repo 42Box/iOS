@@ -18,12 +18,12 @@ class ResetView: UIView {
     let label = UILabel().then {
         $0.text = "경고: 이 작업을 진행하면 저장하신 모든 폴더 및 북마크 정보가 영구적으로 삭제되고 기본값으로 초기화됩니다. 진행하기 전에 중요한 정보가 없는지 다시 한번 확인해 주시기 바랍니다."
         $0.numberOfLines = 0
-        $0.font = .systemFont(ofSize: 15)
+        $0.font = .descriptionFont
     }
     
     let resetButton = UIButton().then {
         $0.configuration = .plain()
-        $0.configuration?.attributedTitle = .init("초기화", attributes: .init([.font: UIFont.boldSystemFont(ofSize: 15)]))
+        $0.configuration?.attributedTitle = .init("초기화", attributes: .init([.font: UIFont.descriptionFont]))
         $0.tintColor = .white
         $0.backgroundColor = .box
         $0.clipsToBounds = true
