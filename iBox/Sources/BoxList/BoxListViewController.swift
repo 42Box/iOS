@@ -126,11 +126,18 @@ extension BoxListViewController: BoxListViewDelegate {
     }
     
     
-    func didSelectWeb(at url: URL, withName name: String) {
-        let viewController = WebViewController()
-        viewController.selectedWebsite = url
-        viewController.title = name
-        navigationController?.pushViewController(viewController, animated: true)
+    func didSelectWeb(id: UUID, at url: URL, withName name: String) {
+        if let cachedViewController = WebCacheManager.shared.viewControllerForKey(id) {
+            // 이미 캐시에 존재한다면, 그 인스턴스를 재사용
+            navigationController?.pushViewController(cachedViewController, animated: true)
+        } else {
+            // 캐시에 없는 경우, 새로운 viewController 인스턴스를 생성하고 캐시에 추가합니다.
+            let viewController = WebViewController()
+            viewController.selectedWebsite = url
+            viewController.title = name
+            WebCacheManager.shared.cacheData(forKey: id, viewController: viewController)
+            navigationController?.pushViewController(viewController, animated: true)
+        }
     }
     
     func pushViewController(type: EditType) {
