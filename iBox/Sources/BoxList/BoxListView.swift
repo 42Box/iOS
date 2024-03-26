@@ -11,7 +11,7 @@ import UIKit
 import SnapKit
 
 protocol BoxListViewDelegate: AnyObject {
-    func didSelectWeb(at url: URL, withName name: String)
+    func didSelectWeb(id: UUID, at url: URL, withName name: String)
     func pushViewController(type: EditType)
     func pushViewController(url: URL?)
     func presentEditBookmarkController(at indexPath: IndexPath)
@@ -184,10 +184,8 @@ extension BoxListView: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let viewModel else { return }
-        let webUrl = viewModel.boxList[indexPath.section].boxListCellViewModelsWithStatus[indexPath.row].url
-        let webName = viewModel.boxList[indexPath.section].boxListCellViewModelsWithStatus[indexPath.row].name
-        delegate?.didSelectWeb(at: webUrl, withName: webName)
+        guard let cellViewModel = viewModel?.boxList[indexPath.section].boxListCellViewModelsWithStatus[indexPath.row] else { return }
+        delegate?.didSelectWeb(id: cellViewModel.id, at: cellViewModel.url, withName: cellViewModel.name)
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {

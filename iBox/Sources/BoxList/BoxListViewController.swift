@@ -8,8 +8,6 @@
 import UIKit
 
 class BoxListViewController: BaseViewController<BoxListView>, BaseViewControllerProtocol {
-
-    private var viewControllerCache: [String: WebViewController] = [:]
     
     // MARK: - Life Cycle
     
@@ -112,9 +110,8 @@ extension BoxListViewController: BoxListViewDelegate {
     }
     
     
-    func didSelectWeb(at url: URL, withName name: String) {
-        let urlString = url.absoluteString
-        if let cachedViewController = viewControllerCache[urlString] {
+    func didSelectWeb(id: UUID, at url: URL, withName name: String) {
+        if let cachedViewController = WebCacheManager.shared.viewControllerForKey(id) {
             // 이미 캐시에 존재한다면, 그 인스턴스를 재사용
             navigationController?.pushViewController(cachedViewController, animated: true)
         } else {
@@ -122,7 +119,7 @@ extension BoxListViewController: BoxListViewDelegate {
             let viewController = WebViewController()
             viewController.selectedWebsite = url
             viewController.title = name
-            viewControllerCache[urlString] = viewController
+            WebCacheManager.shared.cacheData(forKey: id, viewController: viewController)
             navigationController?.pushViewController(viewController, animated: true)
         }
     }
