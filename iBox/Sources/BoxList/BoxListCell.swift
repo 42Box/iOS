@@ -24,7 +24,9 @@ class BoxListCell: UITableViewCell {
         $0.contentMode = .scaleAspectFit
     }
     
-    private let label = UILabel()
+    private let label = UILabel().then {
+        $0.font = .cellTitleFont
+    }
     
     private let editButton = UIButton().then{
         $0.configuration = .plain()
@@ -79,7 +81,7 @@ class BoxListCell: UITableViewCell {
         cellImageView.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(20)
             make.top.bottom.equalToSuperview().inset(10)
-            make.width.equalTo(30)
+            make.width.equalTo(25)
         }
         
         label.snp.makeConstraints { make in

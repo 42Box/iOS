@@ -21,7 +21,7 @@ class FolderListCell: UITableViewCell {
     
     let folderNameLabel = UILabel().then {
         $0.textColor = .label
-        $0.font = .systemFont(ofSize: 17, weight: .regular)
+        $0.font = .cellTitleFont
     }
     
     private let checkImageView = UIImageView().then {

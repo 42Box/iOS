@@ -16,7 +16,7 @@ class HomeTabSelectorCell: UITableViewCell {
     // MARK: - UI Components
     
     let titleLabel = UILabel().then {
-        $0.font = .systemFont(ofSize: 16)
+        $0.font = .cellTitleFont
     }
     
     let selectButton = UIButton().then {

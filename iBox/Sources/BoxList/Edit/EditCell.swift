@@ -20,6 +20,7 @@ class EditCell: UITableViewCell {
     }
     
     private let titleLabel = UILabel().then {
+        $0.font = .cellTitleFont
         $0.textColor = .label
     }
     
