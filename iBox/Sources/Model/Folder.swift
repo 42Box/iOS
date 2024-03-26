@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Folder {
+struct Folder: Codable {
     let id: UUID
     var name: String
     var bookmarks: [Bookmark]
