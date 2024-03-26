@@ -26,8 +26,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func preloadFavoriteWeb() {
-        let favorite = UserDefaultsManager.favorite
-        let favoriteUrl = favorite.url
+        let favoriteId = UserDefaultsManager.favoriteId
+        var favoriteUrl: URL? = nil
+        if let favoriteId {
+            favoriteUrl = CoreDataManager.shared.getBookmarkUrl(favoriteId)
+            if favoriteUrl == nil {
+                UserDefaultsManager.favoriteId = nil
+            }
+        }
         WebViewPreloader.shared.preloadFavoriteView(url: favoriteUrl)
     }
 

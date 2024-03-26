@@ -190,12 +190,16 @@ extension BoxListView: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         // 액션 정의
-        let favoriteAction = UIContextualAction(style: .normal, title: "favorite", handler: {(action, view, completionHandler) in
-            self.viewModel?.input.send(.setFavorite(indexPath: indexPath))
+        let favoriteAction = UIContextualAction(style: .normal, title: "favorite", handler: { [weak self] (action, view, completionHandler) in
+            self?.viewModel?.input.send(.toggleFavorite(indexPath: indexPath))
             completionHandler(true)
         })
         favoriteAction.backgroundColor = .box2
-        favoriteAction.image = UIImage(systemName: "heart")
+        if viewModel?.isFavoriteBookmark(at: indexPath) == true {
+            favoriteAction.image = UIImage(systemName: "heart.fill")
+        } else {
+            favoriteAction.image = UIImage(systemName: "heart")
+        }
         
         let shareAction = UIContextualAction(style: .normal, title: "share", handler: {(action, view, completionHandler) in
             let cellViewModel = self.viewModel?.viewModel(at: indexPath)
