@@ -28,11 +28,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let urlContext = connectionOptions.urlContexts.first {
             let url = urlContext.url
             guard url.scheme == "iBox" else { return }
-
-            print("Opened URL: \(url)")
             
-            // URLdecoder.handleCustomURL(url)
-            GlobalURLManager.shared.incomingURL = url
+            let urlData = URLdecoder.handleCustomURL(url)
+            URLDataManager.shared.update(with: urlData)
 
             if let windowScene = scene as? UIWindowScene,
                let tabBarController = windowScene.windows.first?.rootViewController as? UITabBarController {
@@ -71,10 +69,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let url = urlContext.url
             guard url.scheme == "iBox" else { return }
 
-            print("Opened URL: \(url)")
-            // 앱 실행 중에 url이 들어오는 경우 Logic
-            // URLdecoder.handleCustomURL(url)
-            GlobalURLManager.shared.incomingURL = url
+            let urlData = URLdecoder.handleCustomURL(url)
+            URLDataManager.shared.update(with: urlData)
 
             if let windowScene = scene as? UIWindowScene,
                let tabBarController = windowScene.windows.first?.rootViewController as? UITabBarController {
