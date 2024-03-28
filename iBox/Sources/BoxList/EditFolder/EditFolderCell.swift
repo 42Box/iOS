@@ -22,7 +22,7 @@ class EditFolderCell: UITableViewCell {
         $0.showsMenuAsPrimaryAction = true
     }
     
-    private lazy var nameEditAction = UIAction(title: "이름 변경", image: UIImage(systemName: "pencil")) {[weak self] _ in
+    private lazy var nameEditAction = UIAction(title: "이름 변경", image: UIImage(systemName: "pencil")) { [weak self] _ in
         self?.onEdit?()
     }
     
@@ -40,6 +40,11 @@ class EditFolderCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        onEdit = nil
+        onDelete = nil
     }
     
     private func setupProperty() {
