@@ -7,11 +7,16 @@
 
 import UIKit
 
+protocol FolderListViewDelegate: AnyObject {
+    func selectFolder(_ folder: Folder, at index: Int)
+}
+
 class FolderListView: UIView {
+    weak var delegate: FolderListViewDelegate?
 
     let coreDataManager = CoreDataManager.shared
     var folders: [Folder] = []
-    var onFolderSelected: ((Folder) -> Void)?
+    var selectedFolderId: UUID?
 
     // MARK: - UI Components
 
@@ -26,7 +31,7 @@ class FolderListView: UIView {
         $0.backgroundColor = .clear
     }
     
-    private lazy var stackView = UIStackView(arrangedSubviews: [infoLabel, tableView]).then {
+    private let stackView = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 20
     }
@@ -62,18 +67,18 @@ class FolderListView: UIView {
             make.leading.equalTo(self.snp.leading)
             make.trailing.equalTo(self.snp.trailing)
         }
+        
+        stackView.addArrangedSubview(infoLabel)
+        stackView.addArrangedSubview(tableView)
     }
     
     func setupTableView() {
         self.tableView.dataSource = self
         self.tableView.delegate = self
         self.tableView.register(FolderListCell.self, forCellReuseIdentifier: FolderListCell.reuseIdentifier)
-
-        folders = coreDataManager.getFolders()
     }
    
     func reloadFolderList() {
-        folders = coreDataManager.getFolders()
         tableView.reloadData()
     }
 }
@@ -87,7 +92,7 @@ extension FolderListView: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: FolderListCell.reuseIdentifier, for: indexPath) as! FolderListCell
         let folder = folders[indexPath.row]
 
-        let isSelectedFolder = UserDefaultsManager.selectedFolder.id == folder.id
+        let isSelectedFolder = selectedFolderId == folder.id
         cell.configureWith(folder: folder, isSelected: isSelectedFolder)
 
         return cell
@@ -97,6 +102,7 @@ extension FolderListView: UITableViewDataSource {
 extension FolderListView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedFolder = folders[indexPath.row]
-        onFolderSelected?(selectedFolder)
+        UserDefaultsManager.selectedFolderId = selectedFolder.id
+        delegate?.selectFolder(selectedFolder, at: indexPath.row)
     }
 }
