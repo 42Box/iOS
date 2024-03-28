@@ -106,7 +106,7 @@ class AddBookmarkView: UIView {
     
     private func setupProperty() {
         backgroundColor = .systemGroupedBackground
-        updateTextFieldWithIncomingURL()
+        updateTextFieldWithIncomingData()
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         nameTextView.delegate = self
         urlTextView.delegate = self
@@ -194,16 +194,22 @@ class AddBookmarkView: UIView {
         
     }
     
-    private func updateTextFieldWithIncomingURL() {
-        if let incomingURL = GlobalURLManager.shared.incomingURL?.absoluteString, !incomingURL.isEmpty {
-            urlTextView.text = incomingURL
-            urlTextViewPlaceHolder.isHidden = true
+    private func updateTextField(textField: UITextView, placeholder: UILabel, withData data: String?) {
+        if let data = data, !data.isEmpty {
+            textField.text = data
+            placeholder.isHidden = true
         } else {
-            urlTextView.text = ""
-            urlTextViewPlaceHolder.isHidden = false
+            textField.text = ""
+            placeholder.isHidden = false
         }
-
-        GlobalURLManager.shared.incomingURL = nil
+    }
+    
+    private func updateTextFieldWithIncomingData() {
+        updateTextField(textField: nameTextView, placeholder: nameTextViewPlaceHolder, withData: URLDataManager.shared.incomingTitle)
+        URLDataManager.shared.incomingTitle = nil
+        
+        updateTextField(textField: urlTextView, placeholder: urlTextViewPlaceHolder, withData: URLDataManager.shared.incomingData)
+        URLDataManager.shared.incomingData = nil
     }
     
     @objc private func buttonTapped() {
