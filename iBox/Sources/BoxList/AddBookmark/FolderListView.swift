@@ -24,7 +24,6 @@ class FolderListView: UIView {
     
     private let tableView = UITableView().then {
         $0.backgroundColor = .clear
-        $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
     private lazy var stackView = UIStackView(arrangedSubviews: [infoLabel, tableView]).then {
