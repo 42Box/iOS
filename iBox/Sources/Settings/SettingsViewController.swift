@@ -36,6 +36,7 @@ final class SettingsViewController: BaseViewController<SettingsView>, BaseViewCo
     
     func setupNavigationBar() {
         setNavigationBarTitleLabelText("설정")
+        enablePopGesture()
     }
     
 }
