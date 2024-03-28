@@ -181,7 +181,6 @@ class AddBookmarkView: UIView {
         selectedFolderLabel.snp.makeConstraints { make in
             make.trailing.equalTo(chevronImageView.snp.leading).offset(-10)
             make.centerY.equalTo(button.snp.centerY)
-            make.width.equalTo(100)
             make.height.equalTo(40)
         }
         

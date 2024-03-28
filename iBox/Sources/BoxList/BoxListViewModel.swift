@@ -161,5 +161,16 @@ class BoxListViewModel {
         let mover = boxList.remove(at: from)
         boxList.insert(mover, at: to)
     }
+    
+    func addFolderDirect(_ folder: Folder) {
+        let boxListSectionViewModel = BoxListSectionViewModel(folder: folder)
+        boxList.append(boxListSectionViewModel)
+        output.send(.sendBoxList(boxList: boxList))
+    }
+    
+    func addBookmarkDirect(_ bookmark: Bookmark, at index: Int) {
+        boxList[index].boxListCellViewModels.append(BoxListCellViewModel(bookmark: bookmark))
+        output.send(.sendBoxList(boxList: boxList))
+    }
 
 }
