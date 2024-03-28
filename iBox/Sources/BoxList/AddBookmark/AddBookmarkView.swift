@@ -212,6 +212,11 @@ class AddBookmarkView: UIView {
         URLDataManager.shared.incomingData = nil
     }
     
+    func updateTextFieldsFilledState() {
+        let isBothTextViewsFilled = !(nameTextView.text?.isEmpty ?? true) && !(urlTextView.text?.isEmpty ?? true)
+        onTextChange?(isBothTextViewsFilled)
+    }
+    
     @objc private func buttonTapped() {
         onButtonTapped?()
     }

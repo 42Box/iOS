@@ -22,6 +22,7 @@ final class AddBookmarkViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         updateSelectedFolder()
+        addBookmarkView.updateTextFieldsFilledState()
     }
 
     override func viewDidLoad() {
