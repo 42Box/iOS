@@ -7,10 +7,18 @@
 
 import Foundation
 
-class GlobalURLManager {
-    static let shared = GlobalURLManager()
-
-    var incomingURL: URL?
+class URLDataManager {
+    static let shared = URLDataManager()
+    
+    var incomingTitle: String?
+    var incomingData: String?
+    var incomingFaviconUrl: String?
 
     private init() {}
+
+    func update(with data: (title: String?, data: String?, faviconUrl: String?)) {
+        incomingTitle = data.title
+        incomingData = data.data
+        incomingFaviconUrl = data.faviconUrl
+    }
 }
