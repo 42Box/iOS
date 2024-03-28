@@ -137,7 +137,7 @@ class BoxListView: UIView {
                 case .reloadSections(idArray: let idArray):
                     guard var snapshot = self?.boxListDataSource.snapshot() else { return }
                     snapshot.reloadSections(idArray)
-                    self?.boxListDataSource.apply(snapshot)
+                    self?.boxListDataSource.apply(snapshot, animatingDifferences: false)
                 case .reloadRows(idArray: let idArray):
                     guard var snapshot = self?.boxListDataSource.snapshot() else { return }
                     snapshot.reloadItems(idArray)

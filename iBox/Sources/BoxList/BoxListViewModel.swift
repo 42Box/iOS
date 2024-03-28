@@ -160,6 +160,9 @@ class BoxListViewModel {
     func moveFolder(from: Int, to: Int) {
         let mover = boxList.remove(at: from)
         boxList.insert(mover, at: to)
+        for box in boxList {
+            sectionsToReload.update(with: box.id)
+        }
     }
 
 }
