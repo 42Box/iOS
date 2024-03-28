@@ -21,26 +21,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.overrideUserInterfaceStyle = window?.toUserInterfaceStyle(UserDefaultsManager.theme) ?? .unspecified
         
         insertDefaultDataIfNeeded()
-
+        
         if let urlContext = connectionOptions.urlContexts.first {
             window?.rootViewController = MainTabBarController()
             window?.makeKeyAndVisible()
-            let url = urlContext.url
-            guard url.scheme == "iBox" else { return }
-            
-            let urlData = URLdecoder.handleCustomURL(url)
-            URLDataManager.shared.update(with: urlData)
-
-            if let windowScene = scene as? UIWindowScene,
-               let tabBarController = windowScene.windows.first?.rootViewController as? UITabBarController {
-                tabBarController.selectedIndex = 0 // 첫 번째 탭으로 이동
-
-                // 첫 번째 탭(FirstViewController)에 있는 shouldPresentModalAutomatically를 true로 설정
-                if let navigationController = tabBarController.selectedViewController as? UINavigationController,
-                   let boxListViewController = navigationController.viewControllers.first as? BoxListViewController {
-                    boxListViewController.shouldPresentModalAutomatically = true
-                }
-            }
+            handleIncomingURL(from: urlContext.url)
         } else {
             window?.rootViewController = CustomLaunchScreenViewController()
             window?.makeKeyAndVisible()
@@ -68,23 +53,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         if let urlContext = URLContexts.first {
-            let url = urlContext.url
-            guard url.scheme == "iBox" else { return }
-
-            let urlData = URLdecoder.handleCustomURL(url)
-            URLDataManager.shared.update(with: urlData)
-
-            if let windowScene = scene as? UIWindowScene,
-               let tabBarController = windowScene.windows.first?.rootViewController as? UITabBarController {
-                tabBarController.selectedIndex = 0 // 첫 번째 탭으로 이동
-
-                // 첫 번째 탭(FirstViewController)에 있는 shouldPresentModalAutomatically를 true로 설정
-                if let navigationController = tabBarController.selectedViewController as? UINavigationController,
-                   let boxListViewController = navigationController.viewControllers.first as? BoxListViewController {
-                    boxListViewController.shouldPresentModalAutomatically = true
-                }
-            }
-            
+            handleIncomingURL(from: urlContext.url)
         }
     }
 
@@ -121,3 +90,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 }
 
+extension SceneDelegate {
+    
+    func handleIncomingURL(from url: URL) {
+        guard url.scheme == "iBox" else { return }
+        
+        let urlData = URLdecoder.handleCustomURL(url)
+        URLDataManager.shared.update(with: urlData)
+
+        if let tabBarController = window?.rootViewController as? UITabBarController {
+            tabBarController.selectedIndex = 0 // 첫 번째 탭으로 이동
+
+            if let navigationController = tabBarController.selectedViewController as? UINavigationController,
+               let boxListViewController = navigationController.viewControllers.first as? BoxListViewController {
+                boxListViewController.shouldPresentModalAutomatically = true
+            }
+        }
+    }
+}
