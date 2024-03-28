@@ -52,10 +52,15 @@ class BoxListView: UIView {
         setupLayout()
         configureDataSource()
         bindViewModel()
+        subscribeToNotifications()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - Setup Methods
@@ -139,6 +144,14 @@ class BoxListView: UIView {
                     self?.boxListDataSource.apply(snapshot)
                 }
             }.store(in: &cancellables)
+    }
+    
+    private func subscribeToNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(dataDidReset), name: .didResetData, object: nil)
+    }
+    
+    @objc func dataDidReset(notification: NSNotification) {
+        viewModel?.input.send(.viewDidLoad)
     }
     
 }
