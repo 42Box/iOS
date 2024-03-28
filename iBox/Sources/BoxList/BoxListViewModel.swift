@@ -15,8 +15,11 @@ class BoxListViewModel {
     var folders: [Folder] {
         boxList.map{ $0.folder }
     }
+
     var sectionsToReload = Set<BoxListSectionViewModel.ID>()
     var isEditing = false
+    var favoriteId: UUID? = nil
+
     
     enum Input {
         case toggleEditStatus
@@ -24,7 +27,7 @@ class BoxListViewModel {
         case viewWillAppear
         case folderTapped(section: Int)
         case deleteBookmark(indexPath: IndexPath)
-        case setFavorite(indexPath: IndexPath)
+        case toggleFavorite(indexPath: IndexPath)
         case moveBookmark(from: IndexPath, to: IndexPath)
         case openFolderIfNeeded(folderIndex: Int)
     }
@@ -50,6 +53,7 @@ class BoxListViewModel {
             case .viewDidLoad:
                 let folders = CoreDataManager.shared.getFolders()
                 boxList = folders.map{ BoxListSectionViewModel(folder: $0) }
+                favoriteId = UserDefaultsManager.favoriteId
             case .viewWillAppear:
                 output.send(.sendBoxList(boxList: boxList))
                 if !sectionsToReload.isEmpty {
@@ -61,8 +65,8 @@ class BoxListViewModel {
                 output.send(.sendBoxList(boxList: boxList))
             case let .deleteBookmark(indexPath):
                 deleteBookmark(at: indexPath)
-            case let .setFavorite(indexPath):
-                print("\(viewModel(at: indexPath).name) favorite 할게용")
+            case let .toggleFavorite(indexPath):
+                toggleFavorite(at: indexPath)
             case .moveBookmark(from: let from, to: let to):
                 reorderBookmark(srcIndexPath: from, destIndexPath: to)
             case .openFolderIfNeeded(folderIndex: let folderIndex):
@@ -74,6 +78,34 @@ class BoxListViewModel {
     
     func viewModel(at indexPath: IndexPath) -> BoxListCellViewModel {
         return boxList[indexPath.section].boxListCellViewModels[indexPath.row]
+    }
+    
+    func isFavoriteBookmark(at indexPath: IndexPath) -> Bool {
+        if let favoriteId {
+            if favoriteId == bookmark(at: indexPath).id {
+                return true
+            } else { return false }
+        } else {
+            return false
+        }
+    }
+    
+    private func toggleFavorite(at indexPath: IndexPath) {
+        let bookmark = boxList[indexPath.section].viewModel(at: indexPath.row)
+        if let prevId = favoriteId {
+            if prevId == bookmark.id { // 지금 들어온게 즐겨찾기면 지워야
+                WebViewPreloader.shared.setFavoriteUrl(url: nil)
+                favoriteId = nil
+                UserDefaultsManager.favoriteId = nil
+            } else {
+                WebViewPreloader.shared.setFavoriteUrl(url: bookmark.url)
+                favoriteId = bookmark.id
+            }
+        } else {
+            WebViewPreloader.shared.setFavoriteUrl(url: bookmark.url)
+            favoriteId = bookmark.id
+        }
+        UserDefaultsManager.favoriteId = favoriteId
     }
     
     func bookmark(at indexPath: IndexPath) -> Bookmark {

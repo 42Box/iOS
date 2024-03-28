@@ -37,22 +37,56 @@ extension ResetViewController: ResetViewDelegate {
     
     func showAlert() {
         let alertController = UIAlertController(title: "경고", message: "이 작업은 되돌릴 수 없습니다. 계속하려면 \"iBox\"라고 입력해 주세요.", preferredStyle: .alert)
-        alertController.addTextField()
         
         let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
         alertController.addAction(cancelAction)
         
-        let confirmAction = UIAlertAction(title: "확인", style: .default) { _ in
+        let confirmAction = UIAlertAction(title: "확인", style: .default) { [weak self] _ in
             if let textField = alertController.textFields?.first, let text = textField.text, text == "iBox" {
-                print("정말로 초기화를 해버렷당")
-                self.navigationController?.popViewController(animated: true)
+                self?.resetData()
+                self?.navigationController?.popViewController(animated: true)
             } else {
-                self.showAlert()
+                self?.showAlert()
             }
         }
+        confirmAction.isEnabled = false
         alertController.addAction(confirmAction)
+        
+        alertController.addTextField() { textField in
+            NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: textField, queue: OperationQueue.main, using:
+                    {_ in
+                        let isTextMatch = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "iBox"
+                        
+                        confirmAction.isEnabled = isTextMatch
+                })
+            
+        }
         
         self.present(alertController, animated: true, completion: nil)
     }
     
+    private func resetData() {
+        let defaultData = [
+            Folder(id: UUID(), name: "42 폴더", bookmarks: [
+                Bookmark(id: UUID(), name: "42 Intra", url: URL(string: "https://profile.intra.42.fr/")!),
+                Bookmark(id: UUID(), name: "42Where", url: URL(string: "https://www.where42.kr/")! ),
+                Bookmark(id: UUID(), name: "42Stat", url: URL(string: "https://stat.42seoul.kr/")!),
+                Bookmark(id: UUID(), name: "집현전", url: URL(string: "https://42library.kr/")!),
+                Bookmark(id: UUID(), name: "Cabi", url: URL(string: "https://cabi.42seoul.io/")!),
+                Bookmark(id: UUID(), name: "24HANE", url: URL(string: "https://24hoursarenotenough.42seoul.kr/")!)
+            ])
+        ]
+        CoreDataManager.shared.deleteAllFolders()
+        CoreDataManager.shared.addInitialFolders(defaultData)
+        UserDefaultsManager.isDefaultDataInserted = true
+        
+        UserDefaultsManager.favoriteId = nil
+        WebViewPreloader.shared.setFavoriteUrl(url: nil)
+        NotificationCenter.default.post(name: .didResetData, object: nil)
+    }
+    
+}
+
+extension Notification.Name {
+    static let didResetData = Notification.Name("didResetData")
 }

@@ -52,10 +52,15 @@ class BoxListView: UIView {
         setupLayout()
         configureDataSource()
         bindViewModel()
+        subscribeToNotifications()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - Setup Methods
@@ -141,6 +146,14 @@ class BoxListView: UIView {
             }.store(in: &cancellables)
     }
     
+    private func subscribeToNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(dataDidReset), name: .didResetData, object: nil)
+    }
+    
+    @objc func dataDidReset(notification: NSNotification) {
+        viewModel?.input.send(.viewDidLoad)
+    }
+    
 }
 
 extension BoxListView: UITableViewDelegate {
@@ -190,12 +203,16 @@ extension BoxListView: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         // 액션 정의
-        let favoriteAction = UIContextualAction(style: .normal, title: "favorite", handler: {(action, view, completionHandler) in
-            self.viewModel?.input.send(.setFavorite(indexPath: indexPath))
+        let favoriteAction = UIContextualAction(style: .normal, title: "favorite", handler: { [weak self] (action, view, completionHandler) in
+            self?.viewModel?.input.send(.toggleFavorite(indexPath: indexPath))
             completionHandler(true)
         })
         favoriteAction.backgroundColor = .box2
-        favoriteAction.image = UIImage(systemName: "heart")
+        if viewModel?.isFavoriteBookmark(at: indexPath) == true {
+            favoriteAction.image = UIImage(systemName: "heart.fill")
+        } else {
+            favoriteAction.image = UIImage(systemName: "heart")
+        }
         
         let shareAction = UIContextualAction(style: .normal, title: "share", handler: {(action, view, completionHandler) in
             let cellViewModel = self.viewModel?.viewModel(at: indexPath)

@@ -84,6 +84,7 @@ extension BoxListViewController: BoxListViewDelegate {
             guard let newName = controller.textFields?.first?.text else { return }
             guard let newUrlString = controller.textFields?.last?.text,
             let newUrl = URL(string: newUrlString) else { return }
+            guard let contentView = self?.contentView as? BoxListView else { return }
             
             contentView.viewModel?.editBookmark(at: indexPath, name: newName, url: newUrl)
         }
