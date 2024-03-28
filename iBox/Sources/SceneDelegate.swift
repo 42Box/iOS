@@ -21,11 +21,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.overrideUserInterfaceStyle = window?.toUserInterfaceStyle(UserDefaultsManager.theme) ?? .unspecified
         
         insertDefaultDataIfNeeded()
-        
-        window?.rootViewController = CustomLaunchScreenViewController()
-        window?.makeKeyAndVisible() // 윈도우를 화면에 보여줌
 
         if let urlContext = connectionOptions.urlContexts.first {
+            window?.rootViewController = MainTabBarController()
+            window?.makeKeyAndVisible()
             let url = urlContext.url
             guard url.scheme == "iBox" else { return }
             
@@ -42,6 +41,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     boxListViewController.shouldPresentModalAutomatically = true
                 }
             }
+        } else {
+            window?.rootViewController = CustomLaunchScreenViewController()
+            window?.makeKeyAndVisible()
         }
     }
     
