@@ -25,7 +25,7 @@ class ThemeViewController: BaseViewController<ThemeView>, BaseViewControllerProt
     
     func setupNavigationBar() {
         setNavigationBarTitleLabelText("다크 모드 설정")
-        setNavigationBarTitleLabelFont(.systemFont(ofSize: 17, weight: .semibold))
+        setNavigationBarTitleLabelFont(.subTitlefont)
         setNavigationBarBackButtonHidden(false)
     }
     

@@ -27,7 +27,7 @@ class ResetViewController: BaseViewController<ResetView>, BaseViewControllerProt
     
     func setupNavigationBar() {
         setNavigationBarTitleLabelText("데이터 초기화")
-        setNavigationBarTitleLabelFont(.systemFont(ofSize: 17, weight: .semibold))
+        setNavigationBarTitleLabelFont(.subTitlefont)
         setNavigationBarBackButtonHidden(false)
     }
     

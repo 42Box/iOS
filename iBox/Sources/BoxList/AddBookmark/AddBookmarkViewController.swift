@@ -45,7 +45,7 @@ final class AddBookmarkViewController: UIViewController {
         navigationItem.rightBarButtonItem?.isEnabled = false
         
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 17) 
+            .font: UIFont.semiboldLabelFont
         ]
 
         navigationItem.leftBarButtonItem?.setTitleTextAttributes(attributes, for: .normal)
