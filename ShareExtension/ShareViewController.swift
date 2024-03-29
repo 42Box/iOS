@@ -110,7 +110,10 @@ class CustomShareViewController: UIViewController {
                 return
             }
             
-            if let htmlContent = String(data: data, encoding: .utf8) {
+            let encodingName = (response as? HTTPURLResponse)?.textEncodingName ?? "utf-8"
+            let encoding = String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding(encodingName as CFString)))
+
+            if let htmlContent = String(data: data, encoding: encoding) {
                 do {
                     let doc: Document = try SwiftSoup.parse(htmlContent)
                     let title: String? = try doc.title()
@@ -160,8 +163,9 @@ extension CustomShareViewController: ShareExtensionBackGroundViewDelegate {
             print("Share extension error")
             return
         }
-        
+        print("Share")
         fetchAndParseMetadata(from: url) { metadata in
+            dump(metadata)
             let encodedTitle = metadata.title?.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
             let encodedData = metadata.url?.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
             let encodedFaviconUrl = metadata.faviconUrl?.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
