@@ -14,7 +14,16 @@ class URLdecoder {
             let title = urlComponents.queryItems?.first(where: { $0.name == "title" })?.value
             let data = urlComponents.queryItems?.first(where: { $0.name == "data" })?.value
             let faviconUrl = urlComponents.queryItems?.first(where: { $0.name == "faviconUrl" })?.value
+            
+            let finalTitle: String?
+            if let title = title, !title.isEmpty {
+                finalTitle = title
+            } else if let data = data, let dataUrl = URL(string: data) {
+                finalTitle = dataUrl.host ?? "No Title"
+            } else {
+                finalTitle = nil
+            }
     
-            return (title, data, faviconUrl)
+            return (finalTitle, data, faviconUrl)
         }
 }
