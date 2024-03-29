@@ -99,7 +99,8 @@ final class AddBookmarkViewController: UIViewController {
     @objc private func addButtonTapped() {
         guard let name = addBookmarkView.nameTextView.text, !name.isEmpty,
               let urlString = addBookmarkView.urlTextView.text, !urlString.isEmpty,
-              let url = URL(string: urlString) else {
+              let encodedUrlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: encodedUrlString) else {
             print("Invalid input")
             return
         }
