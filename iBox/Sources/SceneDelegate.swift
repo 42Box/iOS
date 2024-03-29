@@ -10,6 +10,7 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
@@ -22,14 +23,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         insertDefaultDataIfNeeded()
         
-        if let urlContext = connectionOptions.urlContexts.first {
-            window?.rootViewController = MainTabBarController()
-            window?.makeKeyAndVisible()
-            handleIncomingURL(from: urlContext.url)
-        } else {
-            window?.rootViewController = CustomLaunchScreenViewController()
-            window?.makeKeyAndVisible()
-        }
+        window?.rootViewController = CustomLaunchScreenViewController(urlContext: connectionOptions.urlContexts.first)
+        window?.makeKeyAndVisible()
     }
     
     private func insertDefaultDataIfNeeded() {
@@ -52,8 +47,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        if let urlContext = URLContexts.first {
-            handleIncomingURL(from: urlContext.url)
+        if let urlContext = URLContexts.first,
+        let tabBarController = window?.rootViewController as? UITabBarController {
+        URLDataManager.shared.navigateToAddBookmarkView(from: urlContext.url, in: tabBarController)
         }
     }
 
@@ -88,23 +84,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
 
-}
-
-extension SceneDelegate {
-    
-    func handleIncomingURL(from url: URL) {
-        guard url.scheme == "iBox" else { return }
-        
-        let urlData = URLdecoder.handleCustomURL(url)
-        URLDataManager.shared.update(with: urlData)
-
-        if let tabBarController = window?.rootViewController as? UITabBarController {
-            tabBarController.selectedIndex = 0 // 첫 번째 탭으로 이동
-
-            if let navigationController = tabBarController.selectedViewController as? UINavigationController,
-               let boxListViewController = navigationController.viewControllers.first as? BoxListViewController {
-                boxListViewController.shouldPresentModalAutomatically = true
-            }
-        }
-    }
 }
