@@ -106,7 +106,7 @@ class BoxListView: UIView {
                     self.delegate?.presentEditBookmarkController(at: currentIndexPath)
                 }
             }
-
+            
             return cell
         }
         boxListDataSource.delegate = self
@@ -244,6 +244,57 @@ extension BoxListView: UITableViewDelegate {
         return false
     }
     
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        let configuration = UIContextMenuConfiguration(identifier: nil, previewProvider: { [weak self] () -> UIViewController? in
+            guard let self = self, let cellViewModel = self.viewModel?.boxList[indexPath.section].boxListCellViewModelsWithStatus[indexPath.row] else { return nil }
+            
+            let id = cellViewModel.id
+            let url = cellViewModel.url
+            let name = cellViewModel.name
+            
+            let previewViewController: UIViewController
+            
+            if let cachedViewController = WebCacheManager.shared.viewControllerForKey(id) {
+                previewViewController = cachedViewController
+            } else {
+                let viewController = WebViewController()
+                viewController.selectedWebsite = url
+                viewController.title = name
+                WebCacheManager.shared.cacheData(forKey: id, viewController: viewController)
+                previewViewController = viewController
+            }
+            
+            return previewViewController
+        }, actionProvider: { suggestedActions in
+            return self.makeContextMenu(for: indexPath)
+        })
+        return configuration
+    }
+    
+    private func makeContextMenu(for indexPath: IndexPath) -> UIMenu {
+        let deleteAction = UIAction(title: "삭제", image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] action in
+            self?.viewModel?.input.send(.deleteBookmark(indexPath: indexPath))
+        }
+        
+        let isFavorite = self.viewModel?.isFavoriteBookmark(at: indexPath) ?? false
+        let favoriteActionTitle = isFavorite ? "즐겨찾기 해제" : "즐겨찾기로 등록"
+        let favoriteActionImage = UIImage(systemName: isFavorite ? "heart.slash.fill" : "heart.fill")
+        
+        let favoriteAction = UIAction(title: favoriteActionTitle, image: favoriteActionImage) { [weak self] action in
+            self?.viewModel?.input.send(.toggleFavorite(indexPath: indexPath))
+        }
+
+        let shareAction = UIAction(title: "공유하기", image: UIImage(systemName: "square.and.arrow.up")) { [weak self] action in
+            guard let self = self, let url = self.viewModel?.boxList[indexPath.section].boxListCellViewModelsWithStatus[indexPath.row].url else { return }
+            
+            let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+            if let viewController = self.delegate as? UIViewController {
+                viewController.present(activityViewController, animated: true, completion: nil)
+            }
+        }
+
+        return UIMenu(title: "", children: [favoriteAction, shareAction, deleteAction])
+    }
 }
 
 extension BoxListView: BoxListDataSourceDelegate {
@@ -269,7 +320,7 @@ class BoxListDataSource: UITableViewDiffableDataSource<BoxListSectionViewModel.I
         delegate?.moveCell(at: sourceIndexPath, to: destinationIndexPath)
         
         guard let src = itemIdentifier(for: sourceIndexPath),
-            sourceIndexPath != destinationIndexPath else { return }
+              sourceIndexPath != destinationIndexPath else { return }
         
         var snap = snapshot()
         if let dest = itemIdentifier(for: destinationIndexPath) {
