@@ -8,16 +8,45 @@
 // MARK: - VersionInfo
 struct VersionInfo: Codable {
     let version: [Version]
-    let url: URLClass
+    let storeUrl: String
+    let url: [URLUpdate]
 }
 
-// MARK: - URLClass
-struct URLClass: Codable {
-    let updateURL: String?
+// MARK: - URLUpdate
+struct URLUpdate: Codable {
+    let id: Int
+    let defaultList: [URLList]?
+    let remove: [URLList]?
+    let add: [URLList]?
+    let fix: [FixList]?
 
     enum CodingKeys: String, CodingKey {
-        case updateURL = "updateUrl"
+        case id
+        case defaultList = "default"
+        case remove, add, fix
     }
+}
+
+// MARK: - URLList
+struct URLList: Codable {
+    let list: [URLItem]
+}
+
+// MARK: - URLItem
+struct URLItem: Codable {
+    let name: String?
+    let url: String
+}
+
+// MARK: - FixList
+struct FixList: Codable {
+    let list: [FixItem]
+}
+
+// MARK: - FixItem
+struct FixItem: Codable {
+    let from: String
+    let to: String
 }
 
 // MARK: - Version
