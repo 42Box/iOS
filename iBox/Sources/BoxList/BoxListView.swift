@@ -94,14 +94,14 @@ class BoxListView: UIView {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: BoxListCell.reuseIdentifier, for: indexPath) as? BoxListCell else { fatalError() }
             cell.setEditButtonHidden(!viewModel.isEditing)
             cell.bindViewModel(viewModel.viewModel(at: indexPath))
-            cell.onDelete = { [weak self] in
-                guard let self else { return }
+            cell.onDelete = { [weak self, weak cell] in
+                guard let self = self, let cell = cell else { return }
                 if let currentIndexPath = self.tableView.indexPath(for: cell) {
                     self.viewModel?.deleteBookmark(at: currentIndexPath)
                 }
             }
-            cell.onEdit = { [weak self] in
-                guard let self else { return }
+            cell.onEdit = { [weak self, weak cell] in
+                guard let self = self, let cell = cell else { return }
                 if let currentIndexPath = self.tableView.indexPath(for: cell) {
                     self.delegate?.presentEditBookmarkController(at: currentIndexPath)
                 }

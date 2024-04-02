@@ -80,7 +80,7 @@ extension BoxListViewController: BoxListViewDelegate {
         let controller = UIAlertController(title: "북마크 편집", message: nil, preferredStyle: .alert)
         
         let cancelAction = UIAlertAction(title: "취소", style: .default) { _ in return }
-        let okAction = UIAlertAction(title: "확인", style: .default) { [weak self] action in
+        let okAction = UIAlertAction(title: "확인", style: .default) { action in
             guard let newName = controller.textFields?.first?.text else { return }
             guard let newUrlString = controller.textFields?.last?.text,
             let newUrl = URL(string: newUrlString) else { return }
