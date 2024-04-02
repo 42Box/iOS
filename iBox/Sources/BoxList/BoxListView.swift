@@ -94,14 +94,14 @@ class BoxListView: UIView {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: BoxListCell.reuseIdentifier, for: indexPath) as? BoxListCell else { fatalError() }
             cell.setEditButtonHidden(!viewModel.isEditing)
             cell.bindViewModel(viewModel.viewModel(at: indexPath))
-            cell.onDelete = { [weak self] in
-                guard let self else { return }
+            cell.onDelete = { [weak self, weak cell] in
+                guard let self = self, let cell = cell else { return }
                 if let currentIndexPath = self.tableView.indexPath(for: cell) {
                     self.viewModel?.deleteBookmark(at: currentIndexPath)
                 }
             }
-            cell.onEdit = { [weak self] in
-                guard let self else { return }
+            cell.onEdit = { [weak self, weak cell] in
+                guard let self = self, let cell = cell else { return }
                 if let currentIndexPath = self.tableView.indexPath(for: cell) {
                     self.delegate?.presentEditBookmarkController(at: currentIndexPath)
                 }
@@ -137,7 +137,7 @@ class BoxListView: UIView {
                 case .reloadSections(idArray: let idArray):
                     guard var snapshot = self?.boxListDataSource.snapshot() else { return }
                     snapshot.reloadSections(idArray)
-                    self?.boxListDataSource.apply(snapshot)
+                    self?.boxListDataSource.apply(snapshot, animatingDifferences: false)
                 case .reloadRows(idArray: let idArray):
                     guard var snapshot = self?.boxListDataSource.snapshot() else { return }
                     snapshot.reloadItems(idArray)
@@ -199,6 +199,8 @@ extension BoxListView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let cellViewModel = viewModel?.boxList[indexPath.section].boxListCellViewModelsWithStatus[indexPath.row] else { return }
         delegate?.didSelectWeb(id: cellViewModel.id, at: cellViewModel.url, withName: cellViewModel.name)
+        
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {

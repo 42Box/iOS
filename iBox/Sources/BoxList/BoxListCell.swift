@@ -68,7 +68,7 @@ class BoxListCell: UITableViewCell {
     
     private func setupProperty() {
         backgroundColor = .tableViewBackgroundColor
-        selectionStyle = .none
+        selectionStyle = .gray
     }
     
     private func setupHierarchy() {
