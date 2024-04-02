@@ -11,6 +11,16 @@ import Combine
 class CustomLaunchScreenViewController: UIViewController {
     private var customLaunchScreenView: CustomLaunchScreenView!
     private var cancellables: Set<AnyCancellable> = []
+    private var urlContext: UIOpenURLContext?
+    
+    init(urlContext: UIOpenURLContext?) {
+        self.urlContext = urlContext
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,10 +73,15 @@ class CustomLaunchScreenViewController: UIViewController {
     
     
     private func transitionToNextScreen() {
-        let mainViewController = MainTabBarController()
-        
         guard let window = self.view.window else { return }
+        
+        let mainViewController = MainTabBarController()
         window.rootViewController = mainViewController
+        
+        if let urlContext = self.urlContext,
+           let tabBarController = window.rootViewController as? UITabBarController {
+            URLDataManager.shared.navigateToAddBookmarkView(from: urlContext.url, in: tabBarController)
+        }
         UIView.transition(with: window, duration: 0.5, options: .transitionCrossDissolve, animations: {}, completion: nil)
     }
 }

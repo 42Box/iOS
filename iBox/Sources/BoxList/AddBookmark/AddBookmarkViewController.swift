@@ -26,6 +26,12 @@ final class AddBookmarkViewController: UIViewController {
         super.loadView()
         setupAddBookmarkView()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateSelectedFolder()
+        addBookmarkView.updateTextFieldsFilledState()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,6 +81,7 @@ final class AddBookmarkViewController: UIViewController {
     }
     
     private func updateSelectedFolder() {
+        folders = CoreDataManager.shared.getFolders()
         let selectedFolderId = UserDefaultsManager.selectedFolderId
         
         for (index, folder) in folders.enumerated() {
@@ -122,7 +129,8 @@ final class AddBookmarkViewController: UIViewController {
     @objc private func addButtonTapped() {
         guard let name = addBookmarkView.nameTextView.text, !name.isEmpty,
               let urlString = addBookmarkView.urlTextView.text, !urlString.isEmpty,
-              let url = URL(string: urlString) else {
+              let encodedUrlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: encodedUrlString) else {
             print("Invalid input")
             return
         }

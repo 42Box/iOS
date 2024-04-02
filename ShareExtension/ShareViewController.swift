@@ -110,7 +110,10 @@ class CustomShareViewController: UIViewController {
                 return
             }
             
-            if let htmlContent = String(data: data, encoding: .utf8) {
+            let encodingName = (response as? HTTPURLResponse)?.textEncodingName ?? "utf-8"
+            let encoding = String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding(encodingName as CFString)))
+
+            if let htmlContent = String(data: data, encoding: encoding) {
                 do {
                     let doc: Document = try SwiftSoup.parse(htmlContent)
                     let title: String? = try doc.title()
@@ -136,7 +139,8 @@ class CustomShareViewController: UIViewController {
                         faviconUrl = url.scheme! + "://" + url.host! + "/favicon.ico"
                     }
 
-                    let metadata = Metadata(title: title, faviconUrl: faviconUrl, url: url.absoluteString)
+                    let decodedUrlString = url.absoluteString.removingPercentEncoding ?? url.absoluteString
+                    let metadata = Metadata(title: title, faviconUrl: faviconUrl, url: decodedUrlString)
 
                     DispatchQueue.main.async {
                         completion(metadata)
@@ -160,14 +164,13 @@ extension CustomShareViewController: ShareExtensionBackGroundViewDelegate {
             print("Share extension error")
             return
         }
-        
         fetchAndParseMetadata(from: url) { metadata in
+            dump(metadata)
             let encodedTitle = metadata.title?.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
             let encodedData = metadata.url?.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
             let encodedFaviconUrl = metadata.faviconUrl?.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
             let urlString = "iBox://url?title=\(encodedTitle)&data=\(encodedData)&faviconUrl=\(encodedFaviconUrl)"
             
-            print(urlString)
             if let openUrl = URL(string: urlString) {
                 if self.openURL(openUrl) {
                     print("iBox 앱이 성공적으로 열렸습니다.")

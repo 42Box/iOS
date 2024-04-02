@@ -55,7 +55,6 @@ class BoxListViewController: BaseViewController<BoxListView>, BaseViewController
         
         let addBookmarkViewController = AddBookmarkViewController()
         addBookmarkViewController.delegate = self
-        addBookmarkViewController.folders = contentView.viewModel?.folders ?? []
         
         let navigationController = UINavigationController(rootViewController: addBookmarkViewController)
 
