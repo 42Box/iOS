@@ -54,32 +54,70 @@ extension ResetViewController: ResetViewDelegate {
         
         alertController.addTextField() { textField in
             NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: textField, queue: OperationQueue.main, using:
-                    {_ in
-                        let isTextMatch = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "iBox"
-                        
-                        confirmAction.isEnabled = isTextMatch
-                })
+                                                    {_ in
+                let isTextMatch = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "iBox"
+                
+                confirmAction.isEnabled = isTextMatch
+            })
             
         }
         
         self.present(alertController, animated: true, completion: nil)
     }
     
-    private func resetData() {
-        let defaultData = [
-            Folder(id: UUID(), name: "42 폴더", bookmarks: [
-                Bookmark(id: UUID(), name: "42 Intra", url: URL(string: "https://profile.intra.42.fr/")!),
-                Bookmark(id: UUID(), name: "42Where", url: URL(string: "https://www.where42.kr/")! ),
-                Bookmark(id: UUID(), name: "42Stat", url: URL(string: "https://stat.42seoul.kr/")!),
-                Bookmark(id: UUID(), name: "집현전", url: URL(string: "https://42library.kr/")!),
-                Bookmark(id: UUID(), name: "Cabi", url: URL(string: "https://cabi.42seoul.io/")!),
-                Bookmark(id: UUID(), name: "24HANE", url: URL(string: "https://24hoursarenotenough.42seoul.kr/")!)
-            ])
-        ]
-        CoreDataManager.shared.deleteAllFolders()
-        CoreDataManager.shared.addInitialFolders(defaultData)
-        UserDefaultsManager.isDefaultDataInserted = true
+    private func storeDataHandler(defaultData: [Folder]) {
+        DispatchQueue.main.async {
+            CoreDataManager.shared.deleteAllFolders()
+            CoreDataManager.shared.addInitialFolders(defaultData)
+            UserDefaultsManager.isDefaultDataInserted = true
+        }
+    }
+    
+    private func resetHandler() {
+        let urlString = "https://raw.githubusercontent.com/42Box/versioning/main/raw.json"
         
+        NetworkManager.shared.fetchModel(from: urlString, modelType: VersionInfo.self) { result in
+            switch result {
+            case .success(let model):
+                if let defaultList = model.url.filter({ $0.id == 0 }).first?.defaultList?.first?.list {
+                    var bookmarks = [Bookmark]()
+                    for item in defaultList {
+                        if let url = URL(string: item.url) {
+                            let bookmark = Bookmark(id: UUID(), name: item.name ?? "", url: url)
+                            bookmarks.append(bookmark)
+                        }
+                    }
+                    
+                    let defaultData = [
+                        Folder(id: UUID(), name: "42 폴더", bookmarks: bookmarks)
+                    ]
+                    
+                    self.storeDataHandler(defaultData: defaultData)
+                    
+                    print("success")
+                }
+            case .failure(let error):
+                print("Error fetching version info: \(error.localizedDescription)")
+                
+                let defaultData = [
+                    Folder(id: UUID(), name: "42 폴더", bookmarks: [
+                        Bookmark(id: UUID(), name: "42 Intra", url: URL(string: "https://profile.intra.42.fr/")!),
+                        Bookmark(id: UUID(), name: "집현전", url: URL(string: "https://42library.kr/")!),
+                        Bookmark(id: UUID(), name: "42Where", url: URL(string: "https://www.where42.kr/")! ),
+                        Bookmark(id: UUID(), name: "42Stat", url: URL(string: "https://stat.42seoul.kr/")!),
+                        Bookmark(id: UUID(), name: "24HANE", url: URL(string: "https://24hoursarenotenough.42seoul.kr/")!)
+                    ])
+                ]
+                
+                self.storeDataHandler(defaultData: defaultData)
+            }
+        }
+    }
+    
+    private func resetData() {
+        //        https://my-json-server.typicode.com/42Box/versioning/version/1
+        
+        resetHandler()
         UserDefaultsManager.favoriteId = nil
         WebViewPreloader.shared.setFavoriteUrl(url: nil)
         NotificationCenter.default.post(name: .didResetData, object: nil)
