@@ -81,6 +81,7 @@ final class AddBookmarkViewController: UIViewController {
     }
     
     private func updateSelectedFolder() {
+        folders = CoreDataManager.shared.getFolders()
         let selectedFolderId = UserDefaultsManager.selectedFolderId
         
         for (index, folder) in folders.enumerated() {
