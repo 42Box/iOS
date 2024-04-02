@@ -21,7 +21,7 @@ protocol BaseViewControllerProtocol {
     func setupNavigationBar()
 }
 
-class BaseViewController<View: UIView>: UIViewController {
+class BaseViewController<View: UIView>: UIViewController, UIGestureRecognizerDelegate {
     
     let backgroundColor: UIColor = .backgroundColor
     let tintColor: UIColor = .label
@@ -62,6 +62,7 @@ class BaseViewController<View: UIView>: UIViewController {
     private func setupProperty() {
         view.backgroundColor = .backgroundColor
         navigationController?.setNavigationBarHidden(true, animated: false)
+        navigationController?.interactivePopGestureRecognizer?.delegate = self
         
         setNavigationBarTintColor(tintColor)
         setNavigationBarTitleLabelFont(titleFont)
@@ -224,6 +225,14 @@ class BaseViewController<View: UIView>: UIViewController {
     
     @objc func backButtonTapped() {
         navigationController?.popViewController(animated: true)
+    }
+    
+    // MARK: - UIGestureRecognizerDelegate
+    
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard let navigationController = navigationController else { return false }
+        // Navigation Stack에 쌓인 뷰가 1개를 초과할 때 스와이프 제스처 허용
+        return navigationController.viewControllers.count > 1
     }
     
 }
