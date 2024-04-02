@@ -62,6 +62,7 @@ class BaseViewController<View: UIView>: UIViewController, UIGestureRecognizerDel
     private func setupProperty() {
         view.backgroundColor = .backgroundColor
         navigationController?.setNavigationBarHidden(true, animated: false)
+        navigationController?.interactivePopGestureRecognizer?.delegate = self
         
         setNavigationBarTintColor(tintColor)
         setNavigationBarTitleLabelFont(titleFont)
@@ -218,10 +219,6 @@ class BaseViewController<View: UIView>: UIViewController, UIGestureRecognizerDel
     
     func setNavigationBarTitleLabelTextColor(_ color: UIColor?) {
         navigationBar.titleLabel.textColor = color
-    }
-    
-    func enablePopGesture() {
-        navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     
     // MARK: - Action Functions
