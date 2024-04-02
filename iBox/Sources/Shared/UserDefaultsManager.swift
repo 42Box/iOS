@@ -24,8 +24,8 @@ final class UserDefaultsManager {
     @UserDefaultsData(key: "isPreload", defaultValue: false)
     static var isPreload: Bool
     
-    @UserDefaultsData(key: "selectedFolder", defaultValue: Folder(id: UUID(), name: "", bookmarks: []))
-    static var selectedFolder: Folder
+    @UserDefaultsData(key: "selectedFolderId", defaultValue: nil)
+    static var selectedFolderId: UUID?
 
 }
 

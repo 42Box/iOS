@@ -51,7 +51,12 @@ class BoxListViewController: BaseViewController<BoxListView>, BaseViewController
     // MARK: - Action Functions
     
     @objc private func addButtonTapped() {
+        guard let contentView = contentView as? BoxListView else { return }
+        
         let addBookmarkViewController = AddBookmarkViewController()
+        addBookmarkViewController.delegate = self
+        addBookmarkViewController.folders = contentView.viewModel?.folders ?? []
+        
         let navigationController = UINavigationController(rootViewController: addBookmarkViewController)
 
         navigationController.modalPresentationStyle = .pageSheet
@@ -71,6 +76,19 @@ class BoxListViewController: BaseViewController<BoxListView>, BaseViewController
         setNavigationBarDoneButtonHidden(true)
     }
 
+}
+
+extension BoxListViewController: AddBookmarkViewControllerProtocol {
+    func addFolderDirect(_ folder: Folder) {
+        guard let contentView = contentView as? BoxListView else { return }
+        contentView.viewModel?.addFolderDirect(folder)
+    }
+    
+    func addBookmarkDirect(_ bookmark: Bookmark, at folderIndex: Int) {
+        guard let contentView = contentView as? BoxListView else { return }
+        contentView.viewModel?.addBookmarkDirect(bookmark, at: folderIndex)
+    }
+    
 }
 
 extension BoxListViewController: BoxListViewDelegate {
