@@ -199,6 +199,8 @@ extension BoxListView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let cellViewModel = viewModel?.boxList[indexPath.section].boxListCellViewModelsWithStatus[indexPath.row] else { return }
         delegate?.didSelectWeb(id: cellViewModel.id, at: cellViewModel.url, withName: cellViewModel.name)
+        
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
