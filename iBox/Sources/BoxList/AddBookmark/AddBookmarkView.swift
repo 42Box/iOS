@@ -42,6 +42,7 @@ class AddBookmarkView: UIView {
         $0.textColor = .label
         $0.isScrollEnabled = true
         $0.keyboardType = .emailAddress
+        $0.autocorrectionType = .no
     }
     
     private let separatorView = UIView().then {
@@ -62,6 +63,7 @@ class AddBookmarkView: UIView {
         $0.textColor = .label
         $0.isScrollEnabled = true
         $0.keyboardType = .emailAddress
+        $0.autocorrectionType = .no
     }
     
     private let button = UIButton(type: .custom).then {
