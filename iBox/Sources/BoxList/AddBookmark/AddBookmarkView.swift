@@ -228,6 +228,22 @@ class AddBookmarkView: UIView {
 }
 
 extension AddBookmarkView: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        let textLength: Int = textView.text.count
+        textView.selectedRange = NSRange(location: textLength, length: 0)
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if text == "\n" {
+            if textView == nameTextView {
+                urlTextView.becomeFirstResponder()
+            } else if textView == urlTextView {
+                textView.resignFirstResponder()
+            }
+            return false
+        }
+        return true
+    }
     
     func textViewDidChange(_ textView: UITextView) {
         
