@@ -12,7 +12,12 @@ import SnapKit
 
 class FavoriteView: UIView {
     
-    private lazy var webView = WebViewPreloader.shared.getFavoriteView()
+    private lazy var webView = {
+        if WebViewPreloader.shared.getFavoriteView() == nil {
+            loadFavoriteWeb()
+        }
+        return WebViewPreloader.shared.getFavoriteView()
+    }()
     
     private let refreshControl = UIRefreshControl()
     
@@ -56,6 +61,18 @@ class FavoriteView: UIView {
             webView.reload()
             refreshControl.endRefreshing()
         }
+    }
+    
+    private func loadFavoriteWeb() {
+        let favoriteId = UserDefaultsManager.favoriteId
+        var favoriteUrl: URL? = nil
+        if let favoriteId {
+            favoriteUrl = CoreDataManager.shared.getBookmarkUrl(favoriteId)
+            if favoriteUrl == nil {
+                UserDefaultsManager.favoriteId = nil
+            }
+        }
+        WebViewPreloader.shared.preloadFavoriteView(url: favoriteUrl)
     }
     
 }
