@@ -130,7 +130,7 @@ class AddBookmarkView: UIView {
     private func setupLayout() {
         
         textFieldView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(100)
+            make.top.equalToSuperview().offset(70)
             make.height.equalTo(150)
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().offset(-20)
