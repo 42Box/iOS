@@ -166,7 +166,7 @@ extension BoxListView: UITableViewDelegate {
             make.top.bottom.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(15)
         }
-        view.backgroundColor = .backgroundColor
+        view.backgroundColor = .tableViewBackgroundColor
         line.backgroundColor = .quaternaryLabel
         return view
     }

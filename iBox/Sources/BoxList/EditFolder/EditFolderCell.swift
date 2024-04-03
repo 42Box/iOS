@@ -67,7 +67,7 @@ class EditFolderCell: UITableViewCell {
         
         editButton.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
-            make.trailing.equalToSuperview().inset(10)
+            make.trailing.equalToSuperview().offset(-10)
             make.width.equalTo(30)
         }
         
