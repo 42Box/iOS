@@ -68,7 +68,7 @@ class FolderListCell: UITableViewCell {
         folderNameLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalTo(folderImageView.snp.trailing).offset(10)
-            make.trailing.lessThanOrEqualToSuperview().offset(-20)
+            make.trailing.lessThanOrEqualToSuperview().offset(-60)
             make.top.greaterThanOrEqualToSuperview().offset(10)
             make.bottom.lessThanOrEqualToSuperview().offset(-10)
         }
