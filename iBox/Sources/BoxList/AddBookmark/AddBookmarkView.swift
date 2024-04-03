@@ -176,7 +176,6 @@ class AddBookmarkView: UIView {
         buttonLabel.snp.makeConstraints { make in
             make.leading.equalTo(button.snp.leading).offset(20)
             make.centerY.equalTo(button.snp.centerY)
-            make.width.equalTo(40)
             make.height.equalTo(40)
         }
         
@@ -184,6 +183,7 @@ class AddBookmarkView: UIView {
             make.trailing.equalTo(chevronImageView.snp.leading).offset(-10)
             make.centerY.equalTo(button.snp.centerY)
             make.height.equalTo(40)
+            make.width.equalTo(100)
         }
         
         chevronImageView.snp.makeConstraints { make in
