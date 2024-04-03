@@ -51,6 +51,7 @@ class FolderView: UIView {
         folderNameLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalTo(folderImageView.snp.trailing).offset(10)
+            make.trailing.equalToSuperview().inset(10)
         }
     }
     
