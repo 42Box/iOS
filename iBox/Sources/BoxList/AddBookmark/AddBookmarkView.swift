@@ -41,6 +41,8 @@ class AddBookmarkView: UIView {
         $0.font = .cellTitleFont
         $0.textColor = .label
         $0.isScrollEnabled = true
+        $0.keyboardType = .emailAddress
+        $0.autocorrectionType = .no
     }
     
     private let separatorView = UIView().then {
@@ -60,6 +62,8 @@ class AddBookmarkView: UIView {
         $0.font = .cellTitleFont
         $0.textColor = .label
         $0.isScrollEnabled = true
+        $0.keyboardType = .emailAddress
+        $0.autocorrectionType = .no
     }
     
     private let button = UIButton(type: .custom).then {
@@ -128,7 +132,7 @@ class AddBookmarkView: UIView {
     private func setupLayout() {
         
         textFieldView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(100)
+            make.top.equalToSuperview().offset(70)
             make.height.equalTo(150)
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().offset(-20)
@@ -182,6 +186,7 @@ class AddBookmarkView: UIView {
             make.trailing.equalTo(chevronImageView.snp.leading).offset(-10)
             make.centerY.equalTo(button.snp.centerY)
             make.height.equalTo(40)
+            make.width.equalTo(100)
         }
         
         chevronImageView.snp.makeConstraints { make in
@@ -226,6 +231,22 @@ class AddBookmarkView: UIView {
 }
 
 extension AddBookmarkView: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        let textLength: Int = textView.text.count
+        textView.selectedRange = NSRange(location: textLength, length: 0)
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if text == "\n" {
+            if textView == nameTextView {
+                urlTextView.becomeFirstResponder()
+            } else if textView == urlTextView {
+                textView.resignFirstResponder()
+            }
+            return false
+        }
+        return true
+    }
     
     func textViewDidChange(_ textView: UITextView) {
         
