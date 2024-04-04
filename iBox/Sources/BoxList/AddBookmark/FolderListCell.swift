@@ -65,19 +65,19 @@ class FolderListCell: UITableViewCell {
             make.bottom.lessThanOrEqualToSuperview().offset(-10)
         }
         
-        folderNameLabel.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.leading.equalTo(folderImageView.snp.trailing).offset(10)
-            make.trailing.lessThanOrEqualToSuperview().offset(-20)
-            make.top.greaterThanOrEqualToSuperview().offset(10)
-            make.bottom.lessThanOrEqualToSuperview().offset(-10)
-        }
-        
         checkImageView.snp.makeConstraints { make in
              make.centerY.equalToSuperview()
              make.trailing.equalToSuperview().offset(-20)
              make.width.height.equalTo(24)
          }
+        
+        folderNameLabel.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.leading.equalTo(folderImageView.snp.trailing).offset(10)
+            make.trailing.equalTo(checkImageView.snp.leading).offset(-10)
+            make.top.greaterThanOrEqualToSuperview().offset(10)
+            make.bottom.lessThanOrEqualToSuperview().offset(-10)
+        }
     }
     
     func configureWith(folder: Folder, isSelected: Bool) {
