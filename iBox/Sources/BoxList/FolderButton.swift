@@ -52,7 +52,7 @@ class FolderButton: UIButton {
     private func setupLayout() {
         openCloseImageView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.width.height.equalTo(20)
+            make.height.equalTo(20)
             make.trailing.equalToSuperview().offset(-20)
         }
         
