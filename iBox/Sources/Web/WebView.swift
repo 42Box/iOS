@@ -21,11 +21,9 @@ class WebView: UIView {
     }
     
     // MARK: - UI Components
+
     
-    private let webView = WKWebView().then {
-        $0.isOpaque = false
-        $0.scrollView.contentInsetAdjustmentBehavior = .always
-    }
+    private let webView:WKWebView
     
     private let refreshControl = UIRefreshControl()
   
@@ -38,7 +36,12 @@ class WebView: UIView {
     // MARK: - Initializer
     
     override init(frame: CGRect) {
+        let config = WKWebViewConfiguration()
+        config.allowsInlineMediaPlayback = true
+        
+        webView = WKWebView(frame: .zero, configuration: config)
         super.init(frame: frame)
+        
         setupProperty()
         setupHierarchy()
         setupLayout()
@@ -51,6 +54,7 @@ class WebView: UIView {
     deinit {
         progressObserver?.invalidate()
         webView.stopLoading()
+        webView.isOpaque = false
         webView.navigationDelegate = nil
         webView.scrollView.delegate = nil
     }
@@ -107,19 +111,4 @@ extension WebView: WKNavigationDelegate {
         }
     }
   
-    //    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-    //            print("웹뷰 로딩 실패: \(error.localizedDescription)")
-    //        }
-    //
-    //    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-    //        print("웹뷰 프로비저널 네비게이션 실패: \(error.localizedDescription)")
-    //    }
-    //
-    //    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-    //        if let url = navigationAction.request.url {
-    //            print("웹뷰가 리다이렉트 되는 URL: \(url.absoluteString)")
-    //        }
-    //
-    //        decisionHandler(.allow)
-    //    }
 }
