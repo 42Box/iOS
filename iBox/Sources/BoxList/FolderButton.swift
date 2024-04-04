@@ -21,6 +21,7 @@ class FolderButton: UIButton {
     
     private let openCloseImageView = UIImageView().then {
         $0.tintColor = .tertiaryLabel
+        $0.contentMode = .scaleAspectFit
     }
     
     // MARK: - Initializer
@@ -52,7 +53,7 @@ class FolderButton: UIButton {
     private func setupLayout() {
         openCloseImageView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.height.equalTo(20)
+            make.width.height.equalTo(20)
             make.trailing.equalToSuperview().offset(-20)
         }
         
