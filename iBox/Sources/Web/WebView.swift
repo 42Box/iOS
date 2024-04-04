@@ -54,6 +54,7 @@ class WebView: UIView {
     deinit {
         progressObserver?.invalidate()
         webView.stopLoading()
+        webView.isOpaque = false
         webView.navigationDelegate = nil
         webView.scrollView.delegate = nil
     }
