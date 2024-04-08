@@ -22,7 +22,8 @@ class WebView: UIView {
         }
     }
     
-    private var refreshControlHeight: CGFloat = 100.0
+    private var debounceTimer: Timer?
+    private var refreshControlHeight: CGFloat = 120.0
     private var isActive = false
     
     // MARK: - UI Components
@@ -38,6 +39,8 @@ class WebView: UIView {
         $0.sizeToFit()
     }
     
+    private var refreshControl: RefreshControl?
+    
     // MARK: - Initializer
     
     override init(frame: CGRect) {
@@ -45,6 +48,7 @@ class WebView: UIView {
         setupProperty()
         setupHierarchy()
         setupLayout()
+//        setupRefreshControl()
     }
     
     required init?(coder: NSCoder) {
@@ -66,18 +70,6 @@ class WebView: UIView {
         progressObserver = webView.observe(\.estimatedProgress, options: .new) { [weak self] webView, _ in
             self?.progressView.setProgress(Float(webView.estimatedProgress), animated: true)
         }
-        setupRefreshControl()
-    }
-    
-    private func setupRefreshControl() {
-        // pan gesture
-        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handleSwipe))
-        panGestureRecognizer.delegate = self
-        addGestureRecognizer(panGestureRecognizer)
-        // refresh control
-        let refreshControl = RefreshControl(frame: .init(x: 0, y: -refreshControlHeight, width: frame.width, height: refreshControlHeight))
-        webView.scrollView.addSubview(refreshControl)
-        webView.scrollView.delegate = self
     }
     
     private func setupHierarchy() {
@@ -95,31 +87,63 @@ class WebView: UIView {
         }
     }
     
+    func setupRefreshControl() {
+        // pan gesture
+        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handleSwipe))
+        panGestureRecognizer.delegate = self // UIGestureRecognizerDelegate
+        addGestureRecognizer(panGestureRecognizer)
+        // refresh control
+        let refreshControl = RefreshControl(frame: .init(x: 0, y: -refreshControlHeight, width: frame.size.width, height: refreshControlHeight))
+        webView.scrollView.addSubview(refreshControl)
+        webView.scrollView.delegate = self // UIScrollViewDelegate
+        self.refreshControl = refreshControl
+    }
+    
     private func loadWebsite() {
         guard let url = selectedWebsite else { return }
         webView.load(URLRequest(url: url))
         webView.allowsBackForwardNavigationGestures = true
     }
     
+    private func debounce(interval: TimeInterval, action: @escaping (() -> Void)) {
+        debounceTimer?.invalidate()
+        debounceTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false, block: { _ in action() })
+    }
+    
     @objc func handleSwipe(_ gesture: UIPanGestureRecognizer) {
-        guard isActive else { return } // 활성 상태일 때만 처리
+        guard isActive, let refreshControl = refreshControl else { return }
         
         let translation = gesture.translation(in: self)
-        if gesture.state == .ended { // 사용자의 터치가 끝났을 때
-            if abs(translation.x) > 100 {
+        if gesture.state == .changed {
+            if abs(translation.x) > refreshControlHeight {
                 if translation.x > 0 { // 오른쪽 스와이프 : 처음 북마크로 돌아가기
-                    loadWebsite()
+                    refreshControl.setSelected(.back)
                 } else { // 왼쪽 스와이프 : 현재 링크 북마크 추가
-                    guard let url = webView.url else { return }
-                    delegate?.pushAddBookMarkViewController(url: url)
+                    refreshControl.setSelected(.addBookmark)
                 }
             } else { // 아래 : 새로고침
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-                    self?.webView.reload()
-                }
+                refreshControl.setSelected(.refresh)
             }
-            // 제스처 인식 후 초기화
+        } else if gesture.state == .ended { // 사용자의 터치가 끝났을 때
+            switch refreshControl.currentType {
+            case .addBookmark:
+                guard let url = webView.url else { return }
+                delegate?.pushAddBookMarkViewController(url: url)
+            case .refresh:
+                self.webView.reload()
+            case .back:
+                loadWebsite()
+            case .none: break
+            }
+            // 제스처 완료 후 초기화
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                refreshControl.clear()
+            }
+        }
+        // 제스처 초기화
+        if gesture.state == .ended || gesture.state == .cancelled {
             gesture.setTranslation(CGPoint.zero, in: self)
+            refreshControl.currentType = nil
         }
     }
     
@@ -140,7 +164,6 @@ extension WebView: WKNavigationDelegate {
 extension WebView: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let refreshControlHeight: CGFloat = 100.0
         if scrollView.contentOffset.y < -refreshControlHeight {
             isActive = true
         } else {

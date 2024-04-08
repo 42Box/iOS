@@ -29,6 +29,12 @@ class WebViewController: BaseViewController<WebView>, BaseViewControllerProtocol
         contentView.selectedWebsite = selectedWebsite
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        guard let contentView = contentView as? WebView else { return }
+        contentView.setupRefreshControl()
+    }
+    
     // MARK: - BaseViewControllerProtocol
     
     func setupNavigationBar() {
