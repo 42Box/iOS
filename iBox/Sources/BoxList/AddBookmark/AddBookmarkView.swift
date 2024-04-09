@@ -41,7 +41,7 @@ class AddBookmarkView: UIView {
         $0.font = .cellTitleFont
         $0.textColor = .label
         $0.isScrollEnabled = true
-        $0.keyboardType = .emailAddress
+        $0.keyboardType = .default
         $0.autocorrectionType = .no
     }
     
@@ -68,7 +68,7 @@ class AddBookmarkView: UIView {
         $0.font = .cellTitleFont
         $0.textColor = .label
         $0.isScrollEnabled = true
-        $0.keyboardType = .emailAddress
+        $0.keyboardType = .URL
         $0.autocorrectionType = .no
     }
     
