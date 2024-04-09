@@ -156,6 +156,7 @@ extension BoxListViewController: BoxListViewDelegate {
         } else {
             // 캐시에 없는 경우, 새로운 viewController 인스턴스를 생성하고 캐시에 추가합니다.
             let viewController = WebViewController()
+            viewController.delegate = self
             viewController.selectedWebsite = url
             viewController.title = name
             WebCacheManager.shared.cacheData(forKey: id, viewController: viewController)

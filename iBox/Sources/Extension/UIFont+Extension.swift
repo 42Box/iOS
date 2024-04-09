@@ -17,5 +17,6 @@ extension UIFont {
     static let cellTitleFont = UIFont.systemFont(ofSize: 16.0)
     static let cellDescriptionFont = UIFont.systemFont(ofSize: 13.0, weight: .regular)
     static let descriptionFont = UIFont.systemFont(ofSize: 14.0)
+    static let refreshControlFont = UIFont.boldSystemFont(ofSize: 12.0)
     
 }
