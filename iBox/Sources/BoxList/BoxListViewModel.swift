@@ -150,6 +150,9 @@ class BoxListViewModel {
     func deleteFolder(at row: Int) {
         sectionsToReload.remove(boxList[row].id)
         boxList.remove(at: row)
+        for box in boxList {
+            sectionsToReload.update(with: box.id)
+        }
     }
     
     func editFolderName(at row: Int, name: String) {
