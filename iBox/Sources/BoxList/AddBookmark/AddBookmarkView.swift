@@ -41,6 +41,14 @@ class AddBookmarkView: UIView {
         $0.font = .cellTitleFont
         $0.textColor = .label
         $0.isScrollEnabled = true
+        $0.keyboardType = .default
+        $0.autocorrectionType = .no
+    }
+    
+    private let clearButton = UIButton().then {
+        $0.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
+        $0.tintColor = .systemGray3
+        $0.isHidden = true
     }
     
     private let separatorView = UIView().then {
@@ -60,6 +68,8 @@ class AddBookmarkView: UIView {
         $0.font = .cellTitleFont
         $0.textColor = .label
         $0.isScrollEnabled = true
+        $0.keyboardType = .URL
+        $0.autocorrectionType = .no
     }
     
     private let button = UIButton(type: .custom).then {
@@ -107,6 +117,7 @@ class AddBookmarkView: UIView {
     private func setupProperty() {
         backgroundColor = .systemGroupedBackground
         updateTextFieldWithIncomingData()
+        clearButton.addTarget(self, action: #selector(clearTextView), for: .touchUpInside)
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         nameTextView.delegate = self
         urlTextView.delegate = self
@@ -115,6 +126,7 @@ class AddBookmarkView: UIView {
     private func setupHierarchy() {
         addSubview(textFieldView)
         addSubview(nameTextView)
+        addSubview(clearButton)
         addSubview(separatorView)
         addSubview(urlTextView)
         addSubview(nameTextViewPlaceHolder)
@@ -128,7 +140,7 @@ class AddBookmarkView: UIView {
     private func setupLayout() {
         
         textFieldView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(100)
+            make.top.equalToSuperview().offset(70)
             make.height.equalTo(150)
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().offset(-20)
@@ -144,6 +156,11 @@ class AddBookmarkView: UIView {
         nameTextViewPlaceHolder.snp.makeConstraints { make in
             make.top.equalTo(nameTextView.snp.top).offset(7)
             make.leading.equalTo(nameTextView.snp.leading).offset(5)
+        }
+        
+        clearButton.snp.makeConstraints { make in
+            make.top.equalTo(nameTextView.snp.top).offset(7)
+            make.trailing.equalTo(nameTextView.snp.trailing).offset(-5)
         }
         
         separatorView.snp.makeConstraints { make in
@@ -174,14 +191,15 @@ class AddBookmarkView: UIView {
         buttonLabel.snp.makeConstraints { make in
             make.leading.equalTo(button.snp.leading).offset(20)
             make.centerY.equalTo(button.snp.centerY)
-            make.width.equalTo(40)
             make.height.equalTo(40)
         }
         
         selectedFolderLabel.snp.makeConstraints { make in
+            make.leading.equalTo(buttonLabel.snp.trailing).offset(10)
             make.trailing.equalTo(chevronImageView.snp.leading).offset(-10)
             make.centerY.equalTo(button.snp.centerY)
             make.height.equalTo(40)
+            make.width.equalTo(100)
         }
         
         chevronImageView.snp.makeConstraints { make in
@@ -197,9 +215,15 @@ class AddBookmarkView: UIView {
         if let data = data, !data.isEmpty {
             textField.text = data
             placeholder.isHidden = true
+            if textField == nameTextView {
+                clearButton.isHidden = false
+            }
         } else {
             textField.text = ""
             placeholder.isHidden = false
+            if textField == nameTextView {
+                clearButton.isHidden = true
+            }
         }
     }
     
@@ -216,6 +240,11 @@ class AddBookmarkView: UIView {
         onTextChange?(isBothTextViewsFilled)
     }
     
+    @objc func clearTextView() {
+        nameTextView.text = ""
+        textViewDidChange(nameTextView)
+    }
+    
     @objc private func buttonTapped() {
         onButtonTapped?()
     }
@@ -226,6 +255,22 @@ class AddBookmarkView: UIView {
 }
 
 extension AddBookmarkView: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        let textLength: Int = textView.text.count
+        textView.selectedRange = NSRange(location: textLength, length: 0)
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if text == "\n" {
+            if textView == nameTextView {
+                urlTextView.becomeFirstResponder()
+            } else if textView == urlTextView {
+                textView.resignFirstResponder()
+            }
+            return false
+        }
+        return true
+    }
     
     func textViewDidChange(_ textView: UITextView) {
         
@@ -234,6 +279,7 @@ extension AddBookmarkView: UITextViewDelegate {
         
         if textView == nameTextView {
             nameTextViewPlaceHolder.isHidden = !nameTextView.text.isEmpty
+            clearButton.isHidden = nameTextView.text.isEmpty
         }
 
         if textView == urlTextView {

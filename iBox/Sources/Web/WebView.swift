@@ -26,11 +26,9 @@ class WebView: UIView {
     private var isActive = false
     
     // MARK: - UI Components
+
     
-    private let webView = WKWebView().then {
-        $0.isOpaque = false
-        $0.scrollView.contentInsetAdjustmentBehavior = .always
-    }
+    private let webView:WKWebView
     
     private let progressView = UIProgressView().then {
         $0.progressViewStyle = .bar
@@ -43,7 +41,12 @@ class WebView: UIView {
     // MARK: - Initializer
     
     override init(frame: CGRect) {
+        let config = WKWebViewConfiguration()
+        config.allowsInlineMediaPlayback = true
+        
+        webView = WKWebView(frame: .zero, configuration: config)
         super.init(frame: frame)
+        
         setupProperty()
         setupHierarchy()
         setupLayout()
@@ -56,6 +59,7 @@ class WebView: UIView {
     deinit {
         progressObserver?.invalidate()
         webView.stopLoading()
+        webView.isOpaque = false
         webView.navigationDelegate = nil
         webView.scrollView.delegate = nil
     }
@@ -145,9 +149,15 @@ class WebView: UIView {
 
 extension WebView: WKNavigationDelegate {
     
+    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        // 로딩 시작 시 프로그레스 바를 보여주고 진행률 초기화
+        progressView.isHidden = false
+        progressView.setProgress(0.0, animated: false)
+    }
+    
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         progressView.setProgress(1.0, animated: true)
-        // 약간의 딜레이를 주어서 프로그레스 바가 완전히 차도록 함
+        // 약간의 딜레이 후 프로그레스 바를 숨김
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.progressView.isHidden = true
         }

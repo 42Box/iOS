@@ -25,16 +25,8 @@ class ShareExtensionBackGroundView: UIView {
     lazy var label: UILabel = {
         let label = UILabel()
         label.text = "이 링크를 iBox 앱에서 여시겠습니까?"
-        label.font = .systemFont(ofSize: 17)
+        label.font = .systemFont(ofSize: 15)
         label.textColor = .label
-        return label
-    }()
-    
-    lazy var linkLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .label
-        label.numberOfLines = 3
-        label.lineBreakMode = .byTruncatingTail
         return label
     }()
     
@@ -43,7 +35,7 @@ class ShareExtensionBackGroundView: UIView {
         button.configuration = .plain()
         button.configuration?.attributedTitle = .init(
             "Cancel",
-            attributes: .init([.font: UIFont.systemFont(ofSize: 14)])
+            attributes: .init([.font: UIFont.systemFont(ofSize: 13)])
         )
         return button
     }()
@@ -53,7 +45,7 @@ class ShareExtensionBackGroundView: UIView {
         button.configuration = .plain()
         button.configuration?.attributedTitle = .init(
             "Open",
-            attributes: .init([.font: UIFont.boldSystemFont(ofSize: 14)])
+            attributes: .init([.font: UIFont.boldSystemFont(ofSize: 13)])
         )
         return button
     }()
@@ -76,7 +68,7 @@ class ShareExtensionBackGroundView: UIView {
     private func setupProperty() {
         backgroundColor = .systemBackground
         clipsToBounds = true
-        layer.cornerRadius = 10
+        layer.cornerRadius = 15
         
         cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
         openAppButton.addTarget(self, action: #selector(openAppButtonTapped), for: .touchUpInside)
@@ -84,33 +76,24 @@ class ShareExtensionBackGroundView: UIView {
     
     private func setupHierarchy() {
         addSubview(label)
-        addSubview(linkLabel)
         addSubview(cancelButton)
         addSubview(openAppButton)
     }
     
     private func setupLayout() {
         label.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().inset(20)
-        }
-        
-        linkLabel.snp.makeConstraints { make in
-            make.top.equalTo(label.snp.bottom).offset(10)
-            make.leading.trailing.equalToSuperview().inset(20)
+            make.top.equalToSuperview().inset(25)
+            make.leading.equalToSuperview().inset(20)
         }
         
         cancelButton.snp.makeConstraints { make in
-            make.trailing.equalTo(openAppButton.snp.leading).offset(-20)
+            make.trailing.equalTo(openAppButton.snp.leading)
             make.centerY.equalTo(openAppButton.snp.centerY)
         }
         
         openAppButton.snp.makeConstraints { make in
-            make.trailing.bottom.equalToSuperview().inset(20)
+            make.trailing.bottom.equalToSuperview().inset(15)
         }
-    }
-    
-    func updateLinkLabel(with text: String) {
-        linkLabel.text = text
     }
     
     // MARK: - Action Functions

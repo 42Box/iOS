@@ -85,11 +85,14 @@ class BoxListCell: UITableViewCell {
         }
         
         label.snp.makeConstraints { make in
-            make.top.trailing.bottom.equalToSuperview()
+            make.top.bottom.equalToSuperview()
+            make.trailing.equalToSuperview().inset(25)
             make.leading.equalTo(cellImageView.snp.trailing).offset(10)
         }
         editButton.snp.makeConstraints { make in
-            make.top.bottom.trailing.equalToSuperview()
+            make.width.equalTo(30)
+            make.top.bottom.equalToSuperview()
+            make.trailing.equalToSuperview().offset(-10)
         }
     }
     
@@ -106,6 +109,20 @@ class BoxListCell: UITableViewCell {
     
     func setEditButtonHidden(_ isHidden: Bool) {
         editButton.isHidden = isHidden
+        
+        if isHidden {
+            label.snp.remakeConstraints { make in
+                make.top.bottom.equalToSuperview()
+                make.trailing.equalToSuperview().inset(25)
+                make.leading.equalTo(cellImageView.snp.trailing).offset(10)
+            }
+        } else {
+            label.snp.remakeConstraints { make in
+                make.top.bottom.equalToSuperview()
+                make.trailing.equalTo(editButton.snp.leading).offset(-5)
+                make.leading.equalTo(cellImageView.snp.trailing).offset(10)
+            }
+        }
     }
 
 }
