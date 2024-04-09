@@ -194,6 +194,11 @@ extension BoxListView: UITableViewDelegate {
         guard let viewModel else { return }
         viewModel.input.send(.folderTapped(section: button.tag))
         button.toggleStatus()
+        if UserDefaultsManager.isHaptics {
+            let generator = UIImpactFeedbackGenerator(style: .light)
+            generator.prepare()
+            generator.impactOccurred()
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -207,6 +212,11 @@ extension BoxListView: UITableViewDelegate {
         // 액션 정의
         let favoriteAction = UIContextualAction(style: .normal, title: "favorite", handler: { [weak self] (action, view, completionHandler) in
             self?.viewModel?.input.send(.toggleFavorite(indexPath: indexPath))
+            if UserDefaultsManager.isHaptics {
+                let generator = UIImpactFeedbackGenerator(style: .soft)
+                generator.prepare()
+                generator.impactOccurred()
+            }
             completionHandler(true)
         })
         favoriteAction.backgroundColor = .box2
@@ -226,6 +236,11 @@ extension BoxListView: UITableViewDelegate {
         
         let deleteAction = UIContextualAction(style: .normal, title: "delete", handler: {(action, view, completionHandler) in
             self.viewModel?.input.send(.deleteBookmark(indexPath: indexPath))
+            if UserDefaultsManager.isHaptics {
+                let generator = UIImpactFeedbackGenerator(style: .soft)
+                generator.prepare()
+                generator.impactOccurred()
+            }
             completionHandler(true)
         })
         deleteAction.backgroundColor = .systemGray

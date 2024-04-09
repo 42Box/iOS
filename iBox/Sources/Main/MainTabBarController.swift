@@ -52,6 +52,11 @@ class MainTabBarController: UITabBarController {
 extension MainTabBarController: UITabBarControllerDelegate {
     
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        if UserDefaultsManager.isHaptics {
+            let generator = UIImpactFeedbackGenerator(style: .light)
+            generator.prepare()
+            generator.impactOccurred()
+        }
         if tabBarController.selectedIndex == 1 && previousTabIndex == 1 {
             WebViewPreloader.shared.resetFavoriteView()
         }

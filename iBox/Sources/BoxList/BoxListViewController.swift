@@ -86,6 +86,11 @@ extension BoxListViewController: AddBookmarkViewControllerProtocol {
     func addBookmarkDirect(_ bookmark: Bookmark, at folderIndex: Int) {
         guard let contentView = contentView as? BoxListView else { return }
         contentView.viewModel?.addBookmarkDirect(bookmark, at: folderIndex)
+        if UserDefaultsManager.isHaptics {
+            let generator = UIImpactFeedbackGenerator(style: .soft)
+            generator.prepare()
+            generator.impactOccurred()
+        }
     }
     
 }
@@ -195,10 +200,20 @@ extension BoxListViewController: EditFolderViewControllerDelegate {
     func deleteFolder(at row: Int) {
         guard let contentView = contentView as? BoxListView else { return }
         contentView.viewModel?.deleteFolder(at: row)
+        if UserDefaultsManager.isHaptics {
+            let generator = UIImpactFeedbackGenerator(style: .soft)
+            generator.prepare()
+            generator.impactOccurred()
+        }
     }
     
     func addFolder(_ folder: Folder) {
         guard let contentView = contentView as? BoxListView else { return }
         contentView.viewModel?.addFolder(folder)
+        if UserDefaultsManager.isHaptics {
+            let generator = UIImpactFeedbackGenerator(style: .soft)
+            generator.prepare()
+            generator.impactOccurred()
+        }
     }
 }
