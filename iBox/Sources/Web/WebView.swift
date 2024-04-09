@@ -103,12 +103,18 @@ class WebView: UIView {
 
 extension WebView: WKNavigationDelegate {
     
+    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        // 로딩 시작 시 프로그레스 바를 보여주고 진행률 초기화
+        progressView.isHidden = false
+        progressView.setProgress(0.0, animated: false)
+    }
+    
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         progressView.setProgress(1.0, animated: true)
-        // 약간의 딜레이를 주어서 프로그레스 바가 완전히 차도록 함
+        // 약간의 딜레이 후 프로그레스 바를 숨김
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.progressView.isHidden = true
         }
     }
-  
+    
 }
