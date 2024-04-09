@@ -21,6 +21,9 @@ final class UserDefaultsManager {
     @UserDefaultsData(key: "isDefaultDataInserted", defaultValue: false)
     static var isDefaultDataInserted: Bool
     
+    @UserDefaultsData(key: "isHaptics", defaultValue: true)
+    static var isHaptics: Bool
+    
     @UserDefaultsData(key: "isPreload", defaultValue: false)
     static var isPreload: Bool
     
