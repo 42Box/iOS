@@ -20,6 +20,7 @@ class WebViewPreloader {
         config.allowsInlineMediaPlayback = true
         
         let webView = WKWebView(frame: .zero, configuration: config)
+        webView.allowsBackForwardNavigationGestures = true
         webView.isOpaque = false
         webView.load(URLRequest(url: url ?? defaultUrl))
         favoriteView = (url ?? defaultUrl, webView)
