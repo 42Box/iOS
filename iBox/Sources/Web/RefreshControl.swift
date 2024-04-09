@@ -77,6 +77,7 @@ class RefreshControl: UIView {
     // MAKR: - Setup Methods
     
     private func setupProperty() {
+        backgroundColor = .backgroundColor
         isUserInteractionEnabled = true
     }
     

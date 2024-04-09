@@ -48,7 +48,6 @@ class WebView: UIView {
         setupProperty()
         setupHierarchy()
         setupLayout()
-//        setupRefreshControl()
     }
     
     required init?(coder: NSCoder) {
