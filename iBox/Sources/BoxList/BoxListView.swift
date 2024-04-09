@@ -194,6 +194,11 @@ extension BoxListView: UITableViewDelegate {
         guard let viewModel else { return }
         viewModel.input.send(.folderTapped(section: button.tag))
         button.toggleStatus()
+        if UserDefaultsManager.isHaptics {
+            let generator = UIImpactFeedbackGenerator(style: .light)
+            generator.prepare()
+            generator.impactOccurred()
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -207,6 +212,11 @@ extension BoxListView: UITableViewDelegate {
         // 액션 정의
         let favoriteAction = UIContextualAction(style: .normal, title: "favorite", handler: { [weak self] (action, view, completionHandler) in
             self?.viewModel?.input.send(.toggleFavorite(indexPath: indexPath))
+            if UserDefaultsManager.isHaptics {
+                let generator = UIImpactFeedbackGenerator(style: .soft)
+                generator.prepare()
+                generator.impactOccurred()
+            }
             completionHandler(true)
         })
         favoriteAction.backgroundColor = .box2
@@ -219,6 +229,11 @@ extension BoxListView: UITableViewDelegate {
         let shareAction = UIContextualAction(style: .normal, title: "share", handler: {(action, view, completionHandler) in
             let cellViewModel = self.viewModel?.viewModel(at: indexPath)
             self.delegate?.pushViewController(url: cellViewModel?.url)
+            if UserDefaultsManager.isHaptics {
+                let generator = UIImpactFeedbackGenerator(style: .soft)
+                generator.prepare()
+                generator.impactOccurred()
+            }
             completionHandler(true)
         })
         shareAction.backgroundColor = .box3
@@ -226,6 +241,11 @@ extension BoxListView: UITableViewDelegate {
         
         let deleteAction = UIContextualAction(style: .normal, title: "delete", handler: {(action, view, completionHandler) in
             self.viewModel?.input.send(.deleteBookmark(indexPath: indexPath))
+            if UserDefaultsManager.isHaptics {
+                let generator = UIImpactFeedbackGenerator(style: .soft)
+                generator.prepare()
+                generator.impactOccurred()
+            }
             completionHandler(true)
         })
         deleteAction.backgroundColor = .systemGray
@@ -276,6 +296,11 @@ extension BoxListView: UITableViewDelegate {
     private func makeContextMenu(for indexPath: IndexPath) -> UIMenu {
         let deleteAction = UIAction(title: "삭제", image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] action in
             self?.viewModel?.input.send(.deleteBookmark(indexPath: indexPath))
+            if UserDefaultsManager.isHaptics {
+                let generator = UIImpactFeedbackGenerator(style: .soft)
+                generator.prepare()
+                generator.impactOccurred()
+            }
         }
         
         let isFavorite = self.viewModel?.isFavoriteBookmark(at: indexPath) ?? false
@@ -284,10 +309,21 @@ extension BoxListView: UITableViewDelegate {
         
         let favoriteAction = UIAction(title: favoriteActionTitle, image: favoriteActionImage) { [weak self] action in
             self?.viewModel?.input.send(.toggleFavorite(indexPath: indexPath))
+            if UserDefaultsManager.isHaptics {
+                let generator = UIImpactFeedbackGenerator(style: .soft)
+                generator.prepare()
+                generator.impactOccurred()
+            }
         }
 
         let shareAction = UIAction(title: "공유하기", image: UIImage(systemName: "square.and.arrow.up")) { [weak self] action in
             guard let self = self, let url = self.viewModel?.boxList[indexPath.section].boxListCellViewModelsWithStatus[indexPath.row].url else { return }
+            
+            if UserDefaultsManager.isHaptics {
+                let generator = UIImpactFeedbackGenerator(style: .soft)
+                generator.prepare()
+                generator.impactOccurred()
+            }
             
             let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
             if let viewController = self.delegate as? UIViewController {
