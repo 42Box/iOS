@@ -90,7 +90,7 @@ class RefreshControl: UIView {
     
     private func setupLayout() {
         stackView.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(20)
+            make.leading.bottom.trailing.equalToSuperview().inset(20)
         }
     }
     
@@ -102,6 +102,11 @@ class RefreshControl: UIView {
         case .addBookmark: addBookmarkButton.backgroundColor = .tableViewBackgroundColor
         case .refresh: refreshButton.backgroundColor = .tableViewBackgroundColor
         case .back: backButton.backgroundColor = .tableViewBackgroundColor
+        }
+        if UserDefaultsManager.isHaptics {
+            let generator = UIImpactFeedbackGenerator(style: .light)
+            generator.prepare()
+            generator.impactOccurred()
         }
     }
     

@@ -22,7 +22,6 @@ class WebView: UIView {
         }
     }
     
-    private var debounceTimer: Timer?
     private var refreshControlHeight: CGFloat = 120.0
     private var isActive = false
     
@@ -92,8 +91,9 @@ class WebView: UIView {
         panGestureRecognizer.delegate = self // UIGestureRecognizerDelegate
         addGestureRecognizer(panGestureRecognizer)
         // refresh control
-        let refreshControl = RefreshControl(frame: .init(x: 0, y: -refreshControlHeight, width: frame.size.width, height: refreshControlHeight))
+        let refreshControl = RefreshControl(frame: .init(x: 0, y: -frame.size.height, width: frame.size.width, height: frame.size.height))
         webView.scrollView.addSubview(refreshControl)
+        webView.scrollView.backgroundColor = .backgroundColor
         webView.scrollView.delegate = self // UIScrollViewDelegate
         self.refreshControl = refreshControl
     }
@@ -104,17 +104,12 @@ class WebView: UIView {
         webView.allowsBackForwardNavigationGestures = true
     }
     
-    private func debounce(interval: TimeInterval, action: @escaping (() -> Void)) {
-        debounceTimer?.invalidate()
-        debounceTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false, block: { _ in action() })
-    }
-    
     @objc func handleSwipe(_ gesture: UIPanGestureRecognizer) {
         guard isActive, let refreshControl = refreshControl else { return }
         
         let translation = gesture.translation(in: self)
         if gesture.state == .changed {
-            if abs(translation.x) > refreshControlHeight {
+            if abs(translation.x) > 60.0 {
                 if translation.x > 0 { // 오른쪽 스와이프 : 처음 북마크로 돌아가기
                     refreshControl.setSelected(.back)
                 } else { // 왼쪽 스와이프 : 현재 링크 북마크 추가
