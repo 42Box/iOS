@@ -21,6 +21,7 @@ class FolderButton: UIButton {
     
     private let openCloseImageView = UIImageView().then {
         $0.tintColor = .tertiaryLabel
+        $0.contentMode = .scaleAspectFit
     }
     
     // MARK: - Initializer
@@ -41,7 +42,7 @@ class FolderButton: UIButton {
     
     private func setupProperty() {
         backgroundColor = .tableViewBackgroundColor
-        openCloseImageView.image = isOpen ? UIImage(systemName: "chevron.down") : UIImage(systemName: "chevron.right")
+        openCloseImageView.image = UIImage(systemName: "chevron.right")
     }
     
     private func setupHierarchy() {
@@ -68,6 +69,15 @@ class FolderButton: UIButton {
     
     func toggleStatus() {
         isOpen = !isOpen
-        openCloseImageView.image = isOpen ? UIImage(systemName: "chevron.down") : UIImage(systemName: "chevron.right")
+        if isOpen {
+            UIView.animate(withDuration: 0.25) { [weak self] in
+                self?.openCloseImageView.transform = CGAffineTransform(rotationAngle: CGFloat.pi / 2)
+            }
+        } else {
+            UIView.animate(withDuration: 0.25) { [weak self] in
+                self?.openCloseImageView.transform = CGAffineTransform(rotationAngle: 0)
+            }
+        }
+        
     }
 }
