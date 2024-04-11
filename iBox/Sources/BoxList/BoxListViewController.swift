@@ -51,8 +51,6 @@ class BoxListViewController: BaseViewController<BoxListView>, BaseViewController
     // MARK: - Action Functions
     
     @objc private func addButtonTapped() {
-        guard let contentView = contentView as? BoxListView else { return }
-        
         let addBookmarkViewController = AddBookmarkViewController()
         addBookmarkViewController.delegate = self
         
