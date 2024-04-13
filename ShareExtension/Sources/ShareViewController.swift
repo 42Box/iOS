@@ -47,12 +47,12 @@ class CustomShareViewController: UIViewController {
     
     private func setupLayout() {
         modalView.snp.makeConstraints { make in
-            make.top.bottom.leading.trailing.equalToSuperview()
+            make.edges.equalTo(view.safeAreaLayoutGuide)
         }
         
         backgroundView.snp.makeConstraints { make in
-            make.trailing.leading.equalToSuperview().inset(30)
-            make.center.equalToSuperview().offset(-20)
+            make.leading.trailing.equalToSuperview().inset(30)
+            make.centerY.equalToSuperview().inset(20)
             make.height.equalTo(140)
         }
     }
