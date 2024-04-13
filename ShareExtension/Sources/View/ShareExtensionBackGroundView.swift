@@ -71,7 +71,7 @@ class ShareExtensionBackGroundView: UIView {
         button.setBackgroundColor(.clear, for: .normal)
         
         button.setTitle("앱이 실행됩니다", for: .highlighted)
-        button.setTitleColor(.white, for: .highlighted)
+        button.setTitleColor(.darkGray, for: .highlighted)
         button.setBackgroundColor(.box2, for: .highlighted)
         button.setImage(UIImage(systemName: "heart.fill"), for: .highlighted)
         
