@@ -30,8 +30,8 @@ class CustomShareViewController: UIViewController {
         setupProperty()
         setupHierarchy()
         setupLayout()
-        extractSharedURL()
         setupModal()
+        extractSharedURL()
     }
     
     // MARK: - Setup Methods
@@ -128,7 +128,7 @@ extension CustomShareViewController: ShareExtensionBackGroundViewDelegate {
     }
     
     func didTapOpenApp() {
-        guard let sharedURL = dataURL, let url = URL(string: sharedURL) else {
+        guard let sharedURL = dataURL else {
             print("Share extension error")
             return
         }
@@ -141,6 +141,8 @@ extension CustomShareViewController: ShareExtensionBackGroundViewDelegate {
             } else {
                 print("iBox 앱을 열 수 없습니다.")
             }
+        } else {
+            print("url error")
         }
     }
 }
