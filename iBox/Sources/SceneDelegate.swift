@@ -49,7 +49,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         if let urlContext = URLContexts.first,
         let tabBarController = window?.rootViewController as? UITabBarController {
-        URLDataManager.shared.navigateToAddBookmarkView(from: urlContext.url, in: tabBarController)
+        AddBookmarkManager.shared.navigateToAddBookmarkView(from: urlContext.url, in: tabBarController)
         }
     }
 

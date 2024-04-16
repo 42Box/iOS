@@ -80,8 +80,9 @@ class CustomLaunchScreenViewController: UIViewController {
         
         if let urlContext = self.urlContext,
            let tabBarController = window.rootViewController as? UITabBarController {
-            URLDataManager.shared.navigateToAddBookmarkView(from: urlContext.url, in: tabBarController)
+            AddBookmarkManager.shared.navigateToAddBookmarkView(from: urlContext.url, in: tabBarController)
         }
+        
         UIView.transition(with: window, duration: 0.5, options: .transitionCrossDissolve, animations: {}, completion: nil)
     }
 }
