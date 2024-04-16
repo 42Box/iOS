@@ -110,18 +110,21 @@ class AddBookmarkView: UIView {
         setupHierarchy()
         setupLayout()
         setupBindings()
-        
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
     
+    deinit {
+        AddBookmarkManager.shared.incomingTitle = nil
+        AddBookmarkManager.shared.incomingData = nil
+    }
+    
     // MARK: - Setup Methods
     
     private func setupProperty() {
         backgroundColor = .systemGroupedBackground
-        updateTextFieldWithIncomingData()
         clearButton.addTarget(self, action: #selector(clearTextView), for: .touchUpInside)
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         nameTextView.delegate = self
@@ -216,22 +219,6 @@ class AddBookmarkView: UIView {
         
     }
     
-    private func updateTextField(textField: UITextView, placeholder: UILabel, withData data: String?) {
-        if let data = data, !data.isEmpty {
-            textField.text = data
-            placeholder.isHidden = true
-            if textField == nameTextView {
-                clearButton.isHidden = false
-            }
-        } else {
-            textField.text = ""
-            placeholder.isHidden = false
-            if textField == nameTextView {
-                clearButton.isHidden = true
-            }
-        }
-    }
-    
     private func setupBindings() {
         AddBookmarkManager.shared.$incomingTitle
             .receive(on: DispatchQueue.main)
@@ -251,14 +238,6 @@ class AddBookmarkView: UIView {
                 self?.updateTextFieldsFilledState()
             }
             .store(in: &cancellables)
-    }
-    
-    private func updateTextFieldWithIncomingData() {
-        updateTextField(textField: nameTextView, placeholder: nameTextViewPlaceHolder, withData: AddBookmarkManager.shared.incomingTitle)
-        AddBookmarkManager.shared.incomingTitle = nil
-        
-        updateTextField(textField: urlTextView, placeholder: urlTextViewPlaceHolder, withData: AddBookmarkManager.shared.incomingData)
-        AddBookmarkManager.shared.incomingData = nil
     }
     
     func updateTextFieldsFilledState() {
