@@ -37,8 +37,15 @@ class FolderListViewController: UIViewController {
     }
     
     private func setupNavigationBar() {
+        navigationItem.hidesBackButton = true
+        let backButton = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .plain, target: self, action: #selector(back))
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addFolder))
+        navigationItem.leftBarButtonItem = backButton
         navigationItem.rightBarButtonItem = addButton
+    }
+    
+    @objc private func back() {
+        self.navigationController?.popViewController(animated: true)
     }
     
     @objc private func addFolder() {

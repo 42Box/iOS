@@ -43,6 +43,7 @@ final class AddBookmarkViewController: UIViewController {
     private func setupNavigationBar() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
+        appearance.titleTextAttributes = [.font: UIFont.subTitlefont]
         
         navigationController?.navigationBar.tintColor = .box
         navigationController?.navigationBar.standardAppearance = appearance
@@ -56,11 +57,11 @@ final class AddBookmarkViewController: UIViewController {
         navigationItem.rightBarButtonItem?.isEnabled = false
         
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.semiboldLabelFont
+            .font: UIFont.barItemFont
         ]
-
         navigationItem.leftBarButtonItem?.setTitleTextAttributes(attributes, for: .normal)
         navigationItem.rightBarButtonItem?.setTitleTextAttributes(attributes, for: .normal)
+        navigationItem.rightBarButtonItem?.setTitleTextAttributes(attributes, for: .disabled)
     }
     
     private func setupAddBookmarkView() {

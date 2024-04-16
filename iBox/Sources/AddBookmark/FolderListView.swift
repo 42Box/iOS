@@ -22,7 +22,7 @@ class FolderListView: UIView {
 
     private let infoLabel = UILabel().then {
         $0.text = "새로운 북마크를 추가할 폴더를 선택해주세요."
-        $0.font = .semiboldLabelFont
+        $0.font = .barItemFont
         $0.textColor = .label
         $0.textAlignment = .center
     }

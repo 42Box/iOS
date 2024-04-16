@@ -44,7 +44,7 @@ class FolderView: UIView {
     private func setupLayout() {
         folderImageView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.width.height.equalTo(30)
+            make.width.height.equalTo(25)
             make.leading.equalToSuperview().offset(20)
         }
         

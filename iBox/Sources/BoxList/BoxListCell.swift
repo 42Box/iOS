@@ -79,18 +79,19 @@ class BoxListCell: UITableViewCell {
     
     private func setupLayout() {
         cellImageView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(20)
+            make.leading.equalToSuperview().inset(25)
             make.top.bottom.equalToSuperview().inset(10)
-            make.width.equalTo(25)
+            make.width.equalTo(23)
         }
         
         label.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
             make.trailing.equalToSuperview().inset(25)
-            make.leading.equalTo(cellImageView.snp.trailing).offset(10)
+            make.leading.equalTo(cellImageView.snp.trailing).offset(8)
         }
+        
         editButton.snp.makeConstraints { make in
-            make.width.equalTo(30)
+            make.width.equalTo(25)
             make.top.bottom.equalToSuperview()
             make.trailing.equalToSuperview().offset(-10)
         }
