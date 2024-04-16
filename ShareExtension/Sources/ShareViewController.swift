@@ -133,7 +133,7 @@ extension CustomShareViewController: ShareExtensionBackGroundViewDelegate {
             return
         }
         
-        let urlString = "iBox://url?data=\(sharedURL)"
+        let urlString = "iBox://url?data=\(sharedURL)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         
         if let openUrl = URL(string: urlString) {
             if self.openURL(openUrl) {
@@ -143,6 +143,7 @@ extension CustomShareViewController: ShareExtensionBackGroundViewDelegate {
             }
         } else {
             print("url error")
+            // 해당 url은 사용할 수 없음을 보여주는 뷰를 만들어야함.
         }
     }
 }
