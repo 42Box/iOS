@@ -93,9 +93,10 @@ class AddBookmarkView: UIView {
     }
     
     private let chevronImageView = UIImageView().then {
-        let image = UIImage(systemName: "chevron.forward")?.withRenderingMode(.alwaysTemplate)
+        let config = UIImage.SymbolConfiguration(pointSize: 15, weight: .medium, scale: .default)
+        let image = UIImage(systemName: "chevron.forward", withConfiguration: config)?.withRenderingMode(.alwaysTemplate)
         $0.image = image
-        $0.tintColor = .systemGray
+        $0.tintColor = .systemGray3
         $0.contentMode = .scaleAspectFit
     }
     
@@ -199,14 +200,13 @@ class AddBookmarkView: UIView {
             make.trailing.equalTo(chevronImageView.snp.leading).offset(-10)
             make.centerY.equalTo(button.snp.centerY)
             make.height.equalTo(40)
-            make.width.equalTo(100)
+//            make.width.equalTo(100)
         }
         
         chevronImageView.snp.makeConstraints { make in
             make.trailing.equalTo(button.snp.trailing).offset(-20)
             make.centerY.equalTo(button.snp.centerY)
-            make.width.equalTo(17)
-            make.height.equalTo(17)
+            make.width.height.equalTo(15)
         }
         
     }

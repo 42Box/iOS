@@ -42,7 +42,8 @@ class FolderButton: UIButton {
     
     private func setupProperty() {
         backgroundColor = .tableViewBackgroundColor
-        openCloseImageView.image = UIImage(systemName: "chevron.right")
+        let config = UIImage.SymbolConfiguration(pointSize: 15, weight: .medium, scale: .default)
+        openCloseImageView.image = UIImage(systemName: "chevron.right", withConfiguration: config)
     }
     
     private func setupHierarchy() {
