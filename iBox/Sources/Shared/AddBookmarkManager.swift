@@ -6,21 +6,24 @@
 //
 
 import UIKit
+
 import SwiftSoup
 
-class URLDataManager {
-    static let shared = URLDataManager()
+class AddBookmarkManager {
+    static let shared = AddBookmarkManager()
     
-    var incomingTitle: String?
-    var incomingData: String?
-    var incomingFaviconUrl: String?
+    @Published var incomingTitle: String?
+    @Published var incomingData: String?
+    @Published var incomingFaviconUrl: String?
     
     private init() {}
     
     private func update(with data: (title: String?, data: String?, faviconUrl: String?)) {
-        incomingTitle = data.title
-        incomingData = data.data
-        incomingFaviconUrl = data.faviconUrl
+        DispatchQueue.main.async {
+            self.incomingTitle = data.title
+            self.incomingData = data.data
+            self.incomingFaviconUrl = data.faviconUrl
+        }
     }
     
     private func parseHTML(_ html: String, _ url: URL) {
@@ -29,9 +32,8 @@ class URLDataManager {
             let title = try doc.title()
             let faviconLink = try doc.select("link[rel='icon']").first()?.attr("href")
             
-            DispatchQueue.main.async {
-                self.update(with: (title: title, data: url.absoluteString, faviconUrl: faviconLink))
-            }
+            self.update(with: (title: title, data: url.absoluteString, faviconUrl: faviconLink))
+            
         } catch {
             print("Error parsing HTML: \(error)")
         }

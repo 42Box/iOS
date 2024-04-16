@@ -1,15 +1,18 @@
 //
-//  AddBookmarkBottomSheetView.swift
+//  AddBookmarkView.swift
 //  iBox
 //
 //  Created by jiyeon on 1/5/24.
 //
 
 import UIKit
+import Combine
 
 import SnapKit
 
 class AddBookmarkView: UIView {
+    
+    var cancellables = Set<AnyCancellable>()
     
     var onButtonTapped: (() -> Void)?
     var onTextChange: ((Bool) -> Void)?
@@ -19,9 +22,9 @@ class AddBookmarkView: UIView {
             selectedFolderLabel.text = selectedFolderName
         }
     }
-
+    
     // MARK: - UI Components
-
+    
     private let textFieldView: UIView = UIView().then {
         $0.backgroundColor = UIColor.backgroundColor
         $0.layer.cornerRadius = 20
@@ -106,6 +109,8 @@ class AddBookmarkView: UIView {
         setupProperty()
         setupHierarchy()
         setupLayout()
+        setupBindings()
+        
     }
     
     required init?(coder: NSCoder) {
@@ -227,12 +232,33 @@ class AddBookmarkView: UIView {
         }
     }
     
-    private func updateTextFieldWithIncomingData() {
-        updateTextField(textField: nameTextView, placeholder: nameTextViewPlaceHolder, withData: URLDataManager.shared.incomingTitle)
-        URLDataManager.shared.incomingTitle = nil
+    private func setupBindings() {
+        AddBookmarkManager.shared.$incomingTitle
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] title in
+                self?.nameTextView.text = title
+                self?.nameTextViewPlaceHolder.isHidden = !(title?.isEmpty ?? true)
+                self?.clearButton.isHidden = title?.isEmpty ?? true
+                self?.updateTextFieldsFilledState()
+            }
+            .store(in: &cancellables)
         
-        updateTextField(textField: urlTextView, placeholder: urlTextViewPlaceHolder, withData: URLDataManager.shared.incomingData)
-        URLDataManager.shared.incomingData = nil
+        AddBookmarkManager.shared.$incomingData
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] url in
+                self?.urlTextView.text = url
+                self?.urlTextViewPlaceHolder.isHidden = !(url?.isEmpty ?? true)
+                self?.updateTextFieldsFilledState()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func updateTextFieldWithIncomingData() {
+        updateTextField(textField: nameTextView, placeholder: nameTextViewPlaceHolder, withData: AddBookmarkManager.shared.incomingTitle)
+        AddBookmarkManager.shared.incomingTitle = nil
+        
+        updateTextField(textField: urlTextView, placeholder: urlTextViewPlaceHolder, withData: AddBookmarkManager.shared.incomingData)
+        AddBookmarkManager.shared.incomingData = nil
     }
     
     func updateTextFieldsFilledState() {
@@ -281,7 +307,7 @@ extension AddBookmarkView: UITextViewDelegate {
             nameTextViewPlaceHolder.isHidden = !nameTextView.text.isEmpty
             clearButton.isHidden = nameTextView.text.isEmpty
         }
-
+        
         if textView == urlTextView {
             urlTextViewPlaceHolder.isHidden = !urlTextView.text.isEmpty
         }
