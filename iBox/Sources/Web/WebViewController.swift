@@ -48,7 +48,7 @@ extension WebViewController: WebViewDelegate {
     func pushAddBookMarkViewController(url: URL) {
         let encodingURL = url.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         
-        AddBookmarkManager.shared.incomingData = encodingURL
+//        AddBookmarkManager.shared.incomingData = encodingURL
         
         if let iBoxUrl = URL(string: "iBox://url?data=" + encodingURL) {
             if let tabBarController = findMainTabBarController() {
