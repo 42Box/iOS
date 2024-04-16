@@ -221,6 +221,10 @@ extension BoxListView: UITableViewDelegate {
         return 50
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 48
+    }
+    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let viewModel else { return nil }
         let button = FolderButton(isOpen: viewModel.boxList[section].isOpened)
@@ -388,7 +392,8 @@ extension BoxListView: UITableViewDelegate {
 }
 
 extension BoxListView: BoxListDataSourceDelegate {
-    func openFolderIfNeeded(_ folderIndex: Int) {        viewModel?.input.send(.openFolderIfNeeded(folderIndex: folderIndex))
+    func openFolderIfNeeded(_ folderIndex: Int) {
+        viewModel?.input.send(.openFolderIfNeeded(folderIndex: folderIndex))
     }
     
     func moveCell(at sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
