@@ -15,6 +15,8 @@ protocol BoxListViewDelegate: AnyObject {
     func pushViewController(type: EditType)
     func pushViewController(url: URL?)
     func presentEditBookmarkController(at indexPath: IndexPath)
+    func deleteFolderinBoxList(at section: Int)
+    func editFolderNameinBoxList(at section: Int, currentName: String)
 }
 
 class BoxListView: UIView {
@@ -41,6 +43,32 @@ class BoxListView: UIView {
         $0.backgroundColor = .clear
         $0.separatorColor = .clear
         $0.rowHeight = 50
+    }
+    
+    private let emptyStackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.spacing = 10
+        $0.isHidden = true
+    }
+    
+    private let emptyLabel = UILabel().then {
+        $0.text = "폴더가 없습니다"
+        $0.font = .emptyLabelFont
+        $0.textColor = .secondaryLabel
+        $0.textAlignment = .center
+    }
+    
+    private let emptyImageView = UIImageView().then {
+        let image0 = UIImage(named: "sitting_fox0")?.imageWithColor(.secondaryLabel) ?? UIImage()
+        let image1 = UIImage(named: "sitting_fox1")?.imageWithColor(.secondaryLabel) ?? UIImage()
+        let image2 = UIImage(named: "sitting_fox2")?.imageWithColor(.secondaryLabel) ?? UIImage()
+        let image3 = UIImage(named: "sitting_fox3")?.imageWithColor(.secondaryLabel) ?? UIImage()
+        let images = [image0, image1, image2, image3]
+        $0.contentMode = .scaleAspectFit
+        $0.tintColor = .secondaryLabel
+        $0.animationImages = images
+        $0.animationDuration = 1.5
+        $0.startAnimating()
     }
     
     // MARK: - Initializer
@@ -74,6 +102,7 @@ class BoxListView: UIView {
     private func setupHierarchy() {
         addSubview(backgroundView)
         backgroundView.addSubview(tableView)
+        backgroundView.addSubview(emptyStackView)
     }
     
     private func setupLayout() {
@@ -86,6 +115,18 @@ class BoxListView: UIView {
             make.top.bottom.equalToSuperview().offset(10)
             make.leading.trailing.equalToSuperview()
         }
+        
+        emptyStackView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
+        
+        emptyImageView.snp.makeConstraints { make in
+            make.width.height.equalTo(30)
+        }
+        
+        emptyStackView.addArrangedSubview(emptyLabel)
+        emptyStackView.addArrangedSubview(emptyImageView)
+        
     }
     
     private func configureDataSource() {
@@ -130,6 +171,7 @@ class BoxListView: UIView {
                 switch event {
                 case .sendBoxList(boxList: let boxList):
                     self?.applySnapshot(with: boxList)
+                    self?.emptyStackView.isHidden = !boxList.isEmpty
                 case .editStatus(isEditing: let isEditing):
                     self?.tableView.setEditing(isEditing, animated: true)
                     guard let snapshot = self?.boxListDataSource.snapshot() else { return }
@@ -150,7 +192,7 @@ class BoxListView: UIView {
         NotificationCenter.default.addObserver(self, selector: #selector(dataDidReset), name: .didResetData, object: nil)
     }
     
-    @objc func dataDidReset(notification: NSNotification) {
+    @objc private func dataDidReset(notification: NSNotification) {
         viewModel?.input.send(.viewDidLoad)
     }
     
@@ -186,6 +228,16 @@ extension BoxListView: UITableViewDelegate {
         button.tag = section
         
         button.addTarget(self, action: #selector(handleOpenClose), for: .touchUpInside)
+        
+        let edit = UIAction(title: "폴더 편집", image: UIImage(systemName: "pencil")) { [weak self] _ in
+            guard let folderName = self?.viewModel?.boxList[section].name else { return }
+            self?.delegate?.editFolderNameinBoxList(at: section, currentName: folderName)
+        }
+        let delete = UIAction(title: "폴더 삭제", image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] _ in
+            self?.delegate?.deleteFolderinBoxList(at: section)
+        }
+        
+        button.menu = UIMenu(options: .displayInline, children: [edit, delete])
         
         return button
     }

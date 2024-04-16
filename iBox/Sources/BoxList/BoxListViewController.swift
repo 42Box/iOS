@@ -51,8 +51,6 @@ class BoxListViewController: BaseViewController<BoxListView>, BaseViewController
     // MARK: - Action Functions
     
     @objc private func addButtonTapped() {
-        guard let contentView = contentView as? BoxListView else { return }
-        
         let addBookmarkViewController = AddBookmarkViewController()
         addBookmarkViewController.delegate = self
         
@@ -96,6 +94,52 @@ extension BoxListViewController: AddBookmarkViewControllerProtocol {
 }
 
 extension BoxListViewController: BoxListViewDelegate {
+    func deleteFolderinBoxList(at section: Int) {
+        recheckDeleteFolder(at: section)
+    }
+    
+    private func recheckDeleteFolder(at section: Int) {
+        let actionSheetController = UIAlertController(title: nil, message: "모든 북마크가 삭제됩니다.", preferredStyle: .actionSheet)
+        let firstAction = UIAlertAction(title: "폴더 삭제", style: .destructive) {[weak self] _ in
+            guard let contentView = self?.contentView as? BoxListView else { return }
+            contentView.viewModel?.deleteFolderDirect(section)
+        }
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+        actionSheetController.addAction(firstAction)
+        actionSheetController.addAction(cancelAction)
+        present(actionSheetController, animated: true)
+    }
+    
+    func editFolderNameinBoxList(at section: Int, currentName: String) {
+        let controller = UIAlertController(title: "폴더 이름 변경", message: nil, preferredStyle: .alert)
+        
+        let cancelAction = UIAlertAction(title: "취소", style: .default) { _ in return }
+        let okAction = UIAlertAction(title: "확인", style: .default) { [weak self] action in
+            guard let newName = controller.textFields?.first?.text else { return }
+            guard let contentView = self?.contentView as? BoxListView else { return }
+            contentView.viewModel?.editFolderDirect(section, name: newName)
+        }
+        controller.addAction(cancelAction)
+        controller.addAction(okAction)
+        okAction.isEnabled = true
+        
+        controller.addTextField() { textField in
+            NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: textField, queue: OperationQueue.main, using:
+                    {_ in
+                        let textCount = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines).count ?? 0
+                        let textIsNotEmpty = textCount > 0
+                        
+                        okAction.isEnabled = textIsNotEmpty
+                    
+                })
+        }
+        controller.textFields?.first?.text = currentName
+        controller.textFields?.first?.autocorrectionType = .no
+        controller.textFields?.first?.spellCheckingType = .no
+        
+        self.present(controller, animated: true)
+    }
+    
     func presentEditBookmarkController(at indexPath: IndexPath) {
         guard let contentView = contentView as? BoxListView else { return }
         

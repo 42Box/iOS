@@ -10,29 +10,25 @@ import WebKit
 
 class WebViewPreloader {
     static let shared = WebViewPreloader()
-    private var favoriteView: (url: URL, webView: WKWebView)?
+    private var favoriteView: (url: URL, webView: WebView)?
     private var defaultUrl = URL(string: "https://profile.intra.42.fr/")!
     
     private init() {}
     
     func preloadFavoriteView(url: URL?) {
-        let config = WKWebViewConfiguration()
-        config.allowsInlineMediaPlayback = true
-        
-        let webView = WKWebView(frame: .zero, configuration: config)
-        webView.allowsBackForwardNavigationGestures = true
+        let webView = WebView()
         webView.isOpaque = false
-        webView.load(URLRequest(url: url ?? defaultUrl))
+        webView.selectedWebsite = url ?? defaultUrl
         favoriteView = (url ?? defaultUrl, webView)
     }
     
-    func getFavoriteView() -> WKWebView? {
+    func getFavoriteView() -> WebView? {
         return favoriteView?.webView
     }
     
     func resetFavoriteView() {
         guard let favoriteView else { return }
-        favoriteView.webView.load(URLRequest(url: favoriteView.url))
+        favoriteView.webView.selectedWebsite = favoriteView.url
     }
     
     func setFavoriteUrl(url: URL?) {
