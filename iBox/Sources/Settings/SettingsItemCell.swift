@@ -34,6 +34,7 @@ class SettingsItemCell: UITableViewCell {
         $0.configuration?.image = UIImage(systemName: "chevron.right")
         $0.configuration?.preferredSymbolConfigurationForImage = .init(pointSize: 10, weight: .bold)
         $0.tintColor = .systemGray3
+        $0.isUserInteractionEnabled = false
     }
     
     // MARK: - Initializer

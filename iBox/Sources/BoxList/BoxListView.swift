@@ -231,7 +231,10 @@ extension BoxListView: UITableViewDelegate {
         button.setFolderName(viewModel.boxList[section].name)
         button.tag = section
         
+        // 터치했을 때
         button.addTarget(self, action: #selector(handleOpenClose), for: .touchUpInside)
+        // 길게 눌렀을 때
+        button.addTarget(self, action: #selector(handleMenu), for: .menuActionTriggered)
         
         let edit = UIAction(title: "폴더 편집", image: UIImage(systemName: "pencil")) { [weak self] _ in
             guard let folderName = self?.viewModel?.boxList[section].name else { return }
@@ -252,6 +255,14 @@ extension BoxListView: UITableViewDelegate {
         button.toggleStatus()
         if UserDefaultsManager.isHaptics {
             let generator = UIImpactFeedbackGenerator(style: .light)
+            generator.prepare()
+            generator.impactOccurred()
+        }
+    }
+    
+    @objc private func handleMenu(button: FolderButton) {
+        if UserDefaultsManager.isHaptics {
+            let generator = UIImpactFeedbackGenerator(style: .medium)
             generator.prepare()
             generator.impactOccurred()
         }

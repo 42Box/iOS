@@ -18,12 +18,12 @@ class iBoxFactory: ProjectFactory {
     
     let dependencies: [TargetDependency] = [
         .external(name: "SnapKit"),
+        .external(name: "SwiftSoup"),
         .target(name: "iBoxShareExtension")
     ]
     
     let iBoxShareExtensionDependencies: [TargetDependency] = [
-        .external(name: "SnapKit"),
-        .external(name: "SwiftSoup")
+        .external(name: "SnapKit")
     ]
     
     private let appInfoPlist: [String: Plist.Value] = [
@@ -92,8 +92,8 @@ class iBoxFactory: ProjectFactory {
             bundleId: "\(bundleId).ShareExtension",
             deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
             infoPlist: .extendingDefault(with: shareExtensionInfoPlist),
-            sources: ["ShareExtension/**"],
-            resources: [],
+            sources: ["ShareExtension/Sources/**"],
+            resources: ["ShareExtension/Resources/**"],
             dependencies: iBoxShareExtensionDependencies
         )
         

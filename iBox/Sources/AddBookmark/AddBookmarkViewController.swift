@@ -20,7 +20,7 @@ final class AddBookmarkViewController: UIViewController {
     var selectedFolderIndex: Int?
     var folders = [Folder]()
     
-    private let addBookmarkView = AddBookmarkView()
+    let addBookmarkView = AddBookmarkView()
 
     override func loadView() {
         super.loadView()
@@ -31,6 +31,7 @@ final class AddBookmarkViewController: UIViewController {
         super.viewWillAppear(animated)
         updateSelectedFolder()
         addBookmarkView.updateTextFieldsFilledState()
+        addBookmarkView.nameTextView.becomeFirstResponder()
     }
 
     override func viewDidLoad() {
