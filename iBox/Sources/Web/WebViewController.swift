@@ -48,12 +48,12 @@ extension WebViewController: WebViewDelegate {
     func pushAddBookMarkViewController(url: URL) {
         URLDataManager.shared.incomingData = url.absoluteString
         
-        let addBookmarkViewController = AddBookmarkViewController()
-        addBookmarkViewController.delegate = delegate
+        if let iBoxUrl = URL(string: "iBox://url?data=" + url.absoluteString) {
+            if let tabBarController = findMainTabBarController() {
+                URLDataManager.shared.navigateToAddBookmarkView(from: iBoxUrl, in: tabBarController)
+            }
+        }
         
-        let navigationController = UINavigationController(rootViewController: addBookmarkViewController)
-        navigationController.modalPresentationStyle = .pageSheet
-        self.present(navigationController, animated: true, completion: nil)
     }
     
 }
