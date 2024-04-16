@@ -42,7 +42,8 @@ class FolderButton: UIButton {
     
     private func setupProperty() {
         backgroundColor = .tableViewBackgroundColor
-        openCloseImageView.image = UIImage(systemName: "chevron.right")
+        let config = UIImage.SymbolConfiguration(pointSize: 15, weight: .medium, scale: .default)
+        openCloseImageView.image = UIImage(systemName: "chevron.right", withConfiguration: config)
         if isOpen {
             openCloseImageView.transform = CGAffineTransform(rotationAngle: CGFloat.pi / 2)
         }
@@ -56,7 +57,7 @@ class FolderButton: UIButton {
     private func setupLayout() {
         openCloseImageView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.width.height.equalTo(20)
+            make.width.height.equalTo(15)
             make.trailing.equalToSuperview().offset(-20)
         }
         
