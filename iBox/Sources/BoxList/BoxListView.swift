@@ -189,7 +189,6 @@ class BoxListView: UIView {
                     snapshot.reloadItems(idArray)
                     self?.boxListDataSource.apply(snapshot)
                 case .openCloseFolder(boxList: let boxList, section: let section, isEmpty: let isEmpty):
-                    guard let prevOffset = self?.tableView.contentOffset else { return }
                     self?.applySnapshot(with: boxList)
                     self?.tableView.layoutIfNeeded()
                     if !isEmpty {
