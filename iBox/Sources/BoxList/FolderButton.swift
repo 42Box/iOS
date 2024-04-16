@@ -43,6 +43,9 @@ class FolderButton: UIButton {
     private func setupProperty() {
         backgroundColor = .tableViewBackgroundColor
         openCloseImageView.image = UIImage(systemName: "chevron.right")
+        if isOpen {
+            openCloseImageView.transform = CGAffineTransform(rotationAngle: CGFloat.pi / 2)
+        }
     }
     
     private func setupHierarchy() {
