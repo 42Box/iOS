@@ -179,4 +179,25 @@ class BoxListViewModel {
         output.send(.sendBoxList(boxList: boxList))
     }
     
+    func deleteFolderDirect(_ section: Int) {
+        let folderId = boxList[section].id
+        CoreDataManager.shared.deleteFolder(id: folderId)
+        boxList.remove(at: section)
+        for box in boxList {
+            sectionsToReload.update(with: box.id)
+        }
+        output.send(.sendBoxList(boxList: boxList))
+        output.send(.reloadSections(idArray: Array(sectionsToReload)))
+        sectionsToReload.removeAll()
+    }
+    
+    func editFolderDirect(_ section: Int, name: String) {
+        let folderId = boxList[section].id
+        CoreDataManager.shared.updateFolder(id: folderId, name: name)
+        boxList[section].name = name
+        sectionsToReload.update(with: boxList[section].id)
+        output.send(.reloadSections(idArray: Array(sectionsToReload)))
+        sectionsToReload.removeAll()
+    }
+    
 }

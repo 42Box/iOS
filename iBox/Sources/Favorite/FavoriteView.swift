@@ -12,14 +12,12 @@ import SnapKit
 
 class FavoriteView: UIView {
     
-    private lazy var webView = {
+    lazy var webView = {
         if WebViewPreloader.shared.getFavoriteView() == nil {
             loadFavoriteWeb()
         }
         return WebViewPreloader.shared.getFavoriteView()
     }()
-    
-    private let refreshControl = UIRefreshControl()
     
     // MARK: - Initializer
     
@@ -34,13 +32,16 @@ class FavoriteView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        webView?.setupRefreshControl()
+    }
+    
     // MARK: - Setup Methods
     
     private func setupProperty() {
         guard let webView else { return }
         backgroundColor = .backgroundColor
-        webView.scrollView.refreshControl = refreshControl
-        refreshControl.addTarget(self, action: #selector(handleRefreshControl), for: .valueChanged)
     }
     
     private func setupHierarchy() {
@@ -52,14 +53,6 @@ class FavoriteView: UIView {
         guard let webView else { return }
         webView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
-        }
-    }
-    
-    @objc private func handleRefreshControl() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { [weak self] in
-            guard let self = self , let webView = self.webView else { return }
-            webView.reload()
-            refreshControl.endRefreshing()
         }
     }
     

@@ -15,6 +15,8 @@ protocol BoxListViewDelegate: AnyObject {
     func pushViewController(type: EditType)
     func pushViewController(url: URL?)
     func presentEditBookmarkController(at indexPath: IndexPath)
+    func deleteFolderinBoxList(at section: Int)
+    func editFolderNameinBoxList(at section: Int, currentName: String)
 }
 
 class BoxListView: UIView {
@@ -226,6 +228,16 @@ extension BoxListView: UITableViewDelegate {
         button.tag = section
         
         button.addTarget(self, action: #selector(handleOpenClose), for: .touchUpInside)
+        
+        let edit = UIAction(title: "폴더 편집", image: UIImage(systemName: "pencil")) { [weak self] _ in
+            guard let folderName = self?.viewModel?.boxList[section].name else { return }
+            self?.delegate?.editFolderNameinBoxList(at: section, currentName: folderName)
+        }
+        let delete = UIAction(title: "폴더 삭제", image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] _ in
+            self?.delegate?.deleteFolderinBoxList(at: section)
+        }
+        
+        button.menu = UIMenu(options: .displayInline, children: [edit, delete])
         
         return button
     }

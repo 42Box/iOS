@@ -44,6 +44,9 @@ class FolderButton: UIButton {
         backgroundColor = .tableViewBackgroundColor
         let config = UIImage.SymbolConfiguration(pointSize: 15, weight: .medium, scale: .default)
         openCloseImageView.image = UIImage(systemName: "chevron.right", withConfiguration: config)
+        if isOpen {
+            openCloseImageView.transform = CGAffineTransform(rotationAngle: CGFloat.pi / 2)
+        }
     }
     
     private func setupHierarchy() {
