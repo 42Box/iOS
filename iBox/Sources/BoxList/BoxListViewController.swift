@@ -151,14 +151,20 @@ extension BoxListViewController: BoxListViewDelegate {
             guard let newUrlString = controller.textFields?.last?.text,
             let newUrl = URL(string: newUrlString) else { return }
             guard let contentView = self?.contentView as? BoxListView else { return }
-            
+            guard let bookmark = contentView.viewModel?.bookmark(at: indexPath) else { return }
+
             contentView.viewModel?.editBookmark(at: indexPath, name: newName, url: newUrl)
+
+            WebCacheManager.shared.removeViewControllerForKey(bookmark.id)
         }
+        
         controller.addAction(cancelAction)
         controller.addAction(okAction)
         okAction.isEnabled = true
         
         controller.addTextField() { textField in
+            textField.clearButtonMode = .whileEditing
+            
             NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: textField, queue: OperationQueue.main, using:
                     {_ in
                         let textCount = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines).count ?? 0
@@ -169,6 +175,8 @@ extension BoxListViewController: BoxListViewDelegate {
                 })
         }
         controller.addTextField() { textField in
+            textField.clearButtonMode = .whileEditing
+            
             NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: textField, queue: OperationQueue.main, using:
                     {_ in
                         let textCount = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines).count ?? 0
