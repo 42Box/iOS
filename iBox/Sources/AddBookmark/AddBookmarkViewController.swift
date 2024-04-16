@@ -7,8 +7,6 @@
 
 import UIKit
 
-import SwiftSoup
-
 protocol AddBookmarkViewControllerProtocol: AnyObject {
     func addFolderDirect(_ folder: Folder)
     func addBookmarkDirect(_ bookmark: Bookmark, at folderIndex: Int)
@@ -159,72 +157,6 @@ final class AddBookmarkViewController: UIViewController {
         navigationController?.pushViewController(folderListViewController, animated: true)
     }
     
-    private func fetchAndParseMetadata(from url: URL, completion: @escaping (Metadata) -> Void) {
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data, error == nil else {
-                print("Failed to fetch data: \(String(describing: error))")
-                return
-            }
-            
-            let encodingName = (response as? HTTPURLResponse)?.textEncodingName ?? "utf-8"
-            let encoding = String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding(encodingName as CFString)))
-
-            if let htmlContent = String(data: data, encoding: encoding) {
-                do {
-                    let doc: Document = try SwiftSoup.parse(htmlContent)
-                    let title: String? = try doc.title()
-                    
-                    let faviconSelectors = ["link[rel='shortcut icon']", "link[rel='icon']", "link[rel='apple-touch-icon']"]
-                    var faviconUrl: String? = nil
-                    
-                    for selector in faviconSelectors {
-                        if let faviconLink: Element = try doc.select(selector).first() {
-                            if var href = try? faviconLink.attr("href"), !href.isEmpty {
-                                if href.starts(with: "/") {
-                                    href = url.scheme! + "://" + url.host! + href
-                                } else if !href.starts(with: "http") {
-                                    href = url.scheme! + "://" + url.host! + "/" + href
-                                }
-                                faviconUrl = href
-                                break
-                            }
-                        }
-                    }
-                    
-                    if faviconUrl == nil {
-                        faviconUrl = url.scheme! + "://" + url.host! + "/favicon.ico"
-                    }
-
-                    let decodedUrlString = url.absoluteString.removingPercentEncoding ?? url.absoluteString
-                    let metadata = Metadata(title: title, faviconUrl: faviconUrl, url: decodedUrlString)
-
-                    DispatchQueue.main.async {
-                        completion(metadata)
-                    }
-                } catch {
-                    print("Failed to parse HTML: \(error.localizedDescription)")
-                }
-            }
-        }.resume()
-    }
-    
-    private func getMetadata() {
-//        fetchAndParseMetadata(from: url) { metadata in
-//            dump(metadata)
-//            let encodedTitle = metadata.title?.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
-//            let encodedData = metadata.url?.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
-//            let encodedFaviconUrl = metadata.faviconUrl?.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
-//            let urlString = "iBox://url?title=\(encodedTitle)&data=\(encodedData)&faviconUrl=\(encodedFaviconUrl)"
-//            
-//            if let openUrl = URL(string: urlString) {
-//                if self.openURL(openUrl) {
-//                    print("iBox 앱이 성공적으로 열렸습니다.")
-//                } else {
-//                    print("iBox 앱을 열 수 없습니다.")
-//                }
-//            }
-//        }
-    }
 }
 
 extension AddBookmarkViewController: FolderListViewControllerDelegate {
