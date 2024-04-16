@@ -158,7 +158,7 @@ class AddBookmarkView: UIView {
         nameTextView.snp.makeConstraints { make in
             make.top.equalTo(textFieldView.snp.top).offset(10)
             make.leading.equalTo(textFieldView.snp.leading).offset(15)
-            make.trailing.equalTo(textFieldView.snp.trailing).offset(-15)
+            make.trailing.equalTo(clearButton.snp.leading)
             make.height.equalTo(30)
         }
         
@@ -169,13 +169,14 @@ class AddBookmarkView: UIView {
         
         clearButton.snp.makeConstraints { make in
             make.top.equalTo(nameTextView.snp.top).offset(7)
-            make.trailing.equalTo(nameTextView.snp.trailing).offset(-5)
+            make.trailing.equalTo(textFieldView.snp.trailing).offset(-15)
+            make.width.height.equalTo(24)
         }
         
         separatorView.snp.makeConstraints { make in
             make.top.equalTo(nameTextView.snp.bottom).offset(10)
             make.leading.equalTo(nameTextView.snp.leading).offset(5)
-            make.trailing.equalTo(nameTextView.snp.trailing).offset(-5)
+            make.trailing.equalTo(textFieldView.snp.trailing).offset(-15)
             make.height.equalTo(1)
         }
         
