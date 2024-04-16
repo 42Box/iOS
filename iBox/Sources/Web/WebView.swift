@@ -162,7 +162,15 @@ extension WebView: WKNavigationDelegate {
             self.progressView.isHidden = true
         }
     }
-  
+    
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        // "새 창으로 열기" 링크 WebView 내에서 열기
+        if navigationAction.targetFrame == nil {
+            webView.load(navigationAction.request)
+        }
+        decisionHandler(.allow)
+    }
+    
 }
 
 extension WebView: UIScrollViewDelegate {
