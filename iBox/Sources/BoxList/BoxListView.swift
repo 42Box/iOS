@@ -361,15 +361,6 @@ extension BoxListView: UITableViewDelegate {
     }
     
     private func makeContextMenu(for indexPath: IndexPath) -> UIMenu {
-        let deleteAction = UIAction(title: "삭제", image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] action in
-            self?.viewModel?.input.send(.deleteBookmark(indexPath: indexPath))
-            if UserDefaultsManager.isHaptics {
-                let generator = UIImpactFeedbackGenerator(style: .soft)
-                generator.prepare()
-                generator.impactOccurred()
-            }
-        }
-        
         let isFavorite = self.viewModel?.isFavoriteBookmark(at: indexPath) ?? false
         let favoriteActionTitle = isFavorite ? "즐겨찾기 해제" : "즐겨찾기로 등록"
         let favoriteActionImage = UIImage(systemName: isFavorite ? "heart.slash.fill" : "heart.fill")
@@ -382,7 +373,9 @@ extension BoxListView: UITableViewDelegate {
                 generator.impactOccurred()
             }
         }
-
+        
+        favoriteAction.image?.withTintColor(.box2)
+        
         let shareAction = UIAction(title: "공유하기", image: UIImage(systemName: "square.and.arrow.up")) { [weak self] action in
             guard let self = self, let url = self.viewModel?.boxList[indexPath.section].boxListCellViewModelsWithStatus[indexPath.row].url else { return }
             
@@ -397,8 +390,31 @@ extension BoxListView: UITableViewDelegate {
                 viewController.present(activityViewController, animated: true, completion: nil)
             }
         }
+        
+        let editAction = UIAction(title: "북마크 편집", image: UIImage(systemName: "pencil")) { [weak self] action in
+            guard let self = self else { return }
 
-        return UIMenu(title: "", children: [favoriteAction, shareAction, deleteAction])
+            self.delegate?.presentEditBookmarkController(at: indexPath)
+            
+            if UserDefaultsManager.isHaptics {
+                let generator = UIImpactFeedbackGenerator(style: .soft)
+                generator.prepare()
+                generator.impactOccurred()
+            }
+        }
+        
+        let deleteAction = UIAction(title: "삭제", image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] action in
+            self?.viewModel?.input.send(.deleteBookmark(indexPath: indexPath))
+            if UserDefaultsManager.isHaptics {
+                let generator = UIImpactFeedbackGenerator(style: .soft)
+                generator.prepare()
+                generator.impactOccurred()
+            }
+        }
+        
+        
+        
+        return UIMenu(title: "", children: [favoriteAction, shareAction, editAction, deleteAction])
     }
 }
 
