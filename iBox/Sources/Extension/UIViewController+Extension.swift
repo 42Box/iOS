@@ -18,4 +18,17 @@ extension UIViewController {
         }
         return nil
     }
+    
+    func findAddBookmarkView() -> Bool? {
+        var responder: UIResponder? = self
+        while let nextResponder = responder?.next {
+            if let viewController = nextResponder as? AddBookmarkView {
+                return true
+            }
+            responder = nextResponder
+        }
+        return nil
+    }
+    
+    
 }
