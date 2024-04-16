@@ -17,6 +17,7 @@ class BoxListViewModel {
     }
 
     var sectionsToReload = Set<BoxListSectionViewModel.ID>()
+    var rowsToReload = Set<BoxListCellViewModel.ID>()
     var isEditing = false
     var favoriteId: UUID? = nil
 

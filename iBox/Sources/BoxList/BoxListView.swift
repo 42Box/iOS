@@ -150,6 +150,7 @@ class BoxListView: UIView {
             
             return cell
         }
+        boxListDataSource.defaultRowAnimation = .top
         boxListDataSource.delegate = self
     }
     
@@ -422,7 +423,6 @@ class BoxListDataSource: UITableViewDiffableDataSource<BoxListSectionViewModel.I
     weak var delegate: BoxListDataSourceDelegate?
     
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        
         delegate?.moveCell(at: sourceIndexPath, to: destinationIndexPath)
         
         guard let src = itemIdentifier(for: sourceIndexPath),
@@ -430,7 +430,11 @@ class BoxListDataSource: UITableViewDiffableDataSource<BoxListSectionViewModel.I
         
         var snap = snapshot()
         if let dest = itemIdentifier(for: destinationIndexPath) {
-            snap.moveItem(src, beforeItem:dest)
+            if sourceIndexPath.section == destinationIndexPath.section && sourceIndexPath.row < destinationIndexPath.row {
+                snap.moveItem(src, afterItem: dest)
+            } else {
+                snap.moveItem(src, beforeItem:dest)
+            }
         } else {
             snap.deleteItems([src])
             snap.appendItems([src], toSection: snap.sectionIdentifiers[destinationIndexPath.section])
