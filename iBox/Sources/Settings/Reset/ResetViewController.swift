@@ -42,14 +42,17 @@ extension ResetViewController: ResetViewDelegate {
         alertController.addAction(cancelAction)
         
         let confirmAction = UIAlertAction(title: "확인", style: .default) { [weak self] _ in
+            guard let self = self else { return }
             if let textField = alertController.textFields?.first, let text = textField.text, text == "iBox" {
-                self?.resetData()
-                self?.navigationController?.popViewController(animated: true)
+                self.resetData()
             } else {
-                self?.showAlert()
+                self.showAlert()
             }
         }
+        
         confirmAction.isEnabled = false
+        confirmAction.setValue(UIColor.red, forKey: "titleTextColor")
+        
         alertController.addAction(confirmAction)
         
         alertController.addTextField() { textField in
@@ -65,62 +68,29 @@ extension ResetViewController: ResetViewDelegate {
         self.present(alertController, animated: true, completion: nil)
     }
     
-    private func storeDataHandler(defaultData: [Folder]) {
-        DispatchQueue.main.async {
-            CoreDataManager.shared.deleteAllFolders()
-            CoreDataManager.shared.addInitialFolders(defaultData)
-            UserDefaultsManager.isDefaultDataInserted = true
-        }
-    }
-    
-    private func resetHandler() {
-        let urlString = "https://raw.githubusercontent.com/42Box/versioning/main/raw.json"
-        
-        NetworkManager.shared.fetchModel(from: urlString, modelType: VersionInfo.self) { result in
-            switch result {
-            case .success(let model):
-                if let defaultList = model.url.filter({ $0.id == 0 }).first?.defaultList?.first?.list {
-                    var bookmarks = [Bookmark]()
-                    for item in defaultList {
-                        if let url = URL(string: item.url) {
-                            let bookmark = Bookmark(id: UUID(), name: item.name ?? "", url: url)
-                            bookmarks.append(bookmark)
-                        }
-                    }
-                    
-                    let defaultData = [
-                        Folder(id: UUID(), name: "42 폴더", bookmarks: bookmarks)
-                    ]
-                    
-                    self.storeDataHandler(defaultData: defaultData)
-                    
-                    print("success")
+    private func resetData() {
+        DefaultData.insertDefaultDataIfNeeded(true) {
+            UserDefaultsManager.favoriteId = nil
+            WebViewPreloader.shared.setFavoriteUrl(url: nil)
+            NotificationCenter.default.post(name: .didResetData, object: nil)
+            DispatchQueue.main.async {
+                let successView = ResetSuccessView(frame: self.view.bounds)
+                successView.delegate = self
+                self.view.addSubview(successView)
+                successView.snp.makeConstraints { make in
+                    make.edges.equalToSuperview()
                 }
-            case .failure(let error):
-                print("Error fetching version info: \(error.localizedDescription)")
-                
-                let defaultData = [
-                    Folder(id: UUID(), name: "42 폴더", bookmarks: [
-                        Bookmark(id: UUID(), name: "42 Intra", url: URL(string: "https://profile.intra.42.fr/")!),
-                        Bookmark(id: UUID(), name: "집현전", url: URL(string: "https://42library.kr/")!),
-                        Bookmark(id: UUID(), name: "42Where", url: URL(string: "https://www.where42.kr/")! ),
-                        Bookmark(id: UUID(), name: "42Stat", url: URL(string: "https://stat.42seoul.kr/")!),
-                        Bookmark(id: UUID(), name: "24HANE", url: URL(string: "https://24hoursarenotenough.42seoul.kr/")!)
-                    ])
-                ]
-                
-                self.storeDataHandler(defaultData: defaultData)
             }
         }
     }
-    
-    private func resetData() {
-        //        https://my-json-server.typicode.com/42Box/versioning/version/1
-        
-        resetHandler()
-        UserDefaultsManager.favoriteId = nil
-        WebViewPreloader.shared.setFavoriteUrl(url: nil)
-        NotificationCenter.default.post(name: .didResetData, object: nil)
+}
+
+// MARK: - ResetSuccessView
+
+extension ResetViewController: ResetSuccessViewDelegate {
+
+    func didCompleteReset() {
+        self.navigationController?.popViewController(animated: true)
     }
     
 }

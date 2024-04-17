@@ -37,5 +37,5 @@ extension UIColor {
     static let webIconColor = color(light: .black, dark: .systemGray)
     static let dimmedViewColor = UIColor.black.withAlphaComponent(0.75)
     static let backgroundColor = color(light: .white, dark: UIColor(hex: 0x242424))
-    
+    static let invertBackgroundColor = color(light: UIColor(hex: 0x242424), dark: .white)
 }
