@@ -94,6 +94,21 @@ class BoxListView: UIView {
         NotificationCenter.default.removeObserver(self)
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if #available(iOS 13.0, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            let image0 = UIImage(named: "sitting_fox0")?.imageWithColor(.secondaryLabel) ?? UIImage()
+            let image1 = UIImage(named: "sitting_fox1")?.imageWithColor(.secondaryLabel) ?? UIImage()
+            let image2 = UIImage(named: "sitting_fox2")?.imageWithColor(.secondaryLabel) ?? UIImage()
+            let image3 = UIImage(named: "sitting_fox3")?.imageWithColor(.secondaryLabel) ?? UIImage()
+            let images = [image0, image1, image2, image3]
+            emptyImageView.animationImages = images
+            if !emptyStackView.isHidden {
+                emptyImageView.startAnimating()
+            }
+        }
+    }
+    
     // MARK: - Setup Methods
     
     private func setupProperty() {
@@ -176,6 +191,11 @@ class BoxListView: UIView {
                 case .sendBoxList(boxList: let boxList):
                     self?.applySnapshot(with: boxList)
                     self?.emptyStackView.isHidden = !boxList.isEmpty
+                    if self?.emptyStackView.isHidden == false {
+                        self?.emptyImageView.startAnimating()
+                    } else {
+                        self?.emptyImageView.stopAnimating()
+                    }
                 case .editStatus(isEditing: let isEditing):
                     self?.tableView.setEditing(isEditing, animated: false)
                     guard let snapshot = self?.boxListDataSource.snapshot() else { return }
