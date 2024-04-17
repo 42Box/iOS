@@ -13,7 +13,7 @@ class BoxListViewController: BaseViewController<BoxListView>, BaseViewController
         didSet {
             if shouldPresentModalAutomatically {
                 // shouldPresentModalAutomatically가 true로 설정될 때 함수 호출
-                if findAddBookmarkView() == nil {
+                if findAddBookmarkViewController() == false {
                     self.addButtonTapped()
                 }
                 // 함수 호출 후 shouldPresentModalAutomatically를 false로 설정
