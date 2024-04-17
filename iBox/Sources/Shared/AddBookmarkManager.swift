@@ -20,9 +20,9 @@ class AddBookmarkManager {
     
     private func update(with data: (title: String?, data: String?, faviconUrl: String?)) {
         DispatchQueue.main.async {
-            self.incomingTitle = data.title
-            self.incomingData = data.data
-            self.incomingFaviconUrl = data.faviconUrl
+            self.incomingTitle = data.title?.removingPercentEncoding
+            self.incomingData = data.data?.removingPercentEncoding
+            self.incomingFaviconUrl = data.faviconUrl?.removingPercentEncoding
         }
     }
     
@@ -40,18 +40,28 @@ class AddBookmarkManager {
     }
     
     private func extractDataParameter(from url: URL) -> String? {
-        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
-              let queryItems = components.queryItems else {
+        let urlString = url.absoluteString
+        
+        guard let range = urlString.range(of: "url?data=") else {
             return nil
         }
-        return queryItems.first { $0.name == "data" }?.value
+
+        let dataParameter = urlString[range.upperBound...]
+        return String(dataParameter).removingPercentEncoding
     }
     
     private func fetchWebsiteDetails(from url: URL) {
         let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
-            guard let data = data, error == nil,
-                  let html = String(data: data, encoding: .utf8) else {
+            guard let data = data, error == nil else {
                 print("Error downloading HTML: \(String(describing: error))")
+                return
+            }
+            
+            let encodingName = (response as? HTTPURLResponse)?.textEncodingName ?? "utf-8"
+            let encoding = String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding(encodingName as CFString)))
+
+            guard let html = String(data: data, encoding: encoding) else {
+                print("Failed to decode data with encoding: \(encodingName)")
                 return
             }
             
@@ -63,7 +73,7 @@ class AddBookmarkManager {
     func navigateToAddBookmarkView(from url: URL, in tabBarController: UITabBarController) {
         guard url.scheme == "iBox", let urlString = extractDataParameter(from: url) else { return }
         guard let url = URL(string: urlString) else {
-            print("Invalid URL")
+            print("Invalid URL \(urlString)")
             return
         }
         

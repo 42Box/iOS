@@ -46,9 +46,9 @@ class WebViewController: BaseViewController<WebView>, BaseViewControllerProtocol
 extension WebViewController: WebViewDelegate {
     
     func pushAddBookMarkViewController(url: URL) {
-        AddBookmarkManager.shared.incomingData = url.absoluteString
+        let encodingURL = url.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         
-        if let iBoxUrl = URL(string: "iBox://url?data=" + url.absoluteString) {
+        if let iBoxUrl = URL(string: "iBox://url?data=" + encodingURL) {
             if let tabBarController = findMainTabBarController() {
                 AddBookmarkManager.shared.navigateToAddBookmarkView(from: iBoxUrl, in: tabBarController)
             }
