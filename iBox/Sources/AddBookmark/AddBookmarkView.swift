@@ -248,6 +248,7 @@ class AddBookmarkView: UIView {
     @objc func clearTextView() {
         nameTextView.text = ""
         textViewDidChange(nameTextView)
+        nameTextView.becomeFirstResponder()
     }
     
     @objc private func buttonTapped() {

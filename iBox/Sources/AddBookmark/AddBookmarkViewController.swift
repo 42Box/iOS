@@ -31,13 +31,13 @@ final class AddBookmarkViewController: UIViewController {
         super.viewWillAppear(animated)
         updateSelectedFolder()
         addBookmarkView.updateTextFieldsFilledState()
-        addBookmarkView.nameTextView.becomeFirstResponder()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
         updateSelectedFolder()
+        addBookmarkView.nameTextView.becomeFirstResponder()
     }
     
     private func setupNavigationBar() {
