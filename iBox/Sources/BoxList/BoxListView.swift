@@ -43,6 +43,9 @@ class BoxListView: UIView {
         $0.backgroundColor = .clear
         $0.separatorColor = .clear
         $0.rowHeight = 50
+        $0.estimatedSectionHeaderHeight = 0
+        $0.estimatedSectionFooterHeight = 0
+        $0.estimatedRowHeight = 0
     }
     
     private let emptyStackView = UIStackView().then {
@@ -185,6 +188,13 @@ class BoxListView: UIView {
                     guard var snapshot = self?.boxListDataSource.snapshot() else { return }
                     snapshot.reloadItems(idArray)
                     self?.boxListDataSource.apply(snapshot)
+                case .openCloseFolder(boxList: let boxList, section: let section, isEmpty: let isEmpty):
+                    self?.applySnapshot(with: boxList)
+                    self?.tableView.layoutIfNeeded()
+                    if !isEmpty {
+                        let indexPath = IndexPath(row: NSNotFound, section: section)
+                        self?.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+                    }
                 }
             }.store(in: &cancellables)
     }

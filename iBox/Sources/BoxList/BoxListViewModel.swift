@@ -38,6 +38,7 @@ class BoxListViewModel {
         case reloadSections(idArray: [BoxListSectionViewModel.ID])
         case reloadRows(idArray: [BoxListCellViewModel.ID])
         case editStatus(isEditing: Bool)
+        case openCloseFolder(boxList: [BoxListSectionViewModel], section: Int, isEmpty: Bool)
     }
     
     let input = PassthroughSubject<Input, Never>()
@@ -63,7 +64,7 @@ class BoxListViewModel {
                 }
             case let .folderTapped(section):
                 boxList[section].isOpened.toggle()
-                output.send(.sendBoxList(boxList: boxList))
+                output.send(.openCloseFolder(boxList: boxList, section: section, isEmpty: boxList[section].boxListCellViewModelsWithStatus.isEmpty))
             case let .deleteBookmark(indexPath):
                 deleteBookmark(at: indexPath)
             case let .toggleFavorite(indexPath):

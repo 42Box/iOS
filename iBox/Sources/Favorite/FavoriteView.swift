@@ -40,7 +40,6 @@ class FavoriteView: UIView {
     // MARK: - Setup Methods
     
     private func setupProperty() {
-        guard let webView else { return }
         backgroundColor = .backgroundColor
     }
     
