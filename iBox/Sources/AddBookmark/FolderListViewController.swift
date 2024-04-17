@@ -34,6 +34,7 @@ class FolderListViewController: UIViewController {
         super.viewDidLoad()
         
         setupNavigationBar()
+        navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     
     private func setupNavigationBar() {
@@ -99,4 +100,10 @@ extension FolderListViewController: FolderListViewDelegate {
         self.navigationController?.popViewController(animated: true)
     }
     
+}
+
+extension FolderListViewController: UIGestureRecognizerDelegate {
+  func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+    return true
+  }
 }
