@@ -177,7 +177,7 @@ class BoxListView: UIView {
                     self?.applySnapshot(with: boxList)
                     self?.emptyStackView.isHidden = !boxList.isEmpty
                 case .editStatus(isEditing: let isEditing):
-                    self?.tableView.setEditing(isEditing, animated: true)
+                    self?.tableView.setEditing(isEditing, animated: false)
                     guard let snapshot = self?.boxListDataSource.snapshot() else { return }
                     self?.boxListDataSource.applySnapshotUsingReloadData(snapshot)
                 case .reloadSections(idArray: let idArray):
