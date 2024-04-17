@@ -17,53 +17,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
 
-        // 앱 테마 정보
         window?.overrideUserInterfaceStyle = window?.toUserInterfaceStyle(UserDefaultsManager.theme) ?? .unspecified
         
-        insertDefaultDataIfNeeded()
+        window?.rootViewController = CustomLaunchScreenViewController(urlContext: connectionOptions.urlContexts.first)
+        window?.makeKeyAndVisible()
         
-        window?.rootViewController = CustomLaunchScreenViewController()
-        window?.makeKeyAndVisible() // 윈도우를 화면에 보여줌
-
-        if let urlContext = connectionOptions.urlContexts.first {
-            let url = urlContext.url
-            guard url.scheme == "iBox" else { return }
-
-            print("Opened URL: \(url)")
-            
-            // URLdecoder.handleCustomURL(url)
-            GlobalURLManager.shared.incomingURL = url
-
-            if let windowScene = scene as? UIWindowScene,
-               let tabBarController = windowScene.windows.first?.rootViewController as? UITabBarController {
-                tabBarController.selectedIndex = 0 // 첫 번째 탭으로 이동
-
-                // 첫 번째 탭(FirstViewController)에 있는 shouldPresentModalAutomatically를 true로 설정
-                if let navigationController = tabBarController.selectedViewController as? UINavigationController,
-                   let boxListViewController = navigationController.viewControllers.first as? BoxListViewController {
-                    boxListViewController.shouldPresentModalAutomatically = true
-                }
-            }
-        }
-    }
-    
-    private func insertDefaultDataIfNeeded() {
-        let isDefaultDataInserted = UserDefaultsManager.isDefaultDataInserted
-        if !isDefaultDataInserted {
-            let defaultData = [
-                Folder(id: UUID(), name: "42 폴더", bookmarks: [
-                    Bookmark(id: UUID(), name: "42 Intra", url: URL(string: "https://profile.intra.42.fr/")!),
-                    Bookmark(id: UUID(), name: "42Where", url: URL(string: "https://www.where42.kr/")! ),
-                    Bookmark(id: UUID(), name: "42Stat", url: URL(string: "https://stat.42seoul.kr/")!),
-                    Bookmark(id: UUID(), name: "집현전", url: URL(string: "https://42library.kr/")!),
-                    Bookmark(id: UUID(), name: "Cabi", url: URL(string: "https://cabi.42seoul.io/")!),
-                    Bookmark(id: UUID(), name: "24HANE", url: URL(string: "https://24hoursarenotenough.42seoul.kr/")!)
-                ])
-            ]
-            CoreDataManager.shared.deleteAllFolders()
-            CoreDataManager.shared.addInitialFolders(defaultData)
-            UserDefaultsManager.isDefaultDataInserted = true
-        }
     }
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
