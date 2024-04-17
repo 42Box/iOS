@@ -61,17 +61,24 @@ class BoxListView: UIView {
         $0.textAlignment = .center
     }
     
+    private lazy var lightEmptyImages = [
+        UIImage(named: "sitting_fox0")?.imageWithColor(.secondaryLabel.resolvedColor(with: .init(userInterfaceStyle: .light))) ?? UIImage(),
+        UIImage(named: "sitting_fox1")?.imageWithColor(.secondaryLabel.resolvedColor(with: .init(userInterfaceStyle: .light))) ?? UIImage(),
+        UIImage(named: "sitting_fox2")?.imageWithColor(.secondaryLabel.resolvedColor(with: .init(userInterfaceStyle: .light))) ?? UIImage(),
+        UIImage(named: "sitting_fox3")?.imageWithColor(.secondaryLabel.resolvedColor(with: .init(userInterfaceStyle: .light))) ?? UIImage()
+    ]
+    
+    private lazy var darkEmptyImages = [
+        UIImage(named: "sitting_fox0")?.imageWithColor(.secondaryLabel.resolvedColor(with: .init(userInterfaceStyle: .dark))) ?? UIImage(),
+        UIImage(named: "sitting_fox1")?.imageWithColor(.secondaryLabel.resolvedColor(with: .init(userInterfaceStyle: .dark))) ?? UIImage(),
+        UIImage(named: "sitting_fox2")?.imageWithColor(.secondaryLabel.resolvedColor(with: .init(userInterfaceStyle: .dark))) ?? UIImage(),
+        UIImage(named: "sitting_fox3")?.imageWithColor(.secondaryLabel.resolvedColor(with: .init(userInterfaceStyle: .dark))) ?? UIImage()
+    ]
+    
     private let emptyImageView = UIImageView().then {
-        let image0 = UIImage(named: "sitting_fox0")?.imageWithColor(.secondaryLabel) ?? UIImage()
-        let image1 = UIImage(named: "sitting_fox1")?.imageWithColor(.secondaryLabel) ?? UIImage()
-        let image2 = UIImage(named: "sitting_fox2")?.imageWithColor(.secondaryLabel) ?? UIImage()
-        let image3 = UIImage(named: "sitting_fox3")?.imageWithColor(.secondaryLabel) ?? UIImage()
-        let images = [image0, image1, image2, image3]
         $0.contentMode = .scaleAspectFit
         $0.tintColor = .secondaryLabel
-        $0.animationImages = images
         $0.animationDuration = 1.5
-        $0.startAnimating()
     }
     
     // MARK: - Initializer
@@ -97,12 +104,11 @@ class BoxListView: UIView {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         if #available(iOS 13.0, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
-            let image0 = UIImage(named: "sitting_fox0")?.imageWithColor(.secondaryLabel) ?? UIImage()
-            let image1 = UIImage(named: "sitting_fox1")?.imageWithColor(.secondaryLabel) ?? UIImage()
-            let image2 = UIImage(named: "sitting_fox2")?.imageWithColor(.secondaryLabel) ?? UIImage()
-            let image3 = UIImage(named: "sitting_fox3")?.imageWithColor(.secondaryLabel) ?? UIImage()
-            let images = [image0, image1, image2, image3]
-            emptyImageView.animationImages = images
+            if previousTraitCollection?.userInterfaceStyle == .light {
+                emptyImageView.animationImages = darkEmptyImages
+            } else {
+                emptyImageView.animationImages = lightEmptyImages
+            }
             if !emptyStackView.isHidden {
                 emptyImageView.startAnimating()
             }
@@ -115,6 +121,12 @@ class BoxListView: UIView {
         backgroundColor = .backgroundColor
         viewModel = BoxListViewModel()
         tableView.delegate = self
+        
+        if UITraitCollection.current.userInterfaceStyle == .light {
+            emptyImageView.animationImages = lightEmptyImages
+        } else {
+            emptyImageView.animationImages = darkEmptyImages
+        }
     }
     
     private func setupHierarchy() {
