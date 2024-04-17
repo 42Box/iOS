@@ -11,7 +11,7 @@ class VersioningHandler {
     
     func checkAppVersion(retryCount: Int = 0, completion: @escaping (VersionCheckCode) -> Void) {
         let maxRetryCount = 3
-        let urlString = "https://raw.githubusercontent.com/42Box/versioning/main/raw.json"
+        let urlString = "https://raw.githubusercontent.com/42Box/versioning/main/db.json"
         
         NetworkManager.shared.fetchModel(from: urlString, modelType: VersionInfo.self) { result in
             switch result {
@@ -21,8 +21,8 @@ class VersioningHandler {
                     completion(.urlError)
                     return
                 }
-                
-                self.compareVersion(latestVersion: latestVersion, minRequiredVersion: minRequiredVersion, storeURL: versionInfo.storeUrl, completion: completion)
+
+                self.compareVersion(latestVersion: latestVersion, minRequiredVersion: minRequiredVersion, storeURL: versionInfo.url.storeUrl, completion: completion)
                 
             case .failure(let error):
                 print("Error: \(error.localizedDescription)")
