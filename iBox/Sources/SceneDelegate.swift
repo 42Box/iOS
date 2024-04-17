@@ -10,6 +10,7 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
@@ -25,26 +26,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        if let urlContext = URLContexts.first {
-            let url = urlContext.url
-            guard url.scheme == "iBox" else { return }
-
-            print("Opened URL: \(url)")
-            // 앱 실행 중에 url이 들어오는 경우 Logic
-            // URLdecoder.handleCustomURL(url)
-            GlobalURLManager.shared.incomingURL = url
-
-            if let windowScene = scene as? UIWindowScene,
-               let tabBarController = windowScene.windows.first?.rootViewController as? UITabBarController {
-                tabBarController.selectedIndex = 0 // 첫 번째 탭으로 이동
-
-                // 첫 번째 탭(FirstViewController)에 있는 shouldPresentModalAutomatically를 true로 설정
-                if let navigationController = tabBarController.selectedViewController as? UINavigationController,
-                   let boxListViewController = navigationController.viewControllers.first as? BoxListViewController {
-                    boxListViewController.shouldPresentModalAutomatically = true
-                }
-            }
-            
+        if let urlContext = URLContexts.first,
+        let tabBarController = window?.rootViewController as? UITabBarController {
+        AddBookmarkManager.shared.navigateToAddBookmarkView(from: urlContext.url, in: tabBarController)
         }
     }
 
@@ -80,4 +64,3 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
 }
-

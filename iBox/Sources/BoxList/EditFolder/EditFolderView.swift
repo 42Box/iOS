@@ -90,14 +90,14 @@ extension EditFolderView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let viewModel else { fatalError() }
         guard let cell = tableView.dequeueReusableCell(withIdentifier: EditFolderCell.reuserIdentifier, for: indexPath) as? EditFolderCell else { fatalError() }
-        cell.onDelete = { [weak self] in
-            guard let self else { return }
+        cell.onDelete = { [weak self, weak cell] in
+            guard let self = self, let cell = cell else { return }
             if let currentIndexPath = self.tableView.indexPath(for: cell) {
                 self.delegate?.deleteFolder(at: currentIndexPath)
             }
         }
-        cell.onEdit = { [weak self] in
-            guard let self else { return }
+        cell.onEdit = { [weak self, weak cell] in
+            guard let self = self, let cell = cell else { return }
             if let currentIndexPath = self.tableView.indexPath(for: cell) {
                 self.editFolderName(at: currentIndexPath)
             }

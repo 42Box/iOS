@@ -10,6 +10,7 @@ import Foundation
 enum SettingsType {
     case theme
     case homeTab
+    case haptics
     case preload
     case reset
     case guide
@@ -19,6 +20,7 @@ enum SettingsType {
         switch self {
         case .theme: "테마"
         case .homeTab: "홈화면"
+        case .haptics: "진동"
         case .preload: "즐겨찾기 미리 로드"
         case .reset: "데이터 초기화"
         case .guide: "앱 소개"

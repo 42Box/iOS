@@ -7,23 +7,6 @@
 
 import UIKit
 
-class UUIDWrapper: NSObject {
-    let uuid: UUID
-    
-    init(uuid: UUID) {
-        self.uuid = uuid
-    }
-    
-    override func isEqual(_ object: Any?) -> Bool {
-        guard let other = object as? UUIDWrapper else { return false }
-        return uuid == other.uuid
-    }
-    
-    override var hash: Int {
-        return uuid.hashValue
-    }
-}
-
 class WebCacheManager {
     
     static let shared = WebCacheManager()
@@ -42,4 +25,25 @@ class WebCacheManager {
         return cache.object(forKey: wrapper)
     }
     
+    func removeViewControllerForKey(_ uuid: UUID) {
+        let wrapper = UUIDWrapper(uuid: uuid)
+        cache.removeObject(forKey: wrapper)
+    }
+}
+
+class UUIDWrapper: NSObject {
+    let uuid: UUID
+    
+    init(uuid: UUID) {
+        self.uuid = uuid
+    }
+    
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let other = object as? UUIDWrapper else { return false }
+        return uuid == other.uuid
+    }
+    
+    override var hash: Int {
+        return uuid.hashValue
+    }
 }

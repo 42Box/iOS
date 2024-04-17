@@ -12,9 +12,12 @@ import SnapKit
 
 class FavoriteView: UIView {
     
-    private lazy var webView = WebViewPreloader.shared.getFavoriteView()
-    
-    private let refreshControl = UIRefreshControl()
+    lazy var webView = {
+        if WebViewPreloader.shared.getFavoriteView() == nil {
+            loadFavoriteWeb()
+        }
+        return WebViewPreloader.shared.getFavoriteView()
+    }()
     
     // MARK: - Initializer
     
@@ -29,13 +32,15 @@ class FavoriteView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        webView?.setupRefreshControl()
+    }
+    
     // MARK: - Setup Methods
     
     private func setupProperty() {
-        guard let webView else { return }
         backgroundColor = .backgroundColor
-        webView.scrollView.refreshControl = refreshControl
-        refreshControl.addTarget(self, action: #selector(handleRefreshControl), for: .valueChanged)
     }
     
     private func setupHierarchy() {
@@ -50,12 +55,16 @@ class FavoriteView: UIView {
         }
     }
     
-    @objc private func handleRefreshControl() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { [weak self] in
-            guard let self = self , let webView = self.webView else { return }
-            webView.reload()
-            refreshControl.endRefreshing()
+    private func loadFavoriteWeb() {
+        let favoriteId = UserDefaultsManager.favoriteId
+        var favoriteUrl: URL? = nil
+        if let favoriteId {
+            favoriteUrl = CoreDataManager.shared.getBookmarkUrl(favoriteId)
+            if favoriteUrl == nil {
+                UserDefaultsManager.favoriteId = nil
+            }
         }
+        WebViewPreloader.shared.preloadFavoriteView(url: favoriteUrl)
     }
     
 }

@@ -94,7 +94,3 @@ extension ResetViewController: ResetSuccessViewDelegate {
     }
     
 }
-
-extension Notification.Name {
-    static let didResetData = Notification.Name("didResetData")
-}

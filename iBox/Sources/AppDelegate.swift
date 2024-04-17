@@ -13,9 +13,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let versioningHandler: VersioningHandler = VersioningHandler()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-
-        Task {
-            preloadFavoriteWeb()
+        
+        if UserDefaultsManager.isPreload {
+            Task { [weak self] in
+                self?.preloadFavoriteWeb()
+            }
         }
 
         versioningHandler.checkAppVersion { result in
