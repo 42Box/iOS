@@ -7,12 +7,20 @@
 
 import UIKit
 
-final class AddBookmarkViewController: UIViewController {
-    
-    var selectedFolder: Folder?
-    private let coreDataManager = CoreDataManager.shared
-    private let addBookmarkView = AddBookmarkView()
+protocol AddBookmarkViewControllerProtocol: AnyObject {
+    func addFolderDirect(_ folder: Folder)
+    func addBookmarkDirect(_ bookmark: Bookmark, at folderIndex: Int)
+}
 
+final class AddBookmarkViewController: UIViewController {
+    weak var delegate: AddBookmarkViewControllerProtocol?
+    
+    var haveValidInput = false
+    var selectedFolder: Folder?
+    var selectedFolderIndex: Int?
+    var folders = [Folder]()
+    
+    let addBookmarkView = AddBookmarkView()
 
     override func loadView() {
         super.loadView()
@@ -22,16 +30,20 @@ final class AddBookmarkViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         updateSelectedFolder()
+        addBookmarkView.updateTextFieldsFilledState()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
+        updateSelectedFolder()
+        addBookmarkView.nameTextView.becomeFirstResponder()
     }
     
     private func setupNavigationBar() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
+        appearance.titleTextAttributes = [.font: UIFont.subTitlefont]
         
         navigationController?.navigationBar.tintColor = .box
         navigationController?.navigationBar.standardAppearance = appearance
@@ -45,11 +57,11 @@ final class AddBookmarkViewController: UIViewController {
         navigationItem.rightBarButtonItem?.isEnabled = false
         
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.semiboldLabelFont
+            .font: UIFont.barItemFont
         ]
-
         navigationItem.leftBarButtonItem?.setTitleTextAttributes(attributes, for: .normal)
         navigationItem.rightBarButtonItem?.setTitleTextAttributes(attributes, for: .normal)
+        navigationItem.rightBarButtonItem?.setTitleTextAttributes(attributes, for: .disabled)
     }
     
     private func setupAddBookmarkView() {
@@ -57,19 +69,40 @@ final class AddBookmarkViewController: UIViewController {
             self?.openFolderSelection()
         }
         addBookmarkView.onTextChange = { [weak self] isEnabled in
-            self?.navigationItem.rightBarButtonItem?.isEnabled = isEnabled
+            self?.haveValidInput = isEnabled
+            
+            if let haveValidInput = self?.haveValidInput,
+               haveValidInput,
+               let _ = self?.selectedFolder {
+                self?.navigationItem.rightBarButtonItem?.isEnabled = true
+            } else {
+                self?.navigationItem.rightBarButtonItem?.isEnabled = false
+            }
         }
         view = addBookmarkView
     }
     
     private func updateSelectedFolder() {
-        selectedFolder = UserDefaultsManager.selectedFolder
+        folders = CoreDataManager.shared.getFolders()
+        let selectedFolderId = UserDefaultsManager.selectedFolderId
         
-        if selectedFolder?.name == "" {
-            selectedFolder = CoreDataManager.shared.getFolders().first
+        for (index, folder) in folders.enumerated() {
+            if folder.id == selectedFolderId {
+                selectedFolder = folder
+                selectedFolderIndex = index
+            }
         }
         
-        addBookmarkView.selectedFolderName = selectedFolder?.name
+        if selectedFolder == nil && !folders.isEmpty {
+            selectedFolder = folders[0]
+            selectedFolderIndex = 0
+        }
+        
+        if let selectedFolder {
+            addBookmarkView.selectedFolderName = selectedFolder.name
+        } else {
+            addBookmarkView.selectedFolderName = "선택된 폴더가 없습니다."
+        }
     }
     
     @objc private func cancelButtonTapped() {
@@ -98,16 +131,18 @@ final class AddBookmarkViewController: UIViewController {
     @objc private func addButtonTapped() {
         guard let name = addBookmarkView.nameTextView.text, !name.isEmpty,
               let urlString = addBookmarkView.urlTextView.text, !urlString.isEmpty,
-              let url = URL(string: urlString) else {
+              let encodedUrlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: encodedUrlString) else {
             print("Invalid input")
             return
         }
 
         let newBookmark = Bookmark(id: UUID(), name: name, url: url)
 
-        if let selectedFolder = selectedFolder {
-            coreDataManager.addBookmark(newBookmark, folderId: selectedFolder.id)
-            print("북마크 저장 완료: \(newBookmark.name)")
+        if let selectedFolder = selectedFolder,
+           let selectedFolderIndex = selectedFolderIndex {
+            CoreDataManager.shared.addBookmark(newBookmark, folderId: selectedFolder.id)
+            delegate?.addBookmarkDirect(newBookmark, at: selectedFolderIndex)
         } else {
             print("선택된 폴더가 없습니다.")
         }
@@ -116,57 +151,29 @@ final class AddBookmarkViewController: UIViewController {
     }
     
     private func openFolderSelection() {
-        let folderListViewController = FolderListViewController()
+        let folderListViewController = FolderListViewController(folders: folders, selectedId: selectedFolder?.id)
         folderListViewController.title = "목록"
-        
-        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addFolderAction))
-        folderListViewController.navigationItem.rightBarButtonItem = addButton
+        folderListViewController.delegate = self
         
         navigationController?.pushViewController(folderListViewController, animated: true)
     }
     
-    @objc func addFolderAction() {
-        let controller = UIAlertController(title: "새로운 폴더", message: "이 폴더의 이름을 입력하십시오.", preferredStyle: .alert)
-        
-        controller.addTextField { textField in
-            textField.placeholder = "폴더 이름"
-            textField.autocorrectionType = .no
-            textField.spellCheckingType = .no
-        }
-        
-        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-        let addAction = UIAlertAction(title: "추가", style: .default) { [unowned controller, weak self] _ in
-            guard let textField = controller.textFields?.first,
-                  let folderName = textField.text, !folderName.trimmingCharacters(in: .whitespaces).isEmpty else {
-                return
-            }
-            
-            let newFolder = Folder(id: UUID(), name: folderName, bookmarks: [])
-            self?.coreDataManager.addFolder(newFolder)
-            
-            self?.updateFolderList()
-        }
-        
-        controller.addAction(cancelAction)
-        controller.addAction(addAction)
-        
-        NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: controller.textFields?.first, queue: .main) { notification in
-            if let textField = notification.object as? UITextField,
-               let text = textField.text, !text.trimmingCharacters(in: .whitespaces).isEmpty {
-                addAction.isEnabled = true
-            } else {
-                addAction.isEnabled = false
-            }
-        }
-        
-        addAction.isEnabled = false
-        
-        present(controller, animated: true)
-    }
+}
 
-    func updateFolderList() {
-        if let folderListVC = navigationController?.viewControllers.first(where: { $0 is FolderListViewController }) as? FolderListViewController {
-            folderListVC.folderListView.reloadFolderList()
-        }
+extension AddBookmarkViewController: FolderListViewControllerDelegate {
+    func addFolder(_ folder: Folder) {
+        delegate?.addFolderDirect(folder)
     }
+    
+    func selectFolder(_ folder: Folder, at index: Int) {
+        selectedFolder = folder
+        selectedFolderIndex = index
+        
+        if haveValidInput {
+            navigationItem.rightBarButtonItem?.isEnabled = true
+        }
+        
+        addBookmarkView.selectedFolderName = selectedFolder?.name
+    }
+    
 }

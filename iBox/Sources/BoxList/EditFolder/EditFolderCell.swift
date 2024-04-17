@@ -13,6 +13,8 @@ class EditFolderCell: UITableViewCell {
     var onDelete: (() -> Void)?
     var onEdit: (() -> Void)?
     
+    private let containerView = UIView()
+    
     private let folderView = FolderView()
     
     private let editButton = UIButton().then{
@@ -22,7 +24,7 @@ class EditFolderCell: UITableViewCell {
         $0.showsMenuAsPrimaryAction = true
     }
     
-    private lazy var nameEditAction = UIAction(title: "이름 변경", image: UIImage(systemName: "pencil")) {[weak self] _ in
+    private lazy var nameEditAction = UIAction(title: "이름 변경", image: UIImage(systemName: "pencil")) { [weak self] _ in
         self?.onEdit?()
     }
     
@@ -42,22 +44,36 @@ class EditFolderCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        onEdit = nil
+        onDelete = nil
+    }
+    
     private func setupProperty() {
         backgroundColor = .tableViewBackgroundColor
         selectionStyle = .none
     }
     
     private func setupHierarchy() {
-        contentView.addSubview(folderView)
-        folderView.addSubview(editButton)
+        contentView.addSubview(containerView)
+        containerView.addSubview(folderView)
+        containerView.addSubview(editButton)
     }
     
     private func setupLayout() {
-        folderView.snp.makeConstraints { make in
+        containerView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+        
         editButton.snp.makeConstraints { make in
-            make.top.bottom.trailing.equalToSuperview()
+            make.top.bottom.equalToSuperview()
+            make.trailing.equalToSuperview().offset(-10)
+            make.width.equalTo(30)
+        }
+        
+        folderView.snp.makeConstraints { make in
+            make.top.bottom.leading.equalToSuperview()
+            make.trailing.equalTo(editButton.snp.leading)
         }
     }
     

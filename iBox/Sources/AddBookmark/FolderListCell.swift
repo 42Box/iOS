@@ -25,7 +25,8 @@ class FolderListCell: UITableViewCell {
     }
     
     private let checkImageView = UIImageView().then {
-        $0.image = UIImage(systemName: "checkmark")
+        let config = UIImage.SymbolConfiguration(pointSize: 14, weight: .semibold, scale: .default)
+        $0.image = UIImage(systemName: "checkmark", withConfiguration: config)
         $0.contentMode = .scaleAspectFit
         $0.tintColor = .box
         $0.isHidden = true
@@ -65,19 +66,18 @@ class FolderListCell: UITableViewCell {
             make.bottom.lessThanOrEqualToSuperview().offset(-10)
         }
         
-        folderNameLabel.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.leading.equalTo(folderImageView.snp.trailing).offset(10)
-            make.trailing.lessThanOrEqualToSuperview().offset(-20)
-            make.top.greaterThanOrEqualToSuperview().offset(10)
-            make.bottom.lessThanOrEqualToSuperview().offset(-10)
-        }
-        
         checkImageView.snp.makeConstraints { make in
              make.centerY.equalToSuperview()
              make.trailing.equalToSuperview().offset(-20)
-             make.width.height.equalTo(24)
          }
+        
+        folderNameLabel.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.leading.equalTo(folderImageView.snp.trailing).offset(10)
+            make.trailing.equalTo(checkImageView.snp.leading).offset(-10)
+            make.top.greaterThanOrEqualToSuperview().offset(10)
+            make.bottom.lessThanOrEqualToSuperview().offset(-10)
+        }
     }
     
     func configureWith(folder: Folder, isSelected: Bool) {

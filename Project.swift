@@ -18,19 +18,19 @@ class iBoxFactory: ProjectFactory {
     
     let dependencies: [TargetDependency] = [
         .external(name: "SnapKit"),
+        .external(name: "SwiftSoup"),
         .target(name: "iBoxShareExtension")
     ]
     
     let iBoxShareExtensionDependencies: [TargetDependency] = [
-        .external(name: "SnapKit"),
-        .external(name: "SwiftSoup")
+        .external(name: "SnapKit")
     ]
     
     private let appInfoPlist: [String: Plist.Value] = [
         "ITSAppUsesNonExemptEncryption": false,
         "CFBundleDisplayName": "iBox",
         "CFBundleName": "iBox",
-        "CFBundleShortVersionString": "1.2.2",
+        "CFBundleShortVersionString": "1.0.0",
         "CFBundleVersion": "1",
         "UILaunchStoryboardName": "LaunchScreen",
         "UIApplicationSceneManifest": [
@@ -58,7 +58,7 @@ class iBoxFactory: ProjectFactory {
     
     private let shareExtensionInfoPlist: [String: Plist.Value] = [
         "CFBundleDisplayName": "iBox.Share",
-        "CFBundleShortVersionString": "1.0",
+        "CFBundleShortVersionString": "1.0.0",
         "CFBundleVersion": "1",
         "NSExtension": [
             "NSExtensionAttributes": [
@@ -92,8 +92,8 @@ class iBoxFactory: ProjectFactory {
             bundleId: "\(bundleId).ShareExtension",
             deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
             infoPlist: .extendingDefault(with: shareExtensionInfoPlist),
-            sources: ["ShareExtension/**"],
-            resources: [],
+            sources: ["ShareExtension/Sources/**"],
+            resources: ["ShareExtension/Resources/**"],
             dependencies: iBoxShareExtensionDependencies
         )
         

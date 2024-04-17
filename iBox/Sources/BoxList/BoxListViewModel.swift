@@ -17,6 +17,7 @@ class BoxListViewModel {
     }
 
     var sectionsToReload = Set<BoxListSectionViewModel.ID>()
+    var rowsToReload = Set<BoxListCellViewModel.ID>()
     var isEditing = false
     var favoriteId: UUID? = nil
 
@@ -37,6 +38,7 @@ class BoxListViewModel {
         case reloadSections(idArray: [BoxListSectionViewModel.ID])
         case reloadRows(idArray: [BoxListCellViewModel.ID])
         case editStatus(isEditing: Bool)
+        case openCloseFolder(boxList: [BoxListSectionViewModel], section: Int, isEmpty: Bool)
     }
     
     let input = PassthroughSubject<Input, Never>()
@@ -62,7 +64,7 @@ class BoxListViewModel {
                 }
             case let .folderTapped(section):
                 boxList[section].isOpened.toggle()
-                output.send(.sendBoxList(boxList: boxList))
+                output.send(.openCloseFolder(boxList: boxList, section: section, isEmpty: boxList[section].boxListCellViewModelsWithStatus.isEmpty))
             case let .deleteBookmark(indexPath):
                 deleteBookmark(at: indexPath)
             case let .toggleFavorite(indexPath):
@@ -150,6 +152,9 @@ class BoxListViewModel {
     func deleteFolder(at row: Int) {
         sectionsToReload.remove(boxList[row].id)
         boxList.remove(at: row)
+        for box in boxList {
+            sectionsToReload.update(with: box.id)
+        }
     }
     
     func editFolderName(at row: Int, name: String) {
@@ -160,6 +165,41 @@ class BoxListViewModel {
     func moveFolder(from: Int, to: Int) {
         let mover = boxList.remove(at: from)
         boxList.insert(mover, at: to)
+        for box in boxList {
+            sectionsToReload.update(with: box.id)
+        }
     }
-
+    
+    func addFolderDirect(_ folder: Folder) {
+        let boxListSectionViewModel = BoxListSectionViewModel(folder: folder)
+        boxList.append(boxListSectionViewModel)
+        output.send(.sendBoxList(boxList: boxList))
+    }
+    
+    func addBookmarkDirect(_ bookmark: Bookmark, at index: Int) {
+        boxList[index].boxListCellViewModels.append(BoxListCellViewModel(bookmark: bookmark))
+        output.send(.sendBoxList(boxList: boxList))
+    }
+    
+    func deleteFolderDirect(_ section: Int) {
+        let folderId = boxList[section].id
+        CoreDataManager.shared.deleteFolder(id: folderId)
+        boxList.remove(at: section)
+        for box in boxList {
+            sectionsToReload.update(with: box.id)
+        }
+        output.send(.sendBoxList(boxList: boxList))
+        output.send(.reloadSections(idArray: Array(sectionsToReload)))
+        sectionsToReload.removeAll()
+    }
+    
+    func editFolderDirect(_ section: Int, name: String) {
+        let folderId = boxList[section].id
+        CoreDataManager.shared.updateFolder(id: folderId, name: name)
+        boxList[section].name = name
+        sectionsToReload.update(with: boxList[section].id)
+        output.send(.reloadSections(idArray: Array(sectionsToReload)))
+        sectionsToReload.removeAll()
+    }
+    
 }

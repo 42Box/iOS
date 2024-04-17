@@ -7,8 +7,13 @@
 
 import UIKit
 
+protocol WebViewDelegate {
+    func pushAddBookMarkViewController(url: URL)
+}
+
 class WebViewController: BaseViewController<WebView>, BaseViewControllerProtocol {
     
+    var delegate: AddBookmarkViewControllerProtocol?
     var selectedWebsite: URL?
 
     // MARK: - Life Cycle
@@ -20,7 +25,14 @@ class WebViewController: BaseViewController<WebView>, BaseViewControllerProtocol
         view.backgroundColor = .backgroundColor
         
         guard let contentView = contentView as? WebView else { return }
+        contentView.delegate = self
         contentView.selectedWebsite = selectedWebsite
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        guard let contentView = contentView as? WebView else { return }
+        contentView.setupRefreshControl()
     }
     
     // MARK: - BaseViewControllerProtocol
@@ -29,4 +41,19 @@ class WebViewController: BaseViewController<WebView>, BaseViewControllerProtocol
         setNavigationBarHidden(true)
     }
 
+}
+
+extension WebViewController: WebViewDelegate {
+    
+    func pushAddBookMarkViewController(url: URL) {
+        let encodingURL = url.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        
+        if let iBoxUrl = URL(string: "iBox://url?data=" + encodingURL) {
+            if let tabBarController = findMainTabBarController() {
+                AddBookmarkManager.shared.navigateToAddBookmarkView(from: iBoxUrl, in: tabBarController)
+            }
+        }
+        
+    }
+    
 }

@@ -23,7 +23,7 @@ class ResetView: UIView {
     
     let resetButton = UIButton().then {
         $0.configuration = .plain()
-        $0.configuration?.attributedTitle = .init("초기화", attributes: .init([.font: UIFont.descriptionFont]))
+        $0.configuration?.attributedTitle = .init("초기화", attributes: .init([.font: UIFont.boldLabelFont]))
         $0.tintColor = .white
         $0.backgroundColor = .box
         $0.clipsToBounds = true

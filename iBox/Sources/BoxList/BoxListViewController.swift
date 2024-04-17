@@ -13,7 +13,7 @@ class BoxListViewController: BaseViewController<BoxListView>, BaseViewController
         didSet {
             if shouldPresentModalAutomatically {
                 // shouldPresentModalAutomatically가 true로 설정될 때 함수 호출
-                dismiss(animated: false) {
+                if findAddBookmarkView() == nil {
                     self.addButtonTapped()
                 }
                 // 함수 호출 후 shouldPresentModalAutomatically를 false로 설정
@@ -52,6 +52,8 @@ class BoxListViewController: BaseViewController<BoxListView>, BaseViewController
     
     @objc private func addButtonTapped() {
         let addBookmarkViewController = AddBookmarkViewController()
+        addBookmarkViewController.delegate = self
+        
         let navigationController = UINavigationController(rootViewController: addBookmarkViewController)
 
         navigationController.modalPresentationStyle = .pageSheet
@@ -73,20 +75,49 @@ class BoxListViewController: BaseViewController<BoxListView>, BaseViewController
 
 }
 
-extension BoxListViewController: BoxListViewDelegate {
-    func presentEditBookmarkController(at indexPath: IndexPath) {
+extension BoxListViewController: AddBookmarkViewControllerProtocol {
+    func addFolderDirect(_ folder: Folder) {
         guard let contentView = contentView as? BoxListView else { return }
-        
-        let controller = UIAlertController(title: "북마크 편집", message: nil, preferredStyle: .alert)
+        contentView.viewModel?.addFolderDirect(folder)
+    }
+    
+    func addBookmarkDirect(_ bookmark: Bookmark, at folderIndex: Int) {
+        guard let contentView = contentView as? BoxListView else { return }
+        contentView.viewModel?.addBookmarkDirect(bookmark, at: folderIndex)
+        if UserDefaultsManager.isHaptics {
+            let generator = UIImpactFeedbackGenerator(style: .soft)
+            generator.prepare()
+            generator.impactOccurred()
+        }
+    }
+    
+}
+
+extension BoxListViewController: BoxListViewDelegate {
+    func deleteFolderinBoxList(at section: Int) {
+        recheckDeleteFolder(at: section)
+    }
+    
+    private func recheckDeleteFolder(at section: Int) {
+        let actionSheetController = UIAlertController(title: nil, message: "모든 북마크가 삭제됩니다.", preferredStyle: .actionSheet)
+        let firstAction = UIAlertAction(title: "폴더 삭제", style: .destructive) {[weak self] _ in
+            guard let contentView = self?.contentView as? BoxListView else { return }
+            contentView.viewModel?.deleteFolderDirect(section)
+        }
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+        actionSheetController.addAction(firstAction)
+        actionSheetController.addAction(cancelAction)
+        present(actionSheetController, animated: true)
+    }
+    
+    func editFolderNameinBoxList(at section: Int, currentName: String) {
+        let controller = UIAlertController(title: "폴더 이름 변경", message: nil, preferredStyle: .alert)
         
         let cancelAction = UIAlertAction(title: "취소", style: .default) { _ in return }
         let okAction = UIAlertAction(title: "확인", style: .default) { [weak self] action in
             guard let newName = controller.textFields?.first?.text else { return }
-            guard let newUrlString = controller.textFields?.last?.text,
-            let newUrl = URL(string: newUrlString) else { return }
             guard let contentView = self?.contentView as? BoxListView else { return }
-            
-            contentView.viewModel?.editBookmark(at: indexPath, name: newName, url: newUrl)
+            contentView.viewModel?.editFolderDirect(section, name: newName)
         }
         controller.addAction(cancelAction)
         controller.addAction(okAction)
@@ -102,7 +133,50 @@ extension BoxListViewController: BoxListViewDelegate {
                     
                 })
         }
+        controller.textFields?.first?.text = currentName
+        controller.textFields?.first?.autocorrectionType = .no
+        controller.textFields?.first?.spellCheckingType = .no
+        
+        self.present(controller, animated: true)
+    }
+    
+    func presentEditBookmarkController(at indexPath: IndexPath) {
+        guard let contentView = contentView as? BoxListView else { return }
+        
+        let controller = UIAlertController(title: "북마크 편집", message: nil, preferredStyle: .alert)
+        
+        let cancelAction = UIAlertAction(title: "취소", style: .default) { _ in return }
+        let okAction = UIAlertAction(title: "확인", style: .default) { [weak self] action in
+            guard let newName = controller.textFields?.first?.text else { return }
+            guard let newUrlString = controller.textFields?.last?.text,
+            let newUrl = URL(string: newUrlString) else { return }
+            guard let contentView = self?.contentView as? BoxListView else { return }
+            guard let bookmark = contentView.viewModel?.bookmark(at: indexPath) else { return }
+
+            contentView.viewModel?.editBookmark(at: indexPath, name: newName, url: newUrl)
+
+            WebCacheManager.shared.removeViewControllerForKey(bookmark.id)
+        }
+        
+        controller.addAction(cancelAction)
+        controller.addAction(okAction)
+        okAction.isEnabled = true
+        
         controller.addTextField() { textField in
+            textField.clearButtonMode = .whileEditing
+            
+            NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: textField, queue: OperationQueue.main, using:
+                    {_ in
+                        let textCount = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines).count ?? 0
+                        let textIsNotEmpty = textCount > 0
+                        
+                        okAction.isEnabled = textIsNotEmpty
+                    
+                })
+        }
+        controller.addTextField() { textField in
+            textField.clearButtonMode = .whileEditing
+            
             NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: textField, queue: OperationQueue.main, using:
                     {_ in
                         let textCount = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines).count ?? 0
@@ -134,6 +208,7 @@ extension BoxListViewController: BoxListViewDelegate {
         } else {
             // 캐시에 없는 경우, 새로운 viewController 인스턴스를 생성하고 캐시에 추가합니다.
             let viewController = WebViewController()
+            viewController.delegate = self
             viewController.selectedWebsite = url
             viewController.title = name
             WebCacheManager.shared.cacheData(forKey: id, viewController: viewController)
@@ -178,10 +253,20 @@ extension BoxListViewController: EditFolderViewControllerDelegate {
     func deleteFolder(at row: Int) {
         guard let contentView = contentView as? BoxListView else { return }
         contentView.viewModel?.deleteFolder(at: row)
+        if UserDefaultsManager.isHaptics {
+            let generator = UIImpactFeedbackGenerator(style: .soft)
+            generator.prepare()
+            generator.impactOccurred()
+        }
     }
     
     func addFolder(_ folder: Folder) {
         guard let contentView = contentView as? BoxListView else { return }
         contentView.viewModel?.addFolder(folder)
+        if UserDefaultsManager.isHaptics {
+            let generator = UIImpactFeedbackGenerator(style: .soft)
+            generator.prepare()
+            generator.impactOccurred()
+        }
     }
 }
