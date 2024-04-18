@@ -130,10 +130,19 @@ final class AddBookmarkViewController: UIViewController {
     
     @objc private func addButtonTapped() {
         guard let name = addBookmarkView.nameTextView.text, !name.isEmpty,
-              let urlString = addBookmarkView.urlTextView.text, !urlString.isEmpty,
-              let encodedUrlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-              let url = URL(string: encodedUrlString) else {
+              var urlString = addBookmarkView.urlTextView.text, !urlString.isEmpty else {
             print("Invalid input")
+            return
+        }
+        
+        let lowercasedUrlString = urlString.lowercased()
+        if !lowercasedUrlString.hasPrefix("https://") && !lowercasedUrlString.hasPrefix("http://") {
+            urlString = "https://" + urlString
+        }
+        
+        guard let encodedUrlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: encodedUrlString) else {
+            print("Invalid URL format")
             return
         }
 
