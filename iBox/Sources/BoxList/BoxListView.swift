@@ -377,7 +377,7 @@ extension BoxListView: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        let configuration = UIContextMenuConfiguration(identifier: nil, previewProvider: { [weak self] () -> UIViewController? in
+        let configuration = UIContextMenuConfiguration(identifier: indexPath as NSIndexPath, previewProvider: { [weak self] () -> UIViewController? in
             guard let self = self, let cellViewModel = self.viewModel?.boxList[indexPath.section].boxListCellViewModelsWithStatus[indexPath.row] else { return nil }
             
             let id = cellViewModel.id
@@ -401,6 +401,17 @@ extension BoxListView: UITableViewDelegate {
             return self.makeContextMenu(for: indexPath)
         })
         return configuration
+    }
+    
+    func tableView(_ tableView: UITableView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+        guard let indexPath = configuration.identifier as? IndexPath, let cell = tableView.cellForRow(at: indexPath) else {
+                    return nil
+        }
+        
+        let parameters = UIPreviewParameters()
+        parameters.backgroundColor = .clear
+        
+        return UITargetedPreview(view: cell, parameters: parameters)
     }
     
     private func makeContextMenu(for indexPath: IndexPath) -> UIMenu {
