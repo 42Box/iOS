@@ -10,9 +10,6 @@ import Combine
 class AppStateManager {
     static let shared = AppStateManager()
     
-    @Published var isVersionCheckCompleted: VersionCheckCode = .Initial
+    @Published var isVersionCheckCompleted: VersionCheckCode = .initial
     
-    func shouldTransitionToNextScreen(completion: @escaping (VersionCheckCode) -> Void) {
-        completion(isVersionCheckCompleted)
-    }
 }

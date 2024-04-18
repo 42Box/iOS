@@ -42,23 +42,26 @@ extension ResetViewController: ResetViewDelegate {
         alertController.addAction(cancelAction)
         
         let confirmAction = UIAlertAction(title: "확인", style: .default) { [weak self] _ in
+            guard let self = self else { return }
             if let textField = alertController.textFields?.first, let text = textField.text, text == "iBox" {
-                self?.resetData()
-                self?.navigationController?.popViewController(animated: true)
+                self.resetData()
             } else {
-                self?.showAlert()
+                self.showAlert()
             }
         }
+        
         confirmAction.isEnabled = false
+        confirmAction.setValue(UIColor.red, forKey: "titleTextColor")
+        
         alertController.addAction(confirmAction)
         
         alertController.addTextField() { textField in
             NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: textField, queue: OperationQueue.main, using:
-                    {_ in
-                        let isTextMatch = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "iBox"
-                        
-                        confirmAction.isEnabled = isTextMatch
-                })
+                                                    {_ in
+                let isTextMatch = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "iBox"
+                
+                confirmAction.isEnabled = isTextMatch
+            })
             
         }
         
@@ -66,23 +69,28 @@ extension ResetViewController: ResetViewDelegate {
     }
     
     private func resetData() {
-        let defaultData = [
-            Folder(id: UUID(), name: "42 폴더", bookmarks: [
-                Bookmark(id: UUID(), name: "42 Intra", url: URL(string: "https://profile.intra.42.fr/")!),
-                Bookmark(id: UUID(), name: "42Where", url: URL(string: "https://www.where42.kr/")! ),
-                Bookmark(id: UUID(), name: "42Stat", url: URL(string: "https://stat.42seoul.kr/")!),
-                Bookmark(id: UUID(), name: "집현전", url: URL(string: "https://42library.kr/")!),
-                Bookmark(id: UUID(), name: "Cabi", url: URL(string: "https://cabi.42seoul.io/")!),
-                Bookmark(id: UUID(), name: "24HANE", url: URL(string: "https://24hoursarenotenough.42seoul.kr/")!)
-            ])
-        ]
-        CoreDataManager.shared.deleteAllFolders()
-        CoreDataManager.shared.addInitialFolders(defaultData)
-        UserDefaultsManager.isDefaultDataInserted = true
-        
-        UserDefaultsManager.favoriteId = nil
-        WebViewPreloader.shared.setFavoriteUrl(url: nil)
-        NotificationCenter.default.post(name: .didResetData, object: nil)
+        DefaultData.insertDefaultDataIfNeeded(true) {
+            UserDefaultsManager.favoriteId = nil
+            WebViewPreloader.shared.setFavoriteUrl(url: nil)
+            NotificationCenter.default.post(name: .didResetData, object: nil)
+            DispatchQueue.main.async {
+                let successView = ResetSuccessView(frame: self.view.bounds)
+                successView.delegate = self
+                self.view.addSubview(successView)
+                successView.snp.makeConstraints { make in
+                    make.edges.equalToSuperview()
+                }
+            }
+        }
+    }
+}
+
+// MARK: - ResetSuccessView
+
+extension ResetViewController: ResetSuccessViewDelegate {
+
+    func didCompleteReset() {
+        self.navigationController?.popViewController(animated: true)
     }
     
 }

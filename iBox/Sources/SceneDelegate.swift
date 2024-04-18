@@ -18,32 +18,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
 
-        // 앱 테마 정보
         window?.overrideUserInterfaceStyle = window?.toUserInterfaceStyle(UserDefaultsManager.theme) ?? .unspecified
-        
-        insertDefaultDataIfNeeded()
         
         window?.rootViewController = CustomLaunchScreenViewController(urlContext: connectionOptions.urlContexts.first)
         window?.makeKeyAndVisible()
-    }
-    
-    private func insertDefaultDataIfNeeded() {
-        let isDefaultDataInserted = UserDefaultsManager.isDefaultDataInserted
-        if !isDefaultDataInserted {
-            let defaultData = [
-                Folder(id: UUID(), name: "42 폴더", bookmarks: [
-                    Bookmark(id: UUID(), name: "42 Intra", url: URL(string: "https://profile.intra.42.fr/")!),
-                    Bookmark(id: UUID(), name: "42Where", url: URL(string: "https://www.where42.kr/")! ),
-                    Bookmark(id: UUID(), name: "42Stat", url: URL(string: "https://stat.42seoul.kr/")!),
-                    Bookmark(id: UUID(), name: "집현전", url: URL(string: "https://42library.kr/")!),
-                    Bookmark(id: UUID(), name: "Cabi", url: URL(string: "https://cabi.42seoul.io/")!),
-                    Bookmark(id: UUID(), name: "24HANE", url: URL(string: "https://24hoursarenotenough.42seoul.kr/")!)
-                ])
-            ]
-            CoreDataManager.shared.deleteAllFolders()
-            CoreDataManager.shared.addInitialFolders(defaultData)
-            UserDefaultsManager.isDefaultDataInserted = true
-        }
+        
     }
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {

@@ -6,7 +6,7 @@
 //
 
 enum VersionCheckCode: Equatable {
-    case Initial // 초기값
+    case initial // 초기값
     case success // 성공
     case later // 나중에 (ab testing code)
     case update // 업데이트 (ab testing code)

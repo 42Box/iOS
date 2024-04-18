@@ -44,6 +44,7 @@ class CustomLaunchScreenViewController: UIViewController {
                 switch result {
                 case .success, .maxRetryReached, .later:
                     self?.transitionToNextScreen()
+                    print("App 정상 실행")
                 case .urlError:
                     print("URL 에러가 발생했습니다.")
                 case .networkError:
@@ -64,13 +65,17 @@ class CustomLaunchScreenViewController: UIViewController {
                     print("scene error 수집")
                 case .internalInfoError:
                     print("info error 수집")
-                case .Initial:
-                    print("초기값")
+                case .initial:
+                    self?.startupFlow()
+                    print("init")
                 }
             }
             .store(in: &cancellables)
     }
     
+    private func startupFlow() {
+        DefaultData.insertDefaultDataIfNeeded()
+    }
     
     private func transitionToNextScreen() {
         guard let window = self.view.window else { return }

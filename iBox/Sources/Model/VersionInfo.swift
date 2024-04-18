@@ -13,11 +13,7 @@ struct VersionInfo: Codable {
 
 // MARK: - URLClass
 struct URLClass: Codable {
-    let updateURL: String?
-
-    enum CodingKeys: String, CodingKey {
-        case updateURL = "updateUrl"
-    }
+    let storeUrl: String
 }
 
 // MARK: - Version
