@@ -19,7 +19,7 @@ enum SettingsType {
     func toString() -> String {
         switch self {
         case .theme: "테마"
-        case .homeTab: "홈화면"
+        case .homeTab: "시작 화면"
         case .haptics: "진동"
         case .preload: "즐겨찾기 미리 로드"
         case .reset: "데이터 초기화"
