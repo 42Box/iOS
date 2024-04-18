@@ -32,7 +32,7 @@ class WebView: UIView {
     
     private let progressView = UIProgressView().then {
         $0.progressViewStyle = .bar
-        $0.tintColor = .label
+        $0.tintColor = .box2
         $0.sizeToFit()
     }
     
