@@ -66,6 +66,10 @@ class FolderListViewController: UIViewController {
             let newFolder = Folder(id: UUID(), name: folderName, bookmarks: [])
             CoreDataManager.shared.addFolder(newFolder)
             self?.folderListView.folders.append(newFolder)
+            
+            self?.folderListView.selectedFolderId = newFolder.id
+            UserDefaultsManager.selectedFolderId = newFolder.id
+            
             self?.folderListView.reloadFolderList()
             self?.delegate?.addFolder(newFolder)
         }
