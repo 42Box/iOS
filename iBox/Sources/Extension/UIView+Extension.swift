@@ -30,4 +30,14 @@ extension UIView {
         }
     }
     
+    // MARK: - 뷰 계층 구조 log
+    func printViewHierarchy(level: Int = 0) {
+        let padding = String(repeating: " ", count: level * 2)
+        let viewInfo = "\(padding)\(type(of: self)) - Frame: \(self.frame)"
+        print(viewInfo)
+        
+        for subview in self.subviews {
+            subview.printViewHierarchy(level: level + 1)
+        }
+    }
 }

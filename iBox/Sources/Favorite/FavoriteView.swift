@@ -6,18 +6,18 @@
 //
 
 import UIKit
-import WebKit
-
 import SnapKit
 
 class FavoriteView: UIView {
     
-    lazy var webView = {
-        if WebViewPreloader.shared.getFavoriteView() == nil {
+    var webView: WebView {
+        if let view = WebViewPreloader.shared.getFavoriteView() {
+            return view
+        } else {
             loadFavoriteWeb()
+            return WebViewPreloader.shared.getFavoriteView()!
         }
-        return WebViewPreloader.shared.getFavoriteView()
-    }()
+    }
     
     // MARK: - Initializer
     
@@ -34,7 +34,7 @@ class FavoriteView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        webView?.setupRefreshControl()
+        webView.setupRefreshControl()
     }
     
     // MARK: - Setup Methods
@@ -44,12 +44,10 @@ class FavoriteView: UIView {
     }
     
     private func setupHierarchy() {
-        guard let webView else { return }
         addSubview(webView)
     }
     
     private func setupLayout() {
-        guard let webView else { return }
         webView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
@@ -58,7 +56,7 @@ class FavoriteView: UIView {
     private func loadFavoriteWeb() {
         let favoriteId = UserDefaultsManager.favoriteId
         var favoriteUrl: URL? = nil
-        if let favoriteId {
+        if let favoriteId = favoriteId {
             favoriteUrl = CoreDataManager.shared.getBookmarkUrl(favoriteId)
             if favoriteUrl == nil {
                 UserDefaultsManager.favoriteId = nil
@@ -66,5 +64,4 @@ class FavoriteView: UIView {
         }
         WebViewPreloader.shared.preloadFavoriteView(url: favoriteUrl)
     }
-    
 }
