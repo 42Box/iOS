@@ -19,6 +19,7 @@ class iBoxFactory: ProjectFactory {
     let dependencies: [TargetDependency] = [
         .external(name: "SnapKit"),
         .external(name: "SwiftSoup"),
+        .external(name: "SkeletonView"),
         .target(name: "iBoxShareExtension")
     ]
     
