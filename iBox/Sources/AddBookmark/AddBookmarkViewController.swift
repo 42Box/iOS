@@ -7,6 +7,8 @@
 
 import UIKit
 
+import SkeletonView
+
 protocol AddBookmarkViewControllerProtocol: AnyObject {
     func addFolderDirect(_ folder: Folder)
     func addBookmarkDirect(_ bookmark: Bookmark, at folderIndex: Int)
@@ -31,6 +33,8 @@ final class AddBookmarkViewController: UIViewController {
         super.viewWillAppear(animated)
         updateSelectedFolder()
         addBookmarkView.updateTextFieldsFilledState()
+        
+//        view.showAnimatedGradientSkeleton()
     }
 
     override func viewDidLoad() {
@@ -38,6 +42,8 @@ final class AddBookmarkViewController: UIViewController {
         setupNavigationBar()
         updateSelectedFolder()
         addBookmarkView.nameTextView.becomeFirstResponder()
+        
+        view.isSkeletonable = true
     }
     
     private func setupNavigationBar() {
