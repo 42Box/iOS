@@ -27,7 +27,6 @@ class WebViewController: BaseViewController<WebView>, BaseViewControllerProtocol
         guard let contentView = contentView as? WebView else { return }
         contentView.delegate = self
         contentView.selectedWebsite = selectedWebsite
-        
     }
     
     override func viewDidLayoutSubviews() {
