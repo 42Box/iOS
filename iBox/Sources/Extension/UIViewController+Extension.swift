@@ -19,11 +19,11 @@ extension UIViewController {
         return nil
     }
     
-    func findAddBookmarkViewController() -> Bool {
+    func findAddBookmarkViewController() -> AddBookmarkViewController? {
         if let navigationController = presentedViewController as? UINavigationController,
-           let _ = navigationController.topViewController as? AddBookmarkViewController {
-            return true
+           let vc = navigationController.topViewController as? AddBookmarkViewController {
+            return vc
         }
-        return false
+        return nil
     }
 }

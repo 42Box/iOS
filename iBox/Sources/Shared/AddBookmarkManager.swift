@@ -37,7 +37,6 @@ class AddBookmarkManager {
             
             self.update(with: (title: title, data: url.absoluteString, faviconUrl: faviconLink))
         } catch {
-            self.isFetching = false
             self.incomingError = .parseError
         }
     }
@@ -56,7 +55,6 @@ class AddBookmarkManager {
     private func fetchWebsiteDetails(from url: URL) {
         let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
             guard let data = data, error == nil else {
-                self?.isFetching = false
                 self?.incomingError = .htmlError
                 return
             }
@@ -65,7 +63,6 @@ class AddBookmarkManager {
             let encoding = String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding(encodingName as CFString)))
 
             guard let html = String(data: data, encoding: encoding) else {
-                self?.isFetching = false
                 self?.incomingError = .decodeError
                 return
             }

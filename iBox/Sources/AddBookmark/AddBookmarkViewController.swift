@@ -118,6 +118,7 @@ final class AddBookmarkViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isFetching in
                 if isFetching {
+                    self?.view.hideSkeleton()
                     self?.view.showAnimatedGradientSkeleton()
                 } else {
                     self?.view.hideSkeleton()
@@ -130,7 +131,9 @@ final class AddBookmarkViewController: UIViewController {
             .sink { [weak self] error in
                 guard error != nil else { return }
                 let alert = UIAlertController(title: "오류", message: "해당 URL을 가져올 수 없습니다", preferredStyle: .alert)
-                let okAction = UIAlertAction(title: "확인", style: .default)
+                let okAction = UIAlertAction(title: "확인", style: .default) { _ in
+                    AddBookmarkManager.shared.isFetching = false
+                }
                 alert.addAction(okAction)
                 self?.present(alert, animated: true)
             }
