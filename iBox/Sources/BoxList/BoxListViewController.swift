@@ -15,8 +15,8 @@ class BoxListViewController: BaseViewController<BoxListView>, BaseViewController
         didSet {
             if shouldPresentModalAutomatically {
                 if let vc = findAddBookmarkViewController() {
-                    if let currentAlert = vc.presentedViewController as? UIAlertController {
-                        vc.dismiss(animated: true)
+                    if vc.presentedViewController is UIAlertController {
+                        vc.dismiss(animated: false)
                     }
                 } else {
                     dismiss(animated: false)
