@@ -36,6 +36,8 @@ class AddBookmarkView: UIView {
         $0.text = "북마크 이름"
         $0.font = .cellTitleFont
         $0.textColor = .systemGray3
+        $0.isSkeletonable = true
+        $0.isHiddenWhenSkeletonIsActive = true
     }
     
     let nameTextView = UITextView().then {
@@ -66,6 +68,8 @@ class AddBookmarkView: UIView {
         $0.text = "URL"
         $0.font = .cellTitleFont
         $0.textColor = .systemGray3
+        $0.isSkeletonable = true
+        $0.isHiddenWhenSkeletonIsActive = true
     }
     
     let urlTextView = UITextView().then {
@@ -128,6 +132,8 @@ class AddBookmarkView: UIView {
     deinit {
         AddBookmarkManager.shared.incomingTitle = nil
         AddBookmarkManager.shared.incomingData = nil
+        AddBookmarkManager.shared.incomingFaviconUrl = nil
+        AddBookmarkManager.shared.incomingError = nil
     }
     
     // MARK: - Setup Methods

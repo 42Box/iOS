@@ -5,6 +5,7 @@
 //  Created by jiyeon on 1/5/24.
 //
 
+import Combine
 import UIKit
 
 import SkeletonView
@@ -16,6 +17,8 @@ protocol AddBookmarkViewControllerProtocol: AnyObject {
 
 final class AddBookmarkViewController: UIViewController {
     weak var delegate: AddBookmarkViewControllerProtocol?
+    
+    var cancellables = Set<AnyCancellable>()
     
     var haveValidInput = false
     var selectedFolder: Folder?
@@ -33,8 +36,6 @@ final class AddBookmarkViewController: UIViewController {
         super.viewWillAppear(animated)
         updateSelectedFolder()
         addBookmarkView.updateTextFieldsFilledState()
-        
-//        view.showAnimatedGradientSkeleton()
     }
 
     override func viewDidLoad() {
@@ -42,6 +43,7 @@ final class AddBookmarkViewController: UIViewController {
         setupNavigationBar()
         updateSelectedFolder()
         addBookmarkView.nameTextView.becomeFirstResponder()
+        setupBindings()
         
         view.isSkeletonable = true
     }
@@ -109,6 +111,30 @@ final class AddBookmarkViewController: UIViewController {
         } else {
             addBookmarkView.selectedFolderName = "선택된 폴더가 없습니다."
         }
+    }
+    
+    private func setupBindings() {
+        AddBookmarkManager.shared.$isFetching
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isFetching in
+                if isFetching {
+                    self?.view.showAnimatedGradientSkeleton()
+                } else {
+                    self?.view.hideSkeleton()
+                }
+            }
+            .store(in: &cancellables)
+        
+        AddBookmarkManager.shared.$incomingError
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] error in
+                guard error != nil else { return }
+                let alert = UIAlertController(title: "오류", message: "해당 URL을 가져올 수 없습니다", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "확인", style: .default)
+                alert.addAction(okAction)
+                self?.present(alert, animated: true)
+            }
+            .store(in: &cancellables)
     }
     
     @objc private func cancelButtonTapped() {
