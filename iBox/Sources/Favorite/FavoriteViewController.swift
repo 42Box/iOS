@@ -8,31 +8,23 @@
 import UIKit
 
 class FavoriteViewController: BaseViewController<FavoriteView>, BaseViewControllerProtocol {
-    
-    var selectedWebsite: URL?
 
+    var delegate: AddBookmarkViewControllerProtocol?
+    
     // MARK: - Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         setupNavigationBar()
-        view.backgroundColor = .backgroundColor
-
-        // contentView가 FavoriteView 인스턴스인 경우, WebView의 delegate 설정
-        if let favoriteView = self.view as? FavoriteView {
-            // WebViewPreloader를 통해 가져온 WebView의 delegate를 이 ViewController로 설정
-            let webView = favoriteView.webView
-            webView.delegate = self
-            webView.selectedWebsite = selectedWebsite  // 웹 사이트 설정
-        }
+        
+        guard let contentView = contentView as? FavoriteView else { return }
+        contentView.webView?.delegate = self
     }
-
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        if let favoriteView = self.view as? FavoriteView {
-            favoriteView.webView.setupRefreshControl()
-        }
+        guard let contentView = contentView as? FavoriteView else { return }
+        contentView.webView?.setupRefreshControl()
     }
     
     // MARK: - BaseViewControllerProtocol
