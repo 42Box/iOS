@@ -28,7 +28,7 @@ class WebView: UIView {
     // MARK: - UI Components
 
     
-    private let webView:WKWebView
+    private let webView: WKWebView
     
     private let progressView = UIProgressView().then {
         $0.progressViewStyle = .bar

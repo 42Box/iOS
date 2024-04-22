@@ -14,7 +14,6 @@ enum SettingsType {
     case preload
     case reset
     case guide
-    case feedback
     
     func toString() -> String {
         switch self {
@@ -24,7 +23,6 @@ enum SettingsType {
         case .preload: "즐겨찾기 미리 로드"
         case .reset: "데이터 초기화"
         case .guide: "앱 소개"
-        case .feedback: "앱 피드백"
         }
     }
 
