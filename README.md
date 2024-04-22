@@ -49,14 +49,14 @@
 
 ### 📷 스크린샷
 
-| [폴더추가] | [공유] | [제스처] |
+| 폴더추가 | 공유 | 제스처 |
 |:---:|:---:|:---:|
-|<img width="300" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/214fc1f6-afcb-4f5f-b324-9a5cbd2c1b51">|<img width="300" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/3dcd5650-8d39-45bd-b6b6-fd8fce5fea30">|<img width="300" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/758722b5-ae28-44a9-b2f5-16e1c847694c">|
+|<img width="230" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/214fc1f6-afcb-4f5f-b324-9a5cbd2c1b51">|<img width="230" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/3dcd5650-8d39-45bd-b6b6-fd8fce5fea30">|<img width="230" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/758722b5-ae28-44a9-b2f5-16e1c847694c">|
 
 
-| [즐겨찾기] | [설정] |
+| 즐겨찾기 | 테마 및 설정 |
 |:---:|:---:|
-|<img width="300" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/c4dc5467-9470-4750-94bd-1e09e5fe62bd">|<img width="300" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/b3d7d97a-b68b-4766-ad06-3f7d398396f7">|
+|<img width="230" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/c4dc5467-9470-4750-94bd-1e09e5fe62bd">|<img width="230" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/b3d7d97a-b68b-4766-ad06-3f7d398396f7">|
 
 
 # 🛠 Development Environment
