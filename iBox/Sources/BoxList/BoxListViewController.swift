@@ -40,7 +40,7 @@ class BoxListViewController: BaseViewController<BoxListView>, BaseViewController
     // MARK: - BaseViewControllerProtocol
     
     func setupNavigationBar() {
-        setNavigationBarTitleLabelText("iBox")
+        setNavigationBarTitleLabelText("42Box")
         setNavigationBarMenuButtonHidden(false)
         setNavigationBarAddButtonAction(#selector(addButtonTapped))
         setNavigationBarMoreButtonAction(#selector(moreButtonTapped))
