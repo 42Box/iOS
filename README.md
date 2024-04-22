@@ -4,6 +4,8 @@
 </div>
 
 ### The collection of all the sites you need.
+[<img width="220" alt="appstore" src="https://user-images.githubusercontent.com/55099365/196023806-5eb7be0f-c7cf-4661-bb39-35a15146c33a.png">](https://apps.apple.com)
+
 
 # ✨ Introduction
  안녕하세요 :) 42Box ios 팀입니다.<br/><br/>
@@ -42,14 +44,14 @@
 
 ### 📷 스크린샷
 
-| [폴더관리] | [공유] | [제스처] |
+| [폴더추가] | [공유] | [제스처] |
 |:---:|:---:|:---:|
-|<img width="300" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/9fdcc52b-31fb-4fac-b78f-6ddb6819536e">|<img width="300" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/a8abcf9d-033d-4fad-90dc-4e9172039a69">|<img width="300" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/2a1f06d8-ba5d-4404-91f7-ab4182e5ee49">|
+|<img width="300" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/214fc1f6-afcb-4f5f-b324-9a5cbd2c1b51">|<img width="300" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/3dcd5650-8d39-45bd-b6b6-fd8fce5fea30">|<img width="300" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/758722b5-ae28-44a9-b2f5-16e1c847694c">|
 
 
-| [미리보기] | [테마설정] |
+| [즐겨찾기] | [설정] |
 |:---:|:---:|
-|<img width="300" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/9fdcc52b-31fb-4fac-b78f-6ddb6819536e">|<img width="300" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/1bbffec3-25b1-4faa-9f31-d1d8969fda4c">|
+|<img width="300" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/c4dc5467-9470-4750-94bd-1e09e5fe62bd">|<img width="300" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/b3d7d97a-b68b-4766-ad06-3f7d398396f7">|
 
 
 # 🛠 Development Environment
