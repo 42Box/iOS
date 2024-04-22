@@ -1,10 +1,15 @@
-# 42Box
 <div>
-    <img src="https://github.com/jonnwon/tmp/assets/116494364/8e14a741-7421-49e4-8260-753805fd9abf" width="100" height="100" alt="appstore">
+    <img src="https://user-images.githubusercontent.com/67938113/226243235-89eb97f2-c48f-4db9-bf34-c38231ed37eb.png" width="400" height="200" alt="Fox">
+</div>
+
+
+
+<div>
+    <h1><img src="https://github.com/42Box/iOS/assets/116494364/34d98a09-dd52-47da-9f80-954222f828c8" width="30" height="30" alt="appicon">42Box</h1>
 </div>
 
 ### The collection of all the sites you need.
-[<img width="220" alt="appstore" src="https://user-images.githubusercontent.com/55099365/196023806-5eb7be0f-c7cf-4661-bb39-35a15146c33a.png">](https://apps.apple.com)
+[<img width="180" alt="appstore" src="https://user-images.githubusercontent.com/55099365/196023806-5eb7be0f-c7cf-4661-bb39-35a15146c33a.png">](https://apps.apple.com)
 
 
 # ✨ Introduction
