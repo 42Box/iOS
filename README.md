@@ -51,13 +51,12 @@
 
 | 폴더추가 | 공유 | 제스처 |
 |:---:|:---:|:---:|
-|<img width="230" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/214fc1f6-afcb-4f5f-b324-9a5cbd2c1b51">|<img width="230" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/3dcd5650-8d39-45bd-b6b6-fd8fce5fea30">|<img width="230" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/758722b5-ae28-44a9-b2f5-16e1c847694c">|
+|<img width="230" alt="image" src="https://github.com/42Box/iOS/assets/116494364/e07a8b51-97f6-4c45-a857-63bfb0e42564">|<img width="230" alt="image" src="https://github.com/42Box/iOS/assets/116494364/448b6272-8b2e-4127-99f1-4a504ed1441a">|<img width="230" alt="image" src="https://github.com/42Box/iOS/assets/116494364/9c8dfdaf-d1da-4e7a-bca9-221017dc1e5d">|
 
 
 | 즐겨찾기 | 테마 및 설정 |
 |:---:|:---:|
-|<img width="230" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/c4dc5467-9470-4750-94bd-1e09e5fe62bd">|<img width="230" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/b3d7d97a-b68b-4766-ad06-3f7d398396f7">|
-
+|<img width="230" alt="image" src="https://github.com/42Box/iOS/assets/116494364/0d1a1e51-f9d5-4c65-9883-538c95a977ed">|<img width="230" alt="image" src="https://github.com/42Box/iOS/assets/116494364/edda41cb-e6f9-4113-9b98-7851efe24a58">|
 
 # 🛠 Development Environment
 ![iOS badge](https://img.shields.io/badge/iOS-15.0+-silver?style=flat-square)
@@ -87,6 +86,6 @@
    
 | [jikoo](https://github.com/noeyiz) | [chanheki](https://github.com/chanhihi) | [jihyeole](https://github.com/JH713) | [jonchoi](https://github.com/jonnwon) |
 |:---:|:---:|:---:|:---:|
-|<img width="89" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/31f7aae4-11af-462a-b428-b579c7a100c5">|<img width="88" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/ba168f25-4c0f-46d2-a75f-c3e653548aec">|<img width="89" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/31f8a3ae-27a9-43e2-8a5c-2f94872e2f13">|<img width="89" alt="image" src="https://github.com/jonnwon/tmp/assets/116494364/2315630a-420d-4988-bd66-3534795178d8">|
+|<img width="89" alt="image" src="https://github.com/42Box/iOS/assets/116494364/e803a39e-8317-4606-813f-94305ea4f1bb">|<img width="88" alt="image" src="https://github.com/42Box/iOS/assets/116494364/abbe0aab-ff8f-414c-8a05-542e7ad1b0b1">|<img width="89" alt="image" src="https://github.com/42Box/iOS/assets/116494364/58179302-cd28-4b97-b106-7fca76a55eb1">|<img width="89" alt="image" src="https://github.com/42Box/iOS/assets/116494364/884cde0b-3248-4a35-8aa5-cb1eacacaf74">|
 
 </div>
