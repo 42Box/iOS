@@ -8,6 +8,7 @@
 import UIKit
 import Combine
 
+import SkeletonView
 import SnapKit
 
 class AddBookmarkView: UIView {
@@ -35,6 +36,8 @@ class AddBookmarkView: UIView {
         $0.text = "북마크 이름"
         $0.font = .cellTitleFont
         $0.textColor = .systemGray3
+        $0.isSkeletonable = true
+        $0.isHiddenWhenSkeletonIsActive = true
     }
     
     let nameTextView = UITextView().then {
@@ -46,6 +49,9 @@ class AddBookmarkView: UIView {
         $0.isScrollEnabled = true
         $0.keyboardType = .default
         $0.autocorrectionType = .no
+        $0.isSkeletonable = true
+        $0.skeletonTextLineHeight = .fixed(20)
+        $0.skeletonPaddingInsets = .init(top: 5, left: 0, bottom: 5, right: 0)
     }
     
     private let clearButton = UIButton().then {
@@ -62,6 +68,8 @@ class AddBookmarkView: UIView {
         $0.text = "URL"
         $0.font = .cellTitleFont
         $0.textColor = .systemGray3
+        $0.isSkeletonable = true
+        $0.isHiddenWhenSkeletonIsActive = true
     }
     
     let urlTextView = UITextView().then {
@@ -73,6 +81,10 @@ class AddBookmarkView: UIView {
         $0.isScrollEnabled = true
         $0.keyboardType = .URL
         $0.autocorrectionType = .no
+        $0.isSkeletonable = true
+        $0.skeletonTextLineHeight = .fixed(20)
+        $0.skeletonTextNumberOfLines = 2
+        $0.skeletonPaddingInsets = .init(top: 5, left: 0, bottom: 5, right: 0)
     }
     
     private let button = UIButton(type: .custom).then {
@@ -120,6 +132,8 @@ class AddBookmarkView: UIView {
     deinit {
         AddBookmarkManager.shared.incomingTitle = nil
         AddBookmarkManager.shared.incomingData = nil
+        AddBookmarkManager.shared.incomingFaviconUrl = nil
+        AddBookmarkManager.shared.incomingError = nil
     }
     
     // MARK: - Setup Methods
@@ -130,6 +144,8 @@ class AddBookmarkView: UIView {
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         nameTextView.delegate = self
         urlTextView.delegate = self
+        
+        isSkeletonable = true
     }
     
     private func setupHierarchy() {

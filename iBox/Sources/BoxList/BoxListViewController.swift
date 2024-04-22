@@ -7,12 +7,18 @@
 
 import UIKit
 
+import SkeletonView
+
 class BoxListViewController: BaseViewController<BoxListView>, BaseViewControllerProtocol {
     
     var shouldPresentModalAutomatically: Bool = false {
         didSet {
             if shouldPresentModalAutomatically {
-                if findAddBookmarkViewController() == false {
+                if let vc = findAddBookmarkViewController() {
+                    if vc.presentedViewController is UIAlertController {
+                        vc.dismiss(animated: false)
+                    }
+                } else {
                     dismiss(animated: false)
                     self.addButtonTapped()
                 }
