@@ -53,7 +53,6 @@ extension WebViewController: WebViewDelegate {
                 AddBookmarkManager.shared.navigateToAddBookmarkView(from: iBoxUrl, in: tabBarController)
             }
         }
-        
     }
     
 }

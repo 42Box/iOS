@@ -67,7 +67,7 @@ class ShareExtensionBackGroundView: UIView {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "arrow.up.forward.square"), for: .normal)
         button.setTitle("앱으로 담아가기", for: .normal)
-        button.setTitleColor(.black, for: .normal)
+        button.setTitleColor(.label, for: .normal)
         button.setBackgroundColor(.clear, for: .normal)
         
         button.setTitle("앱이 실행됩니다", for: .highlighted)
