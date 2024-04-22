@@ -13,6 +13,8 @@ import SnapKit
 class WebView: UIView {
     
     var delegate: WebViewDelegate?
+    var errorDelegate: WebViewErrorDelegate?
+    var lastRequestedURL: URL?
     
     private var progressObserver: NSKeyValueObservation?
     
@@ -26,7 +28,7 @@ class WebView: UIView {
     private var isActive = false
     
     // MARK: - UI Components
-
+    
     
     private let webView:WKWebView
     
@@ -164,6 +166,10 @@ extension WebView: WKNavigationDelegate {
     }
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        
+        // 마지막으로 시도한 navigation url
+        lastRequestedURL = navigationAction.request.url
+        
         // "새 창으로 열기" 링크 WebView 내에서 열기
         if navigationAction.targetFrame == nil {
             webView.load(navigationAction.request)
@@ -171,6 +177,24 @@ extension WebView: WKNavigationDelegate {
         decisionHandler(.allow)
     }
     
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        // 초기 로드시 에러 발생
+        errorDelegate?.webView(self, didFailWithError: error, url: selectedWebsite)
+    }
+    
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        // 네비게이션 중 에러 발생 시
+        if let lastURL = lastRequestedURL {
+            errorDelegate?.webView(self, didFailWithError: error, url: lastURL)
+        } else {
+            // lastRequestedURL이 nil인 경우 대비
+            errorDelegate?.webView(self, didFailWithError: error, url: nil)
+        }
+    }
+    
+    func retryLoading() {
+        webView.reload()
+    }
 }
 
 extension WebView: UIScrollViewDelegate {

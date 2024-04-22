@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import WebKit
 
 protocol WebViewDelegate {
     func pushAddBookMarkViewController(url: URL)
@@ -13,6 +14,7 @@ protocol WebViewDelegate {
 
 class WebViewController: BaseViewController<WebView>, BaseViewControllerProtocol {
     
+    var errorViewController: ErrorPageViewController?
     var delegate: AddBookmarkViewControllerProtocol?
     var selectedWebsite: URL?
 
@@ -22,11 +24,8 @@ class WebViewController: BaseViewController<WebView>, BaseViewControllerProtocol
         super.viewDidLoad()
         
         setupNavigationBar()
-        view.backgroundColor = .backgroundColor
-        
-        guard let contentView = contentView as? WebView else { return }
-        contentView.delegate = self
-        contentView.selectedWebsite = selectedWebsite
+        setupView()
+        setupDelegate()
     }
     
     override func viewDidLayoutSubviews() {
@@ -40,7 +39,20 @@ class WebViewController: BaseViewController<WebView>, BaseViewControllerProtocol
     func setupNavigationBar() {
         setNavigationBarHidden(true)
     }
+    
+    func setupDelegate() {
+        guard let contentView = contentView as? WebView else { return }
+        contentView.delegate = self
+        contentView.selectedWebsite = selectedWebsite
 
+        errorViewController = ErrorPageViewController(webView: contentView)
+        contentView.errorDelegate = errorViewController
+        errorViewController?.delegate = self
+    }
+    
+    func setupView() {
+        view.backgroundColor = .backgroundColor
+    }
 }
 
 extension WebViewController: WebViewDelegate {
@@ -54,5 +66,10 @@ extension WebViewController: WebViewDelegate {
             }
         }
     }
-    
+}
+
+extension WebViewController: ErrorPageControllerDelegate {
+    func presentErrorPage(_ errorPage: ErrorPageViewController) {
+        self.present(errorPage, animated: true, completion: nil)
+    }
 }
