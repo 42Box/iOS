@@ -84,7 +84,10 @@ class AddBookmarkManager {
         if urlString.hasPrefix("http://") {
             update(with: (nil, urlString, nil))
         } else {
-            guard let url = URL(string: urlString) else { return }
+            guard let url = URL(string: urlString) else { 
+                isFetching = false
+                return
+            }
             fetchWebsiteDetails(from: url)
         }
         
