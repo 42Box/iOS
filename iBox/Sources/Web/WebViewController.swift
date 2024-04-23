@@ -13,7 +13,8 @@ protocol WebViewDelegate {
 }
 
 class WebViewController: BaseViewController<WebView>, BaseViewControllerProtocol {
-    
+    var id: UUID?
+    var slideInPresentationManager = SlideInPresentationManager()
     var errorViewController: ErrorPageViewController?
     var delegate: AddBookmarkViewControllerProtocol?
     var selectedWebsite: URL?
@@ -33,6 +34,21 @@ class WebViewController: BaseViewController<WebView>, BaseViewControllerProtocol
         guard let contentView = contentView as? WebView else { return }
         contentView.setupRefreshControl()
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        if ((isMovingFromParent || isBeingDismissed) && AppStateManager.shared.currentViewErrorState != .normal){
+            if let id = self.id {
+                WebCacheManager.shared.removeViewControllerForKey(id)
+            }
+        }
+    }
+    
+    deinit {
+        AppStateManager.shared.currentViewErrorState = .normal
+    }
+    
     
     // MARK: - BaseViewControllerProtocol
     
@@ -71,5 +87,13 @@ extension WebViewController: WebViewDelegate {
 extension WebViewController: ErrorPageControllerDelegate {
     func presentErrorPage(_ errorPage: ErrorPageViewController) {
         self.present(errorPage, animated: true, completion: nil)
+    }
+    
+    func backButton() {
+        if let navController = navigationController {
+            navController.popViewController(animated: true)
+        } else {
+            dismiss(animated: true)
+        }
     }
 }
