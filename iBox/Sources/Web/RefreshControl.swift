@@ -78,7 +78,6 @@ class RefreshControl: UIView {
     
     private func setupProperty() {
         backgroundColor = .backgroundColor
-        translatesAutoresizingMaskIntoConstraints = false 
         isUserInteractionEnabled = true
     }
     
