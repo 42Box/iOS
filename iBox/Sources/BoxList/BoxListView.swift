@@ -392,6 +392,7 @@ extension BoxListView: UITableViewDelegate {
                 let viewController = WebViewController()
                 viewController.selectedWebsite = url
                 viewController.title = name
+                viewController.id = id
                 WebCacheManager.shared.cacheData(forKey: id, viewController: viewController)
                 previewViewController = viewController
             }
