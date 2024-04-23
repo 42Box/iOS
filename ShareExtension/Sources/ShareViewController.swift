@@ -78,15 +78,13 @@ class CustomShareViewController: UIViewController {
         
         if let item = extensionContext?.inputItems.first as? NSExtensionItem {
             for attachment in item.attachments ?? [] {
-                if let itemProvider = attachment as? NSItemProvider {
-                    if itemProvider.hasItemConformingToTypeIdentifier("public.plain-text") {
-                        itemProvider.loadItem(forTypeIdentifier: "public.plain-text", options: nil) { (data, error) in
-                            DispatchQueue.main.async {
-                                if let text = data as? String {
-                                    self.extractURL(fromText: text)
-                                } else {
-                                    print("Error loading text: \(String(describing: error))")
-                                }
+                if attachment.hasItemConformingToTypeIdentifier("public.plain-text") {
+                    attachment.loadItem(forTypeIdentifier: "public.plain-text", options: nil) { (data, error) in
+                        DispatchQueue.main.async {
+                            if let text = data as? String {
+                                self.extractURL(fromText: text)
+                            } else {
+                                print("Error loading text: \(String(describing: error))")
                             }
                         }
                     }
