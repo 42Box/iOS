@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         versioningHandler.checkAppVersion { result in
-            AppStateManager.shared.isVersionCheckCompleted = result
+            AppStateManager.shared.versionCheckCompleted = result
         }
         
         return true

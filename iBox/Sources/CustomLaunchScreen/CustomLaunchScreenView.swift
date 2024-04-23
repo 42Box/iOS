@@ -63,7 +63,7 @@ class CustomLaunchScreenView: UIView {
         timer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true) { [weak self] timer in
             guard let self = self else { return }
             
-            let state = AppStateManager.shared.isVersionCheckCompleted
+            let state = AppStateManager.shared.versionCheckCompleted
             if state == .success || state == .later || state == .maxRetryReached {
                 timer.invalidate()
                 self.timer = nil
