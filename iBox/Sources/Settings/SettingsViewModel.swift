@@ -13,7 +13,6 @@ class SettingsViewModel {
     enum Input {
         case viewWillAppear
         case setHaptics(_ isOn: Bool)
-        case setPreload(_ isOn: Bool)
     }
     
     enum Output {
@@ -36,8 +35,6 @@ class SettingsViewModel {
                 self?.output.send(.updateSectionViewModels)
             case let .setHaptics(isOn):
                 UserDefaultsManager.isHaptics = isOn
-            case let .setPreload(isOn):
-                UserDefaultsManager.isPreload = isOn
             }
         }.store(in: &cancellables)
         return output.eraseToAnyPublisher()
@@ -47,8 +44,7 @@ class SettingsViewModel {
         sectionViewModels.append(SettingsSectionViewModel(cellViewModels: [
             SettingsCellViewModel(SettingsItem(type: .theme, description: UserDefaultsManager.theme.toString())),
             SettingsCellViewModel(SettingsItem(type: .homeTab, description: HomeTabType.allCases[UserDefaultsManager.homeTabIndex].toString())),
-            SettingsCellViewModel(SettingsItem(type: .haptics, flag: UserDefaultsManager.isHaptics)),
-            SettingsCellViewModel(SettingsItem(type: .preload, flag: UserDefaultsManager.isPreload))
+            SettingsCellViewModel(SettingsItem(type: .haptics, flag: UserDefaultsManager.isHaptics))
         ]))
         sectionViewModels.append(SettingsSectionViewModel(cellViewModels: [
             SettingsCellViewModel(SettingsItem(type: .reset)),

@@ -12,12 +12,14 @@ import SnapKit
 
 class FavoriteView: UIView {
     
-    lazy var webView = {
-        if WebViewPreloader.shared.getFavoriteView() == nil {
-            loadFavoriteWeb()
-        }
-        return WebViewPreloader.shared.getFavoriteView()
-    }()
+    var webView: WebView?
+    
+//    lazy var webView = {
+//        if WebViewPreloader.shared.getFavoriteView() == nil {
+//            loadFavoriteWeb()
+//        }
+//        return WebViewPreloader.shared.getFavoriteView()
+//    }()
     
     // MARK: - Initializer
     
@@ -41,6 +43,9 @@ class FavoriteView: UIView {
     
     private func setupProperty() {
         backgroundColor = .backgroundColor
+        
+        loadFavoriteWeb()
+        webView = WebViewPreloader.shared.getFavoriteView()
     }
     
     private func setupHierarchy() {

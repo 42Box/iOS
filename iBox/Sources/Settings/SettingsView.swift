@@ -74,11 +74,6 @@ final class SettingsView: UIView {
         viewModel.input.send(.setHaptics(controlSwitch.isOn))
     }
     
-    @objc private func handlePreloadSwitchTap(_ controlSwitch: UISwitch) {
-        guard let viewModel = viewModel else { return }
-        viewModel.input.send(.setPreload(controlSwitch.isOn))
-    }
-    
 }
 
 extension SettingsView: UITableViewDelegate {
@@ -105,7 +100,7 @@ extension SettingsView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let viewModel = viewModel else { return }
         let settingsItem = viewModel.sectionViewModels[indexPath.section].cellViewModels[indexPath.row].settingsItem
-        if (settingsItem.type != SettingsType.haptics && settingsItem.type != SettingsType.preload) {
+        if (settingsItem.type != SettingsType.haptics) {
             delegate?.pushViewController(settingsItem.type)
         }
     }
@@ -129,9 +124,6 @@ extension SettingsView: UITableViewDataSource {
         if settingsType == .haptics {
             cell.switchControl.removeTarget(nil, action: nil, for: .valueChanged)
             cell.switchControl.addTarget(self, action: #selector(handleHapticsSwitchTap), for: .valueChanged)
-        } else if settingsType == .preload {
-            cell.switchControl.removeTarget(nil, action: nil, for: .valueChanged)
-            cell.switchControl.addTarget(self, action: #selector(handlePreloadSwitchTap), for: .valueChanged)
         }
         return cell
     }

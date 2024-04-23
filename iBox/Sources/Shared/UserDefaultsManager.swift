@@ -24,9 +24,6 @@ final class UserDefaultsManager {
     @UserDefaultsData(key: "isHaptics", defaultValue: true)
     static var isHaptics: Bool
     
-    @UserDefaultsData(key: "isPreload", defaultValue: false)
-    static var isPreload: Bool
-    
     @UserDefaultsData(key: "selectedFolderId", defaultValue: nil)
     static var selectedFolderId: UUID?
 

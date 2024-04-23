@@ -5,20 +5,16 @@
 //  Created by 김찬희 on 2023/12/21.
 //
 
-import UIKit
 import CoreData
+import UIKit
+import WebKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     let versioningHandler: VersioningHandler = VersioningHandler()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
-        if UserDefaultsManager.isPreload {
-            Task { [weak self] in
-                self?.preloadFavoriteWeb()
-            }
-        }
+        woraroundInitialWebViewDelay()
 
         versioningHandler.checkAppVersion { result in
             AppStateManager.shared.isVersionCheckCompleted = result
@@ -27,16 +23,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-    private func preloadFavoriteWeb() {
-        let favoriteId = UserDefaultsManager.favoriteId
-        var favoriteUrl: URL? = nil
-        if let favoriteId {
-            favoriteUrl = CoreDataManager.shared.getBookmarkUrl(favoriteId)
-            if favoriteUrl == nil {
-                UserDefaultsManager.favoriteId = nil
-            }
-        }
-        WebViewPreloader.shared.preloadFavoriteView(url: favoriteUrl)
+    func woraroundInitialWebViewDelay() {
+        let webView = WKWebView()
+        webView.loadHTMLString("", baseURL: nil)
     }
 
     // MARK: UISceneSession Lifecycle
