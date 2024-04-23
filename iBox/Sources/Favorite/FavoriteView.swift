@@ -14,13 +14,6 @@ class FavoriteView: UIView {
     
     var webView: WebView?
     
-//    lazy var webView = {
-//        if WebViewPreloader.shared.getFavoriteView() == nil {
-//            loadFavoriteWeb()
-//        }
-//        return WebViewPreloader.shared.getFavoriteView()
-//    }()
-    
     // MARK: - Initializer
     
     override init(frame: CGRect) {
