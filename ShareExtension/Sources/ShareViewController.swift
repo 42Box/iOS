@@ -80,11 +80,9 @@ class CustomShareViewController: UIViewController {
             for attachment in item.attachments ?? [] {
                 if let itemProvider = attachment as? NSItemProvider {
                     if itemProvider.hasItemConformingToTypeIdentifier("public.plain-text") {
-                        // 텍스트 데이터 로드
                         itemProvider.loadItem(forTypeIdentifier: "public.plain-text", options: nil) { (data, error) in
                             DispatchQueue.main.async {
                                 if let text = data as? String {
-                                    // 텍스트에서 URL 추출
                                     self.extractURL(fromText: text)
                                 } else {
                                     print("Error loading text: \(String(describing: error))")
