@@ -20,13 +20,7 @@ class FavoriteViewController: BaseViewController<FavoriteView>, BaseViewControll
         guard let contentView = contentView as? FavoriteView else { return }
         contentView.webView?.delegate = self
     }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        guard let contentView = contentView as? FavoriteView else { return }
-        contentView.webView?.setupRefreshControl()
-    }
-    
+     
     // MARK: - BaseViewControllerProtocol
     
     func setupNavigationBar() {
