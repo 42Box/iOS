@@ -66,9 +66,6 @@ class iBoxFactory: ProjectFactory {
                 "NSExtensionActivationRule": [
                     "NSExtensionActivationSupportsWebPageWithMaxCount": 1,
                     "NSExtensionActivationSupportsWebURLWithMaxCount": 1,
-                    "NSExtensionActivationSupportsImageWithMaxCount": 1,
-                    "NSExtensionActivationSupportsMovieWithMaxCount": 1,
-                    "NSExtensionActivationSupportsFileWithMaxCount": 1,
                     "SUBQUERY": [
                         "extensionItems": [
                             "SUBQUERY": [
