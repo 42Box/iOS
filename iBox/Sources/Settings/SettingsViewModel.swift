@@ -52,8 +52,7 @@ class SettingsViewModel {
         ]))
         sectionViewModels.append(SettingsSectionViewModel(cellViewModels: [
             SettingsCellViewModel(SettingsItem(type: .reset)),
-            SettingsCellViewModel(SettingsItem(type: .guide)),
-            SettingsCellViewModel(SettingsItem(type: .feedback))
+            SettingsCellViewModel(SettingsItem(type: .guide))
         ]))
     }
     

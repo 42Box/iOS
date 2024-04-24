@@ -51,9 +51,7 @@ extension SettingsViewController: SettingsViewDelegate {
         case .reset:
             navigationController?.pushViewController(ResetViewController(), animated: true)
         case .guide:
-            print("앱 소개 탭 !")
-        case .feedback:
-            print("앱 피드백 탭 !")
+            navigationController?.pushViewController(GuideViewController(), animated: true)
         default: break
         }
     }

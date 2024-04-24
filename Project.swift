@@ -76,10 +76,10 @@ class iBoxFactory: ProjectFactory {
     func generateTarget() -> [ProjectDescription.Target] {
         let appTarget = Target(
             name: projectName,
-            platform: .iOS,
+            destinations: [.iPhone],
             product: .app,
             bundleId: bundleId,
-            deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
+            deploymentTargets: .iOS(iosVersion),
             infoPlist: .extendingDefault(with: appInfoPlist),
             sources: ["\(projectName)/Sources/**"],
             resources: "\(projectName)/Resources/**",
@@ -88,10 +88,10 @@ class iBoxFactory: ProjectFactory {
         
         let shareExtensionTarget = Target(
             name: "\(projectName)ShareExtension",
-            platform: .iOS,
+            destinations: [.iPhone],
             product: .appExtension,
             bundleId: "\(bundleId).ShareExtension",
-            deploymentTarget: .iOS(targetVersion: iosVersion, devices: [.iphone]),
+            deploymentTargets: .iOS(iosVersion),
             infoPlist: .extendingDefault(with: shareExtensionInfoPlist),
             sources: ["ShareExtension/Sources/**"],
             resources: ["ShareExtension/Resources/**"],

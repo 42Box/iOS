@@ -30,11 +30,11 @@ class WebView: UIView {
     // MARK: - UI Components
     
     
-    private let webView:WKWebView
+    private let webView: WKWebView
     
     private let progressView = UIProgressView().then {
         $0.progressViewStyle = .bar
-        $0.tintColor = .label
+        $0.tintColor = .box2
         $0.sizeToFit()
     }
     
@@ -83,11 +83,15 @@ class WebView: UIView {
     
     private func setupLayout() {
         webView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.top.equalTo(self.safeAreaLayoutGuide.snp.topMargin)
+            make.bottom.equalTo(self.safeAreaLayoutGuide.snp.bottomMargin)
+            make.leading.equalTo(self.safeAreaLayoutGuide.snp.leadingMargin)
+            make.trailing.equalTo(self.safeAreaLayoutGuide.snp.trailingMargin)
         }
         
         progressView.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
+            make.top.equalTo(self.safeAreaLayoutGuide.snp.topMargin)
+            make.leading.trailing.equalToSuperview()
         }
     }
     
