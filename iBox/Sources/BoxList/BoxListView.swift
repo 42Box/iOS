@@ -378,30 +378,38 @@ extension BoxListView: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         let configuration = UIContextMenuConfiguration(identifier: indexPath as NSIndexPath, previewProvider: { [weak self] () -> UIViewController? in
-            guard let self = self, let cellViewModel = self.viewModel?.boxList[indexPath.section].boxListCellViewModelsWithStatus[indexPath.row] else { return nil }
-            
-            let id = cellViewModel.id
-            let url = cellViewModel.url
-            let name = cellViewModel.name
-            
-            let previewViewController: UIViewController
-            
-            if let cachedViewController = WebCacheManager.shared.viewControllerForKey(id) {
-                previewViewController = cachedViewController
-            } else {
-                let viewController = WebViewController()
-                viewController.selectedWebsite = url
-                viewController.title = name
-                viewController.id = id
-                WebCacheManager.shared.cacheData(forKey: id, viewController: viewController)
-                previewViewController = viewController
-            }
-            
-            return previewViewController
+            guard let self = self else { return nil }
+            return self.createOrRetrievePreviewController(for: indexPath)
         }, actionProvider: { suggestedActions in
             return self.makeContextMenu(for: indexPath)
         })
         return configuration
+    }
+    
+    private func createOrRetrievePreviewController(for indexPath: IndexPath) -> UIViewController? {
+        guard let cellViewModel = self.viewModel?.boxList[indexPath.section].boxListCellViewModelsWithStatus[indexPath.row] else { return nil }
+        let id = cellViewModel.id
+        let cachedViewController = WebCacheManager.shared.viewControllerForKey(id)
+
+        if let cachedViewController = cachedViewController, cachedViewController.errorViewController?.isHandlingError == nil {
+            return cachedViewController
+        }
+
+        if cachedViewController?.errorViewController?.isHandlingError ?? false {
+            WebCacheManager.shared.removeViewControllerForKey(id)
+        }
+
+        let newViewController = createWebViewController(with: cellViewModel)
+        WebCacheManager.shared.cacheData(forKey: id, viewController: newViewController)
+        return newViewController
+    }
+
+    private func createWebViewController(with viewModel: BoxListCellViewModel) -> WebViewController {
+        let viewController = WebViewController()
+        viewController.selectedWebsite = viewModel.url
+        viewController.title = viewModel.name
+        viewController.id = viewModel.id
+        return viewController
     }
     
     func tableView(_ tableView: UITableView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {

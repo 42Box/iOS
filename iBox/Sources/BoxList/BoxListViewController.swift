@@ -43,6 +43,19 @@ class BoxListViewController: BaseViewController<BoxListView>, BaseViewController
         contentView.viewModel?.input.send(.viewWillAppear)
     }
     
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate(alongsideTransition: nil) { _ in
+            self.dismissPreviewIfNeeded()
+        }
+    }
+    
+    func dismissPreviewIfNeeded() {
+        if let previewVC = self.presentedViewController as? WebViewController {
+            previewVC.dismiss(animated: true, completion: nil)
+        }
+    }
+    
     // MARK: - BaseViewControllerProtocol
     
     func setupNavigationBar() {
@@ -205,21 +218,33 @@ extension BoxListViewController: BoxListViewDelegate {
         self.present(controller, animated: true)
     }
     
-    
     func didSelectWeb(id: UUID, at url: URL, withName name: String) {
-        if let cachedViewController = WebCacheManager.shared.viewControllerForKey(id) {
-            // 이미 캐시에 존재한다면, 그 인스턴스를 재사용
-            navigationController?.pushViewController(cachedViewController, animated: true)
-        } else {
-            // 캐시에 없는 경우, 새로운 viewController 인스턴스를 생성하고 캐시에 추가합니다.
-            let viewController = WebViewController()
-            viewController.delegate = self
-            viewController.selectedWebsite = url
-            viewController.title = name
-            viewController.id = id
-            WebCacheManager.shared.cacheData(forKey: id, viewController: viewController)
-            navigationController?.pushViewController(viewController, animated: true)
+        let viewController = getOrCreateWebViewController(id: id, url: url, name: name)
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    private func getOrCreateWebViewController(id: UUID, url: URL, name: String) -> WebViewController {
+        let cachedViewController = WebCacheManager.shared.viewControllerForKey(id)
+        
+        if let cachedViewController = cachedViewController, cachedViewController.errorViewController?.isHandlingError == nil {
+            return cachedViewController
         }
+        
+        if cachedViewController?.errorViewController?.isHandlingError ?? false {
+            WebCacheManager.shared.removeViewControllerForKey(id)
+        }
+        
+        return createAndCacheWebViewController(id: id, url: url, name: name)
+    }
+    
+    private func createAndCacheWebViewController(id: UUID, url: URL, name: String) -> WebViewController {
+        let viewController = WebViewController()
+        viewController.delegate = self
+        viewController.selectedWebsite = url
+        viewController.title = name
+        viewController.id = id
+        WebCacheManager.shared.cacheData(forKey: id, viewController: viewController)
+        return viewController
     }
     
     func pushViewController(type: EditType) {
