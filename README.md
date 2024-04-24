@@ -80,6 +80,6 @@
    
 | [jikoo](https://github.com/noeyiz) | [chanheki](https://github.com/chanhihi) | [jihyeole](https://github.com/JH713) | [jonchoi](https://github.com/jonnwon) |
 |:---:|:---:|:---:|:---:|
-|<img width="89" alt="image" src="https://github.com/42Box/iOS/assets/116494364/e803a39e-8317-4606-813f-94305ea4f1bb">|<img width="88" alt="image" src="https://github.com/42Box/iOS/assets/116494364/abbe0aab-ff8f-414c-8a05-542e7ad1b0b1">|<img width="89" alt="image" src="https://github.com/42Box/iOS/assets/116494364/58179302-cd28-4b97-b106-7fca76a55eb1">|<img width="89" alt="image" src="https://github.com/42Box/iOS/assets/116494364/884cde0b-3248-4a35-8aa5-cb1eacacaf74">|
+|<img width="89" alt="image" src="https://github.com/42Box/iOS/assets/116494364/e803a39e-8317-4606-813f-94305ea4f1bb">|<img width="89" alt="image" src="https://github.com/42Box/iOS/assets/116494364/abbe0aab-ff8f-414c-8a05-542e7ad1b0b1">|<img width="89" alt="image" src="https://github.com/42Box/iOS/assets/86519350/c93e2f11-6b46-4d1e-8f00-80f5c7d657f8">|<img width="89" alt="image" src="https://github.com/42Box/iOS/assets/116494364/884cde0b-3248-4a35-8aa5-cb1eacacaf74">|
 
 </div>
