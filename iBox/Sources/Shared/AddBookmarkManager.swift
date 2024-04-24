@@ -74,13 +74,22 @@ class AddBookmarkManager {
     
     func navigateToAddBookmarkView(from url: URL, in tabBarController: UITabBarController) {
         guard url.scheme == "iBox", let urlString = extractDataParameter(from: url) else { return }
-        guard let url = URL(string: urlString) else { return }
         
         incomingTitle = nil
         incomingData = nil
         incomingFaviconUrl = nil
         isFetching = true
-        fetchWebsiteDetails(from: url)
+        
+        
+        if urlString.hasPrefix("http://") {
+            update(with: (nil, urlString, nil))
+        } else {
+            guard let url = URL(string: urlString) else { 
+                isFetching = false
+                return
+            }
+            fetchWebsiteDetails(from: url)
+        }
         
         tabBarController.selectedIndex = 0
         
