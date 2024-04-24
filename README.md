@@ -1,5 +1,5 @@
 <div>
-    <img src="https://github.com/42Box/iOS/assets/116494364/ab0a2abc-f065-4d5f-b33e-b114979011cf" width="1108" height="400" alt="Fox">
+    <img src="https://github.com/42Box/iOS/assets/116494364/ab0a2abc-f065-4d5f-b33e-b114979011cf" alt="Fox">
 </div>
 
 
