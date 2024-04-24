@@ -12,40 +12,48 @@ import SnapKit
 class ErrorPageView: UIView {
     private var imageViews: [UIImageView] = []
     private let images = ["fox_page0", "fox_page1", "fox_page2", "fox_page3", "fox_page4"]
-    private var timer: Timer?
+    var timer: Timer?
     
     private let backPannelView = UIView().then {
         $0.backgroundColor = .backgroundColor
-        $0.layer.cornerRadius = 20
-        $0.clipsToBounds = true
     }
     
     private let messageLabel = UILabel().then {
         $0.textAlignment = .center
         $0.numberOfLines = 0
+        $0.lineBreakMode = .byTruncatingTail
     }
     
-    private let backButton = UIButton().then {
+    private let problemLabel = UILabel().then {
+        $0.textAlignment = .center
+        $0.numberOfLines = 0
+        $0.text = "해당 주소에서 문제가 발생했습니다."
+    }
+    
+    let backButton = UIButton().then {
         $0.setTitle("나가기", for: .normal)
         $0.backgroundColor = .box2
         $0.setTitleColor(.white, for: .normal)
         $0.layer.cornerRadius = 10
+        $0.addAnimationForStateChange(from: .box, to: .box2)
     }
     
-    private let retryButton = UIButton().then {
+    let retryButton = UIButton().then {
         $0.setTitle("새로고침", for: .normal)
-        $0.backgroundColor = .box2
+        $0.backgroundColor = .systemGray
         $0.setTitleColor(.white, for: .normal)
         $0.layer.cornerRadius = 10
+        $0.addAnimationForStateChange(from: .box, to: .systemGray)
     }
     
-    private let closeButton = UIButton().then {
+    let closeButton = UIButton().then {
         $0.setTitle("닫기", for: .normal)
-        $0.backgroundColor = .box2
+        $0.backgroundColor = .systemGray
         $0.setTitleColor(.white, for: .normal)
         $0.layer.cornerRadius = 10
+        $0.addAnimationForStateChange(from: .box, to: .systemGray)
     }
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupProperty()
@@ -55,21 +63,35 @@ class ErrorPageView: UIView {
         changeImages()
     }
     
+    override func willMove(toSuperview newSuperview: UIView?) {
+        super.willMove(toSuperview: newSuperview)
+        
+        if newSuperview == nil {
+            timer?.invalidate()
+            timer = nil
+        }
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        backPannelView.roundCorners([.bottomLeft, .bottomRight], radius: 20)
+    }
+    
     private func setupProperty() {
-        backgroundColor = .clear
-        
         changeImages()
     }
     
     private func setupHierarchy() {
-        addSubview(messageLabel)
-        addSubview(retryButton)
-        addSubview(closeButton)
-        addSubview(backButton)
+        addSubview(backPannelView)
+        backPannelView.addSubview(retryButton)
+        backPannelView.addSubview(closeButton)
+        backPannelView.addSubview(backButton)
+        backPannelView.addSubview(problemLabel)
+        backPannelView.addSubview(messageLabel)
     }
     
     private func setupAnimation() {
@@ -85,47 +107,60 @@ class ErrorPageView: UIView {
     
     private func setupLayout() {
         
-        imageViews.forEach { imageView in
-            imageView.snp.makeConstraints { make in
-                make.centerX.equalToSuperview()
-                make.top.equalToSuperview().offset(UIScreen.main.bounds.height * 0.3)
-                make.leading.greaterThanOrEqualToSuperview().offset(20)
-                make.trailing.lessThanOrEqualToSuperview().offset(-20)
-                make.width.height.equalTo(32)
-            }
+        backPannelView.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.trailing.leading.equalToSuperview().inset(20)
+            make.height.equalToSuperview().multipliedBy(0.5)
         }
         
-        messageLabel.snp.makeConstraints { make in
-            make.top.equalTo(imageViews[0].snp.bottom).offset(20)
-            make.centerX.equalToSuperview()
-            make.leading.greaterThanOrEqualToSuperview().offset(20)
-            make.trailing.lessThanOrEqualToSuperview().offset(-20)
-        }
-
         retryButton.snp.makeConstraints { make in
-            make.top.equalTo(messageLabel.snp.bottom).offset(20)
+            make.bottom.equalToSuperview().inset(10)
             make.centerX.equalToSuperview()
             make.width.equalTo(100)
             make.height.equalTo(44)
         }
-
+        
         closeButton.snp.makeConstraints { make in
             make.leading.equalTo(retryButton.snp.trailing).offset(20)
             make.centerY.equalTo(retryButton.snp.centerY)
             make.width.equalTo(100)
             make.height.equalTo(44)
         }
-
+        
         backButton.snp.makeConstraints { make in
             make.trailing.equalTo(retryButton.snp.leading).offset(-20)
             make.centerY.equalTo(retryButton.snp.centerY)
             make.width.equalTo(100)
             make.height.equalTo(44)
         }
+        
+        problemLabel.snp.makeConstraints { make in
+            make.bottom.equalTo(retryButton.snp.top).offset(-10)
+            make.leading.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview().offset(-20)
+        }
+        
+        messageLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(problemLabel.snp.top).offset(-10)
+            make.leading.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview().offset(-20)
+        }
+        
+        imageViews.forEach { imageView in
+            imageView.snp.makeConstraints { make in
+                make.centerX.equalToSuperview()
+                make.top.equalTo(safeAreaLayoutGuide).offset(10)
+                make.bottom.equalTo(messageLabel.snp.top).offset(-10)
+                make.leading.greaterThanOrEqualToSuperview().offset(20)
+                make.trailing.lessThanOrEqualToSuperview().offset(-20)
+                make.width.height.equalTo(32)
+            }
+        }
     }
     
     func configure(with error: Error, url: String) {
-        messageLabel.text = "\(url)\n해당 주소에서 문제가 발생했습니다."
+        messageLabel.text = "\(url)"
         print(error.localizedDescription)
     }
     
@@ -133,7 +168,10 @@ class ErrorPageView: UIView {
         var currentIndex = 0
         
         timer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true) { [weak self] timer in
-            guard let self = self else { return }
+            guard let self = self else {
+                timer.invalidate()
+                return
+            }
             
             let state = AppStateManager.shared.currentViewErrorState
             
