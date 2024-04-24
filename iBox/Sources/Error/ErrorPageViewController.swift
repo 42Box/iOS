@@ -20,6 +20,7 @@ protocol WebViewErrorDelegate {
 class ErrorPageViewController: UIViewController {
     weak var delegate: ErrorPageControllerDelegate?
     var webView: WebView?
+    var isHandlingError = false
     
     let slideInPresentationManager = SlideInPresentationManager()
     
@@ -40,6 +41,10 @@ class ErrorPageViewController: UIViewController {
         super.viewDidLoad()
         setupProperty()
         setupPresentation()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        resetErrorHandling()
     }
     
     private func setupProperty() {
@@ -75,11 +80,23 @@ class ErrorPageViewController: UIViewController {
         }
     }
 
-    
     func handleError(_ error: Error, _ url: URL?) {
-        configureWithError(error, url: url?.absoluteString ?? "")
+        guard !isHandlingError else { return }
+        isHandlingError = true
         
-        self.delegate?.presentErrorPage(self)
+        if presentedViewController != nil {
+            dismiss(animated: true) {
+                self.configureWithError(error, url: url?.absoluteString ?? "")
+                self.delegate?.presentErrorPage(self)
+            }
+        } else {
+            configureWithError(error, url: url?.absoluteString ?? "")
+            delegate?.presentErrorPage(self)
+        }
+    }
+
+    func resetErrorHandling() {
+        isHandlingError = false
     }
     
     private func convertErrorToViewErrorCode(_ error: Error) -> ViewErrorCode {
@@ -128,7 +145,7 @@ class ErrorPageViewController: UIViewController {
 extension ErrorPageViewController: WebViewErrorDelegate {
     
     func webView(_ webView: WebView, didFailWithError error: Error, url: URL?) {
-        handleError(error, url)
+            handleError(error, url)
         
         let viewErrorCode = convertErrorToViewErrorCode(error)
         handleViewError(viewErrorCode)
