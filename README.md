@@ -66,7 +66,7 @@
 * UIKit
 * Tuist
 * Combine
-* URLSession
+* MVVM
 * Webkit
 * ShareExtension
 
@@ -83,10 +83,18 @@
 
 # 👩🏻‍💻🧑🏻‍💻 Contributor
 
-<div align="left">
-   
-| [jikoo](https://github.com/noeyiz) | [chanheki](https://github.com/chanhihi) | [jihyeole](https://github.com/JH713) | [jonchoi](https://github.com/jonnwon) |
-|:---:|:---:|:---:|:---:|
-|<img width="89" alt="image" src="https://avatars.githubusercontent.com/u/116897060?v=4?s=100">|<img width="89" alt="image" src="https://github.com/42Box/iOS/assets/116494364/abbe0aab-ff8f-414c-8a05-542e7ad1b0b1">|<img width="89" alt="image" src="https://github.com/42Box/iOS/assets/86519350/c93e2f11-6b46-4d1e-8f00-80f5c7d657f8">|<img width="89" alt="image" src="https://github.com/42Box/iOS/assets/116494364/884cde0b-3248-4a35-8aa5-cb1eacacaf74">|
+<table>
+  <tr>
+    <th>구지연</th> 
+    <th>김찬희</th> 
+    <th>이지현</th> 
+    <th>최종원</th> 
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/noeyiz"><img src="https://avatars.githubusercontent.com/u/116897060?v=4?s=100" height="100px;" alt=""/><br /><sub><b>jikoo</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/chanhihi"><img src="https://github.com/42Box/iOS/assets/116494364/abbe0aab-ff8f-414c-8a05-542e7ad1b0b1" height="100px;" alt=""/><br /><sub><b>chanheki</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/JH713"><img src="https://github.com/42Box/iOS/assets/86519350/c93e2f11-6b46-4d1e-8f00-80f5c7d657f8" height="100px;" alt=""/><br /><sub><b>jihyeole</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/jonnwon"><img src="https://github.com/42Box/iOS/assets/116494364/884cde0b-3248-4a35-8aa5-cb1eacacaf74" height="100px;" alt=""/><br /><sub><b>jonchoi</b></sub></a><br /></td>
+  </tr>
 
-</div>
+</table>
