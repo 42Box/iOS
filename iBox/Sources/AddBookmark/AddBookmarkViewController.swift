@@ -175,7 +175,10 @@ final class AddBookmarkViewController: UIViewController {
             urlString = "https://" + urlString
         }
         
-        guard let encodedUrlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+        var allowedCharacters = CharacterSet.urlQueryAllowed
+        allowedCharacters.insert("#")
+        
+        guard let encodedUrlString = urlString.addingPercentEncoding(withAllowedCharacters: allowedCharacters),
               let url = URL(string: encodedUrlString) else {
             print("Invalid URL format")
             return
