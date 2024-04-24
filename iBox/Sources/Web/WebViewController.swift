@@ -47,8 +47,8 @@ class WebViewController: BaseViewController<WebView>, BaseViewControllerProtocol
     
     deinit {
         AppStateManager.shared.currentViewErrorState = .normal
+        errorViewController = nil
     }
-    
     
     // MARK: - BaseViewControllerProtocol
     
