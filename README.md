@@ -1,22 +1,16 @@
 <div>
-    <img src="https://user-images.githubusercontent.com/67938113/226243235-89eb97f2-c48f-4db9-bf34-c38231ed37eb.png" width="400" height="200" alt="Fox">
+    <img src="https://github.com/42Box/iOS/assets/116494364/ab0a2abc-f065-4d5f-b33e-b114979011cf" width="1108" height="400" alt="Fox">
 </div>
 
 
-
-<div>
-    <h1><img src="https://github.com/42Box/iOS/assets/116494364/34d98a09-dd52-47da-9f80-954222f828c8" width="30" height="30" alt="appicon">42Box</h1>
-</div>
-
-### The collection of all the sites you need.
 [<img width="180" alt="appstore" src="https://user-images.githubusercontent.com/55099365/196023806-5eb7be0f-c7cf-4661-bb39-35a15146c33a.png">](https://apps.apple.com)
 
 
 # ✨ Introduction
- 안녕하세요 :) 42Box ios 팀입니다.<br/><br/>
- 42Box는 웹 링크를 쉽게 관리하고 저장할 수 있는 사용자 친화적인 iOS 앱을 만들겠다는 단순한 아이디어에서 시작되었습니다.<br/><br/>
- 여러 웹 링크를 쉽게 저장하고 깔끔하게 정리하여 쉽게 접근할 수 있게 해줍니다.<br/><br/>
-서비스를 원활하게 이용하실 수 있도록 핵심 기능을 소개합니다. 👋👋👋 <br/><br/>
+ 안녕하세요 :) 42Box iOS 팀입니다.<br/>
+ 42Box는 웹 링크를 쉽게 관리하고 저장할 수 있는 사용자 친화적인 iOS 앱을 만들겠다는 단순한 아이디어에서 시작되었습니다.<br/>
+ 여러 웹 링크를 쉽게 저장하고 깔끔하게 정리하여 쉽게 접근할 수 있게 해줍니다.<br/>
+ 서비스를 원활하게 이용하실 수 있도록 핵심 기능을 소개합니다. 👋👋👋 <br/>
 
 ### ⭐️ Key Function
 1. 42폴더
@@ -47,7 +41,7 @@
 
    > 다크 모드 또는 라이트 모드와 같은 테마를 설정하고 다른 설정을 통해 앱 경험을 사용자 정의하세요.
 
-### 📷 스크린샷
+### 📷 ScreenShot
 
 | 폴더추가 | 공유 | 제스처 |
 |:---:|:---:|:---:|
@@ -72,7 +66,7 @@
 * ShareExtension
 
 
-  ### 🎁 Library
+### 🎁 Library
 | Name              |Version |
 | ----------------- | ------ |
 | SnapKit           | `5.0.1`|
