@@ -71,7 +71,26 @@ class CustomShareViewController: UIViewController {
     }
     
     func extractSharedURL() {
-        guard let extensionItem = extensionContext?.inputItems.first as? NSExtensionItem else { return }
+        guard let extensionItem = extensionContext?.inputItems.first as? NSExtensionItem else {
+            print("No extension items found.")
+            return
+        }
+        
+        if let item = extensionContext?.inputItems.first as? NSExtensionItem {
+            for attachment in item.attachments ?? [] {
+                if attachment.hasItemConformingToTypeIdentifier("public.plain-text") {
+                    attachment.loadItem(forTypeIdentifier: "public.plain-text", options: nil) { (data, error) in
+                        DispatchQueue.main.async {
+                            if let text = data as? String {
+                                self.extractURL(fromText: text)
+                            } else {
+                                print("Error loading text: \(String(describing: error))")
+                            }
+                        }
+                    }
+                }
+            }
+        }
         
         for attachment in extensionItem.attachments ?? [] {
             if attachment.hasItemConformingToTypeIdentifier(UTType.url.identifier) {
@@ -86,7 +105,21 @@ class CustomShareViewController: UIViewController {
                     }
                 }
                 break
+            } else {
+                print("Attachment does not conform to URL type.")
             }
+        }
+    }
+    
+    private func extractURL(fromText text: String) {
+        let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+        let matches = detector?.matches(in: text, options: [], range: NSRange(location: 0, length: text.utf8.count))
+        
+        if let firstMatch = matches?.first, let range = Range(firstMatch.range, in: text), let url = URL(string: String(text[range])) {
+            print("Extracted URL: \(url)")
+            self.dataURL = url.absoluteString
+        } else {
+            print("No URL found in text")
         }
     }
     
