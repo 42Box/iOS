@@ -75,6 +75,7 @@ class ResetSuccessView: UIView {
             make.width.height.equalTo(50)
         }
     }
+    
     private func animateView() {
         UIView.animate(withDuration: 0.5, animations: {
             self.alpha = 1.0
