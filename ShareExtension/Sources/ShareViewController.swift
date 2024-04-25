@@ -16,7 +16,7 @@ import SwiftSoup
 class CustomShareViewController: UIViewController {
     
     var dataURL: String?
-    var backgroundView = ShareExtensionBackGroundView()
+    var panelView = ShareExtensionPanelView()
     var modalView: UIView = {
         let modalview = UIView()
         modalview.backgroundColor = UIColor.lightGray.withAlphaComponent(0.1)
@@ -37,12 +37,12 @@ class CustomShareViewController: UIViewController {
     // MARK: - Setup Methods
     
     private func setupProperty() {
-        backgroundView.delegate = self
+        panelView.delegate = self
     }
     
     private func setupHierarchy() {
         view.addSubview(modalView)
-        modalView.addSubview(backgroundView)
+        modalView.addSubview(panelView)
     }
     
     private func setupLayout() {
@@ -50,7 +50,7 @@ class CustomShareViewController: UIViewController {
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
         
-        backgroundView.snp.makeConstraints { make in
+        panelView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(30)
             make.centerY.equalToSuperview().inset(20)
             make.height.equalTo(140)
@@ -148,13 +148,13 @@ class CustomShareViewController: UIViewController {
     
     @objc func handleBackgroundTap(_ sender: UITapGestureRecognizer) {
         let location = sender.location(in: self.view)
-        if !backgroundView.frame.contains(location) {
+        if !panelView.frame.contains(location) {
             cancel()
         }
     }
 }
 
-extension CustomShareViewController: ShareExtensionBackGroundViewDelegate {
+extension CustomShareViewController: ShareExtensionPanelViewDelegate {
     
     func didTapCancel() {
         cancel()

@@ -9,15 +9,15 @@ import UIKit
 
 import SnapKit
 
-protocol ShareExtensionBackGroundViewDelegate: AnyObject {
+protocol ShareExtensionPanelViewDelegate: AnyObject {
     func didTapCancel()
     func didTapOpenApp()
 }
 
-class ShareExtensionBackGroundView: UIView {
+class ShareExtensionPanelView: UIView {
     
     // MARK: - Properties
-    weak var delegate: ShareExtensionBackGroundViewDelegate?
+    weak var delegate: ShareExtensionPanelViewDelegate?
     
     // MARK: - UI Components
     lazy var stackView: UIStackView = {
