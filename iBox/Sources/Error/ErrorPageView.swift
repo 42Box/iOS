@@ -16,42 +16,62 @@ class ErrorPageView: UIView {
     
     private let backPannelView = UIView().then {
         $0.backgroundColor = .backgroundColor
+        $0.clipsToBounds = true
+        $0.layer.cornerRadius = 15
     }
     
-    private let messageLabel = UILabel().then {
+    private let problemUrlLabel = UILabel().then {
+        $0.font = .cellTitleFont
         $0.textAlignment = .center
         $0.numberOfLines = 0
         $0.lineBreakMode = .byTruncatingTail
     }
     
-    private let problemLabel = UILabel().then {
+    private let messageLabel = UILabel().then {
         $0.textAlignment = .center
         $0.numberOfLines = 0
         $0.text = "해당 주소에서 문제가 발생했습니다."
+        $0.font = .boldLabelFont
+    }
+    
+    let closeButton = UIButton().then {
+        $0.configuration = .plain()
+        $0.configuration?.attributedTitle = .init(
+            "닫기",
+            attributes: .init([.font: UIFont.boldLabelFont, .foregroundColor: UIColor.white])
+        )
+        $0.setTitleColor(.white, for: .normal)
+        $0.backgroundColor = .systemGray
+        $0.layer.cornerRadius = 10
+        $0.addAnimationForStateChange(from: .box, to: .systemGray)
+    }
+    
+    let retryButton = UIButton().then {
+        $0.configuration = .plain()
+        $0.configuration?.attributedTitle = .init(
+            "새로고침",
+            attributes: .init([.font: UIFont.boldLabelFont, .foregroundColor: UIColor.white])
+        )
+        $0.setTitleColor(.white, for: .normal)
+        $0.backgroundColor = .systemGray
+        $0.layer.cornerRadius = 10
+        $0.addAnimationForStateChange(from: .box, to: .systemGray)
     }
     
     let backButton = UIButton().then {
-        $0.setTitle("나가기", for: .normal)
+        $0.configuration = .plain()
+        $0.configuration?.attributedTitle = .init(
+            "나가기",
+            attributes: .init([.font: UIFont.boldLabelFont, .foregroundColor: UIColor.white])
+        )
         $0.backgroundColor = .box2
-        $0.setTitleColor(.white, for: .normal)
         $0.layer.cornerRadius = 10
         $0.addAnimationForStateChange(from: .box, to: .box2)
     }
     
-    let retryButton = UIButton().then {
-        $0.setTitle("새로고침", for: .normal)
-        $0.backgroundColor = .systemGray
-        $0.setTitleColor(.white, for: .normal)
-        $0.layer.cornerRadius = 10
-        $0.addAnimationForStateChange(from: .box, to: .systemGray)
-    }
-    
-    let closeButton = UIButton().then {
-        $0.setTitle("닫기", for: .normal)
-        $0.backgroundColor = .systemGray
-        $0.setTitleColor(.white, for: .normal)
-        $0.layer.cornerRadius = 10
-        $0.addAnimationForStateChange(from: .box, to: .systemGray)
+    let stackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.spacing = 20
     }
     
     override init(frame: CGRect) {
@@ -76,22 +96,18 @@ class ErrorPageView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        backPannelView.roundCorners([.bottomLeft, .bottomRight], radius: 20)
-    }
-    
     private func setupProperty() {
         changeImages()
     }
     
     private func setupHierarchy() {
         addSubview(backPannelView)
-        backPannelView.addSubview(retryButton)
-        backPannelView.addSubview(closeButton)
-        backPannelView.addSubview(backButton)
-        backPannelView.addSubview(problemLabel)
         backPannelView.addSubview(messageLabel)
+        backPannelView.addSubview(problemUrlLabel)
+        backPannelView.addSubview(stackView)
+        stackView.addArrangedSubview(backButton)
+        stackView.addArrangedSubview(retryButton)
+        stackView.addArrangedSubview(closeButton)
     }
     
     private func setupAnimation() {
@@ -106,61 +122,44 @@ class ErrorPageView: UIView {
     }
     
     private func setupLayout() {
-        
-        backPannelView.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.trailing.leading.equalToSuperview().inset(20)
-            make.height.equalToSuperview().multipliedBy(0.5)
-        }
-        
-        retryButton.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().inset(10)
-            make.centerX.equalToSuperview()
-            make.width.equalTo(100)
-            make.height.equalTo(44)
-        }
-        
-        closeButton.snp.makeConstraints { make in
-            make.leading.equalTo(retryButton.snp.trailing).offset(20)
-            make.centerY.equalTo(retryButton.snp.centerY)
-            make.width.equalTo(100)
-            make.height.equalTo(44)
-        }
-        
-        backButton.snp.makeConstraints { make in
-            make.trailing.equalTo(retryButton.snp.leading).offset(-20)
-            make.centerY.equalTo(retryButton.snp.centerY)
-            make.width.equalTo(100)
-            make.height.equalTo(44)
-        }
-        
-        problemLabel.snp.makeConstraints { make in
-            make.bottom.equalTo(retryButton.snp.top).offset(-10)
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().offset(-20)
-        }
-        
-        messageLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.bottom.equalTo(problemLabel.snp.top).offset(-10)
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().offset(-20)
-        }
-        
         imageViews.forEach { imageView in
             imageView.snp.makeConstraints { make in
                 make.centerX.equalToSuperview()
-                make.top.equalTo(safeAreaLayoutGuide).offset(10)
-                make.bottom.equalTo(messageLabel.snp.top).offset(-10)
-                make.leading.greaterThanOrEqualToSuperview().offset(20)
-                make.trailing.lessThanOrEqualToSuperview().offset(-20)
-                make.width.height.equalTo(32)
+                make.bottom.equalTo(backPannelView.snp.top).offset(5)
+                make.width.height.equalTo(38)
+            }
+        }
+        
+        backPannelView.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(100)
+            make.trailing.leading.equalToSuperview().inset(20)
+            make.height.equalToSuperview().multipliedBy(0.4)
+        }
+        
+        problemUrlLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(20)
+            make.bottom.equalTo(messageLabel.snp.top).offset(-20)
+            make.leading.trailing.equalToSuperview().inset(20)
+        }
+        
+        messageLabel.snp.makeConstraints { make in
+            make.bottom.equalTo(stackView.snp.top).offset(-20)
+            make.leading.trailing.equalToSuperview().inset(20)
+        }
+        
+        stackView.snp.makeConstraints { make in
+            make.leading.bottom.trailing.equalToSuperview().inset(20)
+        }
+        
+        [backButton, retryButton, closeButton].forEach { button in
+            button.snp.makeConstraints { make in
+                make.height.equalTo(40)
             }
         }
     }
     
     func configure(with error: Error, url: String) {
-        messageLabel.text = "\(url)"
+        problemUrlLabel.text = "\(url)"
         print(error.localizedDescription)
     }
     
