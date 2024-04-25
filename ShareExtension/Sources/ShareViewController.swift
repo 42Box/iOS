@@ -19,7 +19,7 @@ class CustomShareViewController: UIViewController {
     var panelView = ShareExtensionPanelView()
     var modalView: UIView = {
         let modalview = UIView()
-        modalview.backgroundColor = UIColor.lightGray.withAlphaComponent(0.1)
+        modalview.backgroundColor = .clear
         return modalview
     }()
     
