@@ -87,7 +87,7 @@ class iBoxFactory: ProjectFactory {
     func generateTarget() -> [ProjectDescription.Target] {
         let appTarget = Target(
             name: projectName,
-            destinations: [.iPhone],
+            destinations: .iOS,
             product: .app,
             bundleId: bundleId,
             deploymentTargets: .iOS(iosVersion),
@@ -99,7 +99,7 @@ class iBoxFactory: ProjectFactory {
         
         let shareExtensionTarget = Target(
             name: "\(projectName)ShareExtension",
-            destinations: [.iPhone],
+            destinations: .iOS,
             product: .appExtension,
             bundleId: "\(bundleId).ShareExtension",
             deploymentTargets: .iOS(iosVersion),
