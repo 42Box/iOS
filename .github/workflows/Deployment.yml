@@ -1,0 +1,87 @@
+# Author by chanhihi
+# Date 2024.04.26
+
+name: Deployment
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+  build:
+    name: Deploy on macOS latest - Release for iOS
+    runs-on: macos-latest
+    env:
+      XCODE_VERSION: "15.2.0"
+      SWIFT_VERSION: "5.9.2"
+      TUIST_VERSION: "3.36.2"
+      
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set Xcode version
+        run: sudo xcode-select -s '/Applications/Xcode_15.2.0.app/Contents/Developer'
+
+      - name: Setup Swift
+        uses: swift-actions/setup-swift@v1
+        with:
+          swift-version: ${{ env.SWIFT_VERSION }}
+
+      - name: .env
+        run:
+            touch .env
+            echo "APP_STORE_CONNECT_API_KEY_KEY_ID=${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}" >> .env
+            echo "APP_STORE_CONNECT_API_KEY_ISSUER_ID=${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}" >> .env
+            echo "APP_STORE_CONNECT_API_KEY_KEY=${{ secrets.APP_STORE_CONNECT_API_KEY_KEY }}" >> .env
+
+      - name: Install Tuist
+        run: curl -Ls https://install.tuist.io|bash
+
+      - name: Tuist Version
+        run: mise use tuist@${{ env.TUIST_VERSION }}
+
+      - name: Install Fastlane
+        run: brew install fastlane
+          
+      - uses: actions/setup-ruby@v1
+        with:
+            ruby-version: 2.7
+
+      - name: Tuist clean
+        run: tuist clean
+
+      - name: Tuist fetch
+        run: tuist fetch
+      
+      - name: Tuist Signing Decrypt
+        run: tuist signing decrypt
+
+      - name: Set Keychain
+        run: fastlane set_keychain
+        env:
+            KEYCHAIN_NAME: ${{ secrets.KEYCHAIN_NAME }}
+            KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+
+      - name: Generate Xcode project with Tuist
+        run: tuist generate
+
+      - name: Fastlane run
+        run: fastlane tf
+
+      - name: Tagging
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.CHANHIHI }}
+
+      - name: Draft Release
+        id: draft_release
+        uses: release-drafter/release-drafter@v5
+        with:
+          config-name: Release-note.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.CHANHIHI }}
