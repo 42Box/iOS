@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    name: Deploy on macOS 12 - Archive / Release for iOS
+    name: Deploy on macOS latest - Release for iOS
     runs-on: macos-latest
     env:
       XCODE_VERSION: "15.2.0"
