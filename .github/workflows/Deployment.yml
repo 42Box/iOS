@@ -32,14 +32,18 @@ jobs:
           swift-version: ${{ env.SWIFT_VERSION }}
 
       - name: .env
-        run:
-            touch .env &&
-            echo "APP_STORE_CONNECT_API_KEY_KEY_ID=${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}" >> .env &&
-            echo "APP_STORE_CONNECT_API_KEY_ISSUER_ID=${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}" >> .env &&
-            echo "APP_STORE_CONNECT_API_KEY_KEY=${{ secrets.APP_STORE_CONNECT_API_KEY_KEY }}" >> .env
+        run: touch .env &&
+          echo "APP_STORE_CONNECT_API_KEY_KEY_ID=${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}" >> .env &&
+          echo "APP_STORE_CONNECT_API_KEY_ISSUER_ID=${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}" >> .env &&
+          echo "APP_STORE_CONNECT_API_KEY_KEY=${{ secrets.APP_STORE_CONNECT_API_KEY_KEY }}" >> .env
 
+      - name: Setting Master Key
+        run: | 
+          echo "$MASTER_KEY" > Tuist/master.key
+          
       - name: Install Tuist
-        run: curl -Ls https://install.tuist.io|bash
+        uses: jdx/mise-action@v2
+        run: mise install tuist@${{ env.TUIIST_VERSION }}
 
       - name: Tuist Version
         run: mise use tuist@${{ env.TUIST_VERSION }}
