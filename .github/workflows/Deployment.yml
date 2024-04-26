@@ -19,7 +19,7 @@ jobs:
       SWIFT_VERSION: "5.9.2"
       RUBY_VERSION: "2.6.10"
       TUIST_VERSION: "3.36.2"
-      
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
