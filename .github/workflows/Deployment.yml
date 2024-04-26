@@ -23,6 +23,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Set up Ruby 2.6
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+
       - name: Set Xcode version
         run: sudo xcode-select -s '/Applications/Xcode_15.2.0.app/Contents/Developer'
 
@@ -49,10 +54,6 @@ jobs:
 
       - name: Install Fastlane
         run: brew install fastlane
-          
-      - uses: actions/setup-ruby@v1
-        with:
-            ruby-version: 2.7
 
       - name: Tuist clean
         run: tuist clean
