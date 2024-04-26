@@ -27,7 +27,7 @@ jobs:
       - name: Set up Ruby 2.6
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: RUBY_VERSION
+          ruby-version: ${{ env.RUBY_VERSION }}
           bundler-cache: true
 
       - name: Set Xcode version
