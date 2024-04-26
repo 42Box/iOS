@@ -47,6 +47,8 @@ jobs:
       - name: Setting Master Key
         run: | 
           echo "$MASTER_KEY" > Tuist/master.key
+        env:
+          MASTER_KEY: ${{secrets.MASTER_KEY}}
 
       - name: Mise
         uses: jdx/mise-action@v2
