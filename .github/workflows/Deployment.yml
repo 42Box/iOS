@@ -45,10 +45,7 @@ jobs:
         uses: jdx/mise-action@v2
 
       - name: Install Tuist
-        run: mise install tuist@${{ env.TUIIST_VERSION }}
-
-      - name: Tuist Version
-        run: mise use tuist@${{ env.TUIST_VERSION }}
+        run: mise install tuist@${{ env.TUIST_VERSION }}
 
       - name: Install Fastlane
         run: brew install fastlane
