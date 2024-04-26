@@ -71,6 +71,7 @@ class WebView: UIView {
     private func setupProperty() {
         backgroundColor = .backgroundColor
         webView.navigationDelegate = self
+        webView.uiDelegate = self 
         progressObserver = webView.observe(\.estimatedProgress, options: .new) { [weak self] webView, _ in
             self?.progressView.setProgress(Float(webView.estimatedProgress), animated: true)
         }
@@ -220,4 +221,13 @@ extension WebView: UIGestureRecognizerDelegate {
         return true
     }
     
+}
+
+extension WebView: WKUIDelegate {
+    func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
+        if navigationAction.targetFrame == nil {
+            webView.load(navigationAction.request)
+        }
+        return nil
+    }
 }
