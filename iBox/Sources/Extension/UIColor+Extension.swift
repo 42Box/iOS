@@ -32,6 +32,8 @@ extension UIColor {
     static let box = UIColor(hex: 0xFF7F29)
     static let box2 = UIColor(hex: 0xFF9548)
     static let box3 = UIColor(hex: 0xFFDC6E)
+    static let boxWithOpacity = UIColor(hex: 0xFF7F29, alpha: 0.7)
+    static let box2WithOpacity = UIColor(hex: 0xFF9548, alpha: 0.7)
     static let tableViewBackgroundColor = color(light: .systemGroupedBackground, dark: .systemGray4)
     static let folderGray = color(light: .systemGray3, dark: .systemGray2)
     static let webIconColor = color(light: .black, dark: .systemGray)

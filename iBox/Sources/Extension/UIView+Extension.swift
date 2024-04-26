@@ -30,6 +30,16 @@ extension UIView {
         }
     }
     
+    func roundCorners(_ corners: UIRectCorner, radius: CGFloat) {
+        DispatchQueue.main.async { // 확실히 메인 스레드에서 실행되도록 강제
+            let path = UIBezierPath(roundedRect: self.bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+            let mask = CAShapeLayer()
+            mask.path = path.cgPath
+            mask.frame = self.bounds
+            self.layer.mask = mask
+        }
+    }
+    
     // MARK: - 뷰 계층 구조 log
     func printViewHierarchy(level: Int = 0) {
         let padding = String(repeating: " ", count: level * 2)
@@ -40,4 +50,5 @@ extension UIView {
             subview.printViewHierarchy(level: level + 1)
         }
     }
+    
 }

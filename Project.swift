@@ -64,8 +64,19 @@ class iBoxFactory: ProjectFactory {
         "NSExtension": [
             "NSExtensionAttributes": [
                 "NSExtensionActivationRule": [
-                    "NSExtensionActivationSupportsWebPageWithMaxCount" : 1,
-                    "NSExtensionActivationSupportsWebURLWithMaxCount" : 1
+                    "NSExtensionActivationSupportsWebPageWithMaxCount": 1,
+                    "NSExtensionActivationSupportsWebURLWithMaxCount": 1,
+                    "SUBQUERY": [
+                        "extensionItems": [
+                            "SUBQUERY": [
+                                "attachments": [
+                                    "ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO 'public.data'": "TRUE"
+                                ],
+                                "@count": 1
+                            ]
+                        ],
+                        "@count": 1
+                    ]
                 ]
             ],
             "NSExtensionPointIdentifier": "com.apple.share-services",
@@ -76,7 +87,7 @@ class iBoxFactory: ProjectFactory {
     func generateTarget() -> [ProjectDescription.Target] {
         let appTarget = Target(
             name: projectName,
-            destinations: [.iPhone],
+            destinations: .iOS,
             product: .app,
             bundleId: bundleId,
             deploymentTargets: .iOS(iosVersion),
@@ -88,7 +99,7 @@ class iBoxFactory: ProjectFactory {
         
         let shareExtensionTarget = Target(
             name: "\(projectName)ShareExtension",
-            destinations: [.iPhone],
+            destinations: .iOS,
             product: .appExtension,
             bundleId: "\(bundleId).ShareExtension",
             deploymentTargets: .iOS(iosVersion),

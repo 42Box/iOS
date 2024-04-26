@@ -93,7 +93,7 @@ extension EditFolderViewController: EditFolderViewDelegate {
     }
     
     private func recheckDeleteFolder(at indexPath: IndexPath) {
-        let actionSheetController = UIAlertController(title: nil, message: "모든 북마크가 삭제됩니다.", preferredStyle: .actionSheet)
+        let actionSheetController = UIAlertController(title: nil, message: "모든 북마크가 삭제됩니다.", preferredStyle: .alert)
         let firstAction = UIAlertAction(title: "폴더 삭제", style: .destructive) {[weak self] _ in
             guard let contentView = self?.contentView as? EditFolderView else { return }
             contentView.viewModel?.deleteFolder(at: indexPath)

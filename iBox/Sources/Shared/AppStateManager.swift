@@ -10,6 +10,10 @@ import Combine
 class AppStateManager {
     static let shared = AppStateManager()
     
-    @Published var isVersionCheckCompleted: VersionCheckCode = .initial
-    
+    @Published var versionCheckCompleted: VersionCheckCode = .initial
+    var currentViewErrorState: ViewErrorCode = .normal
+
+    func updateViewError(_ error: ViewErrorCode) {
+        currentViewErrorState = error
+    }
 }

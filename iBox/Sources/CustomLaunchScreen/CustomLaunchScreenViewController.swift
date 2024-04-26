@@ -38,7 +38,7 @@ class CustomLaunchScreenViewController: UIViewController {
     
     // MARK: - Custom Update Checker View (예정)
     private func observeVersionCheckCompletion() {
-        AppStateManager.shared.$isVersionCheckCompleted
+        AppStateManager.shared.$versionCheckCompleted
             .receive(on: DispatchQueue.main)
             .sink { [weak self] result in
                 switch result {

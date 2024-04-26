@@ -15,10 +15,10 @@ import SnapKit
 class CustomShareViewController: UIViewController {
     
     var dataURL: String?
-    var backgroundView = ShareExtensionBackGroundView()
+    var panelView = ShareExtensionPanelView()
     var modalView: UIView = {
         let modalview = UIView()
-        modalview.backgroundColor = UIColor.lightGray.withAlphaComponent(0.1)
+        modalview.backgroundColor = .clear
         return modalview
     }()
     
@@ -36,12 +36,12 @@ class CustomShareViewController: UIViewController {
     // MARK: - Setup Methods
     
     private func setupProperty() {
-        backgroundView.delegate = self
+        panelView.delegate = self
     }
     
     private func setupHierarchy() {
         view.addSubview(modalView)
-        modalView.addSubview(backgroundView)
+        modalView.addSubview(panelView)
     }
     
     private func setupLayout() {
@@ -49,7 +49,7 @@ class CustomShareViewController: UIViewController {
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
         
-        backgroundView.snp.makeConstraints { make in
+        panelView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(30)
             make.centerY.equalToSuperview().inset(20)
             make.height.equalTo(140)
@@ -70,7 +70,26 @@ class CustomShareViewController: UIViewController {
     }
     
     func extractSharedURL() {
-        guard let extensionItem = extensionContext?.inputItems.first as? NSExtensionItem else { return }
+        guard let extensionItem = extensionContext?.inputItems.first as? NSExtensionItem else {
+            print("No extension items found.")
+            return
+        }
+        
+        if let item = extensionContext?.inputItems.first as? NSExtensionItem {
+            for attachment in item.attachments ?? [] {
+                if attachment.hasItemConformingToTypeIdentifier("public.plain-text") {
+                    attachment.loadItem(forTypeIdentifier: "public.plain-text", options: nil) { (data, error) in
+                        DispatchQueue.main.async {
+                            if let text = data as? String {
+                                self.extractURL(fromText: text)
+                            } else {
+                                print("Error loading text: \(String(describing: error))")
+                            }
+                        }
+                    }
+                }
+            }
+        }
         
         for attachment in extensionItem.attachments ?? [] {
             if attachment.hasItemConformingToTypeIdentifier(UTType.url.identifier) {
@@ -85,7 +104,21 @@ class CustomShareViewController: UIViewController {
                     }
                 }
                 break
+            } else {
+                print("Attachment does not conform to URL type.")
             }
+        }
+    }
+    
+    private func extractURL(fromText text: String) {
+        let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+        let matches = detector?.matches(in: text, options: [], range: NSRange(location: 0, length: text.utf8.count))
+        
+        if let firstMatch = matches?.first, let range = Range(firstMatch.range, in: text), let url = URL(string: String(text[range])) {
+            print("Extracted URL: \(url)")
+            self.dataURL = url.absoluteString
+        } else {
+            print("No URL found in text")
         }
     }
     
@@ -114,13 +147,13 @@ class CustomShareViewController: UIViewController {
     
     @objc func handleBackgroundTap(_ sender: UITapGestureRecognizer) {
         let location = sender.location(in: self.view)
-        if !backgroundView.frame.contains(location) {
+        if !panelView.frame.contains(location) {
             cancel()
         }
     }
 }
 
-extension CustomShareViewController: ShareExtensionBackGroundViewDelegate {
+extension CustomShareViewController: ShareExtensionPanelViewDelegate {
     
     func didTapCancel() {
         cancel()
