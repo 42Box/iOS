@@ -20,8 +20,9 @@ jobs:
       TUIST_VERSION: "3.36.2"
       
     steps:
-      - name: Checkout
+      - name: Checkout + Mise
         uses: actions/checkout@v3
+        uses: jdx/mise-action@v2
 
       - name: Set Xcode version
         run: sudo xcode-select -s '/Applications/Xcode_15.2.0.app/Contents/Developer'
@@ -42,7 +43,6 @@ jobs:
           echo "$MASTER_KEY" > Tuist/master.key
           
       - name: Install Tuist
-        uses: jdx/mise-action@v2
         run: mise install tuist@${{ env.TUIIST_VERSION }}
 
       - name: Tuist Version
