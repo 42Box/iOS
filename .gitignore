@@ -5,6 +5,12 @@
 .LSOverride
 .env
 
+# Auth
+*.key
+*.p8
+*.p12
+*.cer
+
 # Icon must end with two
 Icon
 
