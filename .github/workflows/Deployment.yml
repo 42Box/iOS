@@ -46,12 +46,15 @@ jobs:
       - name: Setting Master Key
         run: | 
           echo "$MASTER_KEY" > Tuist/master.key
-                  
+
       - name: Mise
         uses: jdx/mise-action@v2
 
       - name: Install Tuist
         run: mise install tuist@${{ env.TUIST_VERSION }}
+
+      - name: Tuist version
+        run: mise use -g tuist@${{ env.TUIST_VERSION }}
 
       - name: Install Fastlane
         run: brew install fastlane
