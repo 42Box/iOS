@@ -37,6 +37,13 @@ jobs:
         with:
           swift-version: ${{ env.SWIFT_VERSION }}
 
+      - name: .env
+        run:
+            touch .env &&
+            echo "APP_STORE_CONNECT_API_KEY_KEY_ID=${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}" >> .env &&
+            echo "APP_STORE_CONNECT_API_KEY_ISSUER_ID=${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}" >> .env &&
+            echo "APP_STORE_CONNECT_API_KEY_KEY=${{ secrets.APP_STORE_CONNECT_API_KEY_KEY }}" >> .env
+
       - name: Install Tuist
         run: sudo curl -Ls https://install.tuist.io | bash
 
