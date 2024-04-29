@@ -1,5 +1,5 @@
 # Author by chanhihi
-# Date 2024.03.03
+# Date 2024.04.26
 
 name: Deployment
 
@@ -12,22 +12,23 @@ on:
 
 jobs:
   build:
-    name: Deploy on macOS 12 - Archive / Release for iOS
+    name: Deploy on macOS latest - Release for iOS
     runs-on: macos-latest
     env:
       XCODE_VERSION: "15.2.0"
       SWIFT_VERSION: "5.9.2"
-      XCODE_PROJECT: "iBox.xcodeproj"
-      XCODE_SCHEME: "iBox"
-      XCODE_ARCHIVE_PATH: "iBox.xcarchive"
-      XCODE_ARCHIVE_EXPORT_PATH: "./archive"
-      XCODE_EXPORT_PATH: "./artifacts"
+      RUBY_VERSION: "2.6.10"
       TUIST_VERSION: "3.36.2"
-      APP_STORE_CONNECT_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Set up Ruby 2.6
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+          bundler-cache: true
 
       - name: Set Xcode version
         run: sudo xcode-select -s '/Applications/Xcode_15.2.0.app/Contents/Developer'
@@ -37,20 +38,51 @@ jobs:
         with:
           swift-version: ${{ env.SWIFT_VERSION }}
 
+      - name: .env
+        run: touch .env &&
+          echo "APP_STORE_CONNECT_API_KEY_KEY_ID=${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}" >> .env &&
+          echo "APP_STORE_CONNECT_API_KEY_ISSUER_ID=${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}" >> .env &&
+          echo "APP_STORE_CONNECT_API_KEY_KEY=${{ secrets.APP_STORE_CONNECT_API_KEY_KEY }}" >> .env
+
+      - name: Setting Master Key
+        run: | 
+          echo "$MASTER_KEY" > Tuist/master.key
+        env:
+          MASTER_KEY: ${{secrets.MASTER_KEY}}
+
+      - name: Mise
+        uses: jdx/mise-action@v2
+
       - name: Install Tuist
-        run: sudo curl -Ls https://install.tuist.io | bash
+        run: mise install tuist@${{ env.TUIST_VERSION }}
+
+      - name: Tuist version
+        run: mise use -g tuist@${{ env.TUIST_VERSION }}
+
+      - name: Install Fastlane
+        run: brew install fastlane
+
+      - name: Tuist clean
+        run: tuist clean
+
+      - name: Tuist fetch
+        run: tuist fetch
+      
+      - name: Tuist Signing Decrypt
+        run: tuist signing decrypt
+
+      - name: Set Keychain
+        run: fastlane set_keychain
+        env:
+            KEYCHAIN_NAME: ${{ secrets.KEYCHAIN_NAME }}
+            KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
 
       - name: Generate Xcode project with Tuist
-        run: tuist local ${{ env.TUIST_VERSION }} && tuist generate
+        run: tuist generate
 
-      - name: Archive for iOS (Main App and Share Extension)
-        run: |
-          xcodebuild archive -project $XCODE_PROJECT -scheme $XCODE_SCHEME -archivePath "$XCODE_ARCHIVE_EXPORT_PATH"/"$XCODE_ARCHIVE_PATH" -sdk iphoneos BUILD_LIBRARY_FOR_DISTRIBUTION=YES SKIP_INSTALL=NO
-          
-      - name: Export IPA
-        run: |
-          xcodebuild -exportArchive -archivePath "$XCODE_ARCHIVE_EXPORT_PATH"/"$XCODE_ARCHIVE_PATH" -exportOptionsPlist ExportOptions.plist -exportPath "$XCODE_EXPORT_PATH"
-        
+      - name: Fastlane run
+        run: fastlane tf
+
       - name: Tagging
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.1
@@ -64,9 +96,3 @@ jobs:
           config-name: Release-note.yml
         env:
           GITHUB_TOKEN: ${{ secrets.CHANHIHI }}
-          
-      - name: Upload IPA
-        uses: actions/upload-artifact@v2
-        with:
-          name: Box42-${{ steps.tag_version.outputs.new_tag }}
-          path: ${{ env.XCODE_EXPORT_PATH }}/*.ipa
