@@ -43,7 +43,9 @@ class CustomLaunchScreenViewController: UIViewController {
             .sink { [weak self] result in
                 switch result {
                 case .success, .maxRetryReached, .later:
-                    self?.transitionToNextScreen()
+                    DefaultData.insertDefaultDataIfNeeded() {
+                        self?.transitionToNextScreen()
+                    }
                     print("App 정상 실행")
                 case .urlError:
                     print("URL 에러가 발생했습니다.")
@@ -66,7 +68,6 @@ class CustomLaunchScreenViewController: UIViewController {
                 case .internalInfoError:
                     print("info error 수집")
                 case .initial:
-                    self?.startupFlow()
                     print("init")
                 }
             }
