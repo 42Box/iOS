@@ -28,7 +28,7 @@ class CustomLaunchScreenView: UIView {
     
     private func configureUI() {
         backgroundColor = .backgroundColor
-        logoImageView.image = UIImage(named: "playstore")
+        logoImageView.image = UIImage(named: "LaunchIcon")
         logoImageView.contentMode = .scaleAspectFit
         addSubview(logoImageView)
         
