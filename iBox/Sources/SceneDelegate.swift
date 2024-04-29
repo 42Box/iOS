@@ -10,26 +10,19 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-    
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
+        
+        let mainViewController = MainViewController()
+        
+        let navigationController = UINavigationController(rootViewController: mainViewController)
 
-        window?.overrideUserInterfaceStyle = window?.toUserInterfaceStyle(UserDefaultsManager.theme) ?? .unspecified
-        
-        window?.rootViewController = CustomLaunchScreenViewController(urlContext: connectionOptions.urlContexts.first)
-        window?.makeKeyAndVisible()
-        
-    }
-    
-    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        if let urlContext = URLContexts.first,
-        let tabBarController = window?.rootViewController as? UITabBarController {
-        AddBookmarkManager.shared.navigateToAddBookmarkView(from: urlContext.url, in: tabBarController)
-        }
+        window?.rootViewController = navigationController // 루트 뷰컨트롤러 설정
+        window?.makeKeyAndVisible() // 윈도우를 화면에 보여줌
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -60,7 +53,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
 
         // Save changes in the application's managed object context when the application transitions to the background.
+        (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
     }
 
 
 }
+
