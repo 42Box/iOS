@@ -29,7 +29,7 @@ class iBoxFactory: ProjectFactory {
     
     private let appInfoPlist: [String: Plist.Value] = [
         "ITSAppUsesNonExemptEncryption": false,
-        "CFBundleDisplayName": "iBox",
+        "CFBundleDisplayName": "42Box",
         "CFBundleName": "iBox",
         "CFBundleShortVersionString": "1.0.0",
         "CFBundleVersion": "1",
@@ -58,7 +58,7 @@ class iBoxFactory: ProjectFactory {
     ]
     
     private let shareExtensionInfoPlist: [String: Plist.Value] = [
-        "CFBundleDisplayName": "iBox.Share",
+        "CFBundleDisplayName": "42Box.Share",
         "CFBundleShortVersionString": "1.0.0",
         "CFBundleVersion": "1",
         "NSExtension": [
