@@ -56,6 +56,7 @@ class BoxListViewModel {
                 let folders = CoreDataManager.shared.getFolders()
                 boxList = folders.map{ BoxListSectionViewModel(folder: $0) }
                 favoriteId = UserDefaultsManager.favoriteId
+                output.send(.sendBoxList(boxList: boxList))
             case .viewWillAppear:
                 output.send(.sendBoxList(boxList: boxList))
                 if !sectionsToReload.isEmpty {
