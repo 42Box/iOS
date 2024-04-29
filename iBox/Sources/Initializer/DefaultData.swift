@@ -21,6 +21,8 @@ class DefaultData {
                     completion?()
                 }
             }
+        } else {
+            completion?()
         }
     }
     
