@@ -74,10 +74,6 @@ class CustomLaunchScreenViewController: UIViewController {
             .store(in: &cancellables)
     }
     
-    private func startupFlow() {
-        DefaultData.insertDefaultDataIfNeeded()
-    }
-    
     private func transitionToNextScreen() {
         guard let window = self.view.window else { return }
         
