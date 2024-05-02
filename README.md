@@ -98,3 +98,13 @@
   </tr>
 
 </table>
+
+# 🔎 How To Use
+
+## ShareExtension
+
+## Internal Add Bookmark
+
+## List Context Menu
+
+## Darkmode
