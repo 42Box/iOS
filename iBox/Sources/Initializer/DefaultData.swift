@@ -28,7 +28,7 @@ class DefaultData {
     
     static func fetchDefaultData(completion: @escaping ([Folder]) -> Void) {
         let localDic: [String : String] = ["Seoul" : "default-kr", "default" : "default"]
-        let cityName = "Seoul" // 추후 global 예정
+        let cityName = "Seoul"
         let local = localDic[cityName] ?? "default"
         
         let url = URL(string: "https://raw.githubusercontent.com/42Box/versioning/main/\(local).json")!
@@ -42,6 +42,9 @@ class DefaultData {
             do {
                 let folderData = try JSONDecoder().decode(FolderData.self, from: data)
                 let folders = [Folder(id: UUID(), name: "42 \(cityName)", bookmarks: folderData.list.map { Bookmark(id: UUID(), name: $0.name, url: URL(string: $0.url)!) })]
+                if let defaultURLData = URL(string: folderData.favorite) {
+                    DefaultDataLoader.defaultURL = defaultURLData
+                }
                 completion(folders)
             } catch {
                 print("Error decoding JSON: \(error)")

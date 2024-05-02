@@ -11,7 +11,7 @@ import WebKit
 class WebViewPreloader {
     static let shared = WebViewPreloader()
     private var favoriteView: (url: URL, webView: WebView)?
-    private var defaultUrl = URL(string: "https://profile.intra.42.fr/")!
+    private var defaultUrl = DefaultDataLoader.defaultURL
     
     private init() {}
     

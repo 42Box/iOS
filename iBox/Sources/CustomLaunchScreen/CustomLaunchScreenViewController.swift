@@ -44,7 +44,9 @@ class CustomLaunchScreenViewController: UIViewController {
                 switch result {
                 case .success, .maxRetryReached, .later:
                     DefaultData.insertDefaultDataIfNeeded() {
-                        self?.transitionToNextScreen()
+                        DispatchQueue.main.async {
+                            self?.transitionToNextScreen()
+                        }
                     }
                     print("App 정상 실행")
                 case .urlError:
