@@ -99,13 +99,16 @@
 
 </table>
 
+<br/>
+<br/>
+
 # 🔎 How To Use
 
 ### Folder Edit
 
 |Manage folders| 폴더 관리|
 |---|---|
-<img width="230" alt="image" src="https://github.com/42Box/iOS/assets/85754295/cb1f0768-3fe6-40b1-9ca3-ff50f53119f4">|<img width="230" alt="image" src="https://github.com/42Box/iOS/assets/116494364/e07a8b51-97f6-4c45-a857-63bfb0e42564">|
+<img width="230" alt="image" src="https://github.com/42Box/iOS/assets/85754295/f5164646-5ba0-4193-b9b6-eb1c4e01163e">|<img width="230" alt="image" src="https://github.com/42Box/iOS/assets/116494364/e07a8b51-97f6-4c45-a857-63bfb0e42564">|
 
 ### Share Extension
 
