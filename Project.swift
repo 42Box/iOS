@@ -9,6 +9,14 @@ protocol ProjectFactory {
     func generateTarget() -> [Target]
 }
 
+// MARK: - Plist.Value Extension
+extension Plist.Value {
+    static var displayName: Plist.Value = "42Box"
+    static var displayShareExtensionName: Plist.Value = "42Box.Share"
+    static var appVersion: Plist.Value = "1.0.1"
+    
+}
+
 // MARK: - iBox Factory
 
 class iBoxFactory: ProjectFactory {
@@ -29,9 +37,9 @@ class iBoxFactory: ProjectFactory {
     
     private let appInfoPlist: [String: Plist.Value] = [
         "ITSAppUsesNonExemptEncryption": false,
-        "CFBundleDisplayName": "42Box",
+        "CFBundleDisplayName": Plist.Value.displayName,
         "CFBundleName": "iBox",
-        "CFBundleShortVersionString": "1.0.0",
+        "CFBundleShortVersionString": Plist.Value.appVersion,
         "CFBundleVersion": "1",
         "UILaunchStoryboardName": "LaunchScreen",
         "UIApplicationSceneManifest": [
@@ -58,8 +66,8 @@ class iBoxFactory: ProjectFactory {
     ]
     
     private let shareExtensionInfoPlist: [String: Plist.Value] = [
-        "CFBundleDisplayName": "42Box.Share",
-        "CFBundleShortVersionString": "1.0.0",
+        "CFBundleDisplayName": Plist.Value.displayShareExtensionName,
+        "CFBundleShortVersionString": Plist.Value.appVersion,
         "CFBundleVersion": "1",
         "NSExtension": [
             "NSExtensionAttributes": [
