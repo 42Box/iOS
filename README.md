@@ -102,9 +102,13 @@
 # 🔎 How To Use
 
 ## ShareExtension
+![1242*2688(3)](https://github.com/42Box/iOS/assets/85754295/cb1f0768-3fe6-40b1-9ca3-ff50f53119f4)
 
 ## Internal Add Bookmark
+![1242*2688(4)](https://github.com/42Box/iOS/assets/85754295/7e83aeb6-8518-4183-8084-48e70087a304)
 
 ## List Context Menu
+![1242*2688(5)](https://github.com/42Box/iOS/assets/85754295/82a5941c-e7d1-43f4-96bd-649ecfcc312e)
 
 ## Darkmode
+![1242*2688(6)](https://github.com/42Box/iOS/assets/85754295/73f09320-2d85-4ba3-a3b8-067a49a33c55)
