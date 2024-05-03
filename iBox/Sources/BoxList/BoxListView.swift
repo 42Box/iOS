@@ -448,10 +448,7 @@ extension BoxListView: UITableViewDelegate {
                 generator.impactOccurred()
             }
             
-            let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-            if let viewController = self.delegate as? UIViewController {
-                viewController.present(activityViewController, animated: true, completion: nil)
-            }
+            delegate?.pushViewController(url: url)
         }
         
         let editAction = UIAction(title: "북마크 편집", image: UIImage(systemName: "pencil")) { [weak self] action in
@@ -474,8 +471,6 @@ extension BoxListView: UITableViewDelegate {
                 generator.impactOccurred()
             }
         }
-        
-        
         
         return UIMenu(title: "", children: [favoriteAction, shareAction, editAction, deleteAction])
     }
