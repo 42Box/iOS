@@ -16,7 +16,7 @@ class GuideViewController: BaseViewController<GuideView>, BaseViewControllerProt
         setupNavigationBar()
         
         guard let contentView = contentView as? GuideView else { return }
-        contentView.guideUrl = URL(string: "https://github.com/42Box/iOS/tree/develop?tab=readme-ov-file#%EF%B8%8F%EF%B8%8F-introduction")
+        contentView.guideUrl = URL(string: "https://42box.github.io/iOSIntroduction")
     }
     
     // MARK: - BaseViewControllerProtocol
