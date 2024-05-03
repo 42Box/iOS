@@ -10,11 +10,11 @@ protocol ProjectFactory {
 }
 
 // MARK: - Plist.Value Extension
+
 extension Plist.Value {
     static var displayName: Plist.Value = "42Box"
     static var displayShareExtensionName: Plist.Value = "42Box.Share"
-    static var appVersion: Plist.Value = "1.0.1"
-    
+    static var appVersion: Plist.Value = "1.0.2"
 }
 
 // MARK: - iBox Factory
