@@ -265,6 +265,14 @@ extension BoxListViewController: BoxListViewDelegate {
     func pushViewController(url: URL?) {
         guard let url = url else { return }
         let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        
+        // 아이패드 대응
+        if let popoverController = activityViewController.popoverPresentationController {
+            popoverController.sourceView = self.view
+            popoverController.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
+            popoverController.permittedArrowDirections = []
+        }
+        
         self.present(activityViewController, animated: true)
     }
     
