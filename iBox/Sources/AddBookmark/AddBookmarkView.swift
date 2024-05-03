@@ -20,7 +20,13 @@ class AddBookmarkView: UIView {
     
     var selectedFolderName: String? {
         didSet {
-            selectedFolderLabel.text = selectedFolderName
+            if selectedFolderName != nil {
+                selectedFolderLabel.text = selectedFolderName
+                selectedFolderLabel.textColor = .systemGray
+            } else {
+                selectedFolderLabel.text = "선택된 폴더가 없습니다."
+                selectedFolderLabel.textColor = .box
+            }
         }
     }
     

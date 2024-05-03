@@ -109,7 +109,7 @@ final class AddBookmarkViewController: UIViewController {
         if let selectedFolder {
             addBookmarkView.selectedFolderName = selectedFolder.name
         } else {
-            addBookmarkView.selectedFolderName = "선택된 폴더가 없습니다."
+            addBookmarkView.selectedFolderName = nil
         }
     }
     
