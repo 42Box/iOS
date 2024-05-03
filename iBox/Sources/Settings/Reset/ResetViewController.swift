@@ -36,14 +36,14 @@ class ResetViewController: BaseViewController<ResetView>, BaseViewControllerProt
 extension ResetViewController: ResetViewDelegate {
     
     func showAlert() {
-        let alertController = UIAlertController(title: "경고", message: "이 작업은 되돌릴 수 없습니다. 계속하려면 \"iBox\"라고 입력해 주세요.", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "경고", message: "이 작업은 되돌릴 수 없습니다. 계속하려면 \"42Box\"라고 입력해 주세요.", preferredStyle: .alert)
         
         let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
         alertController.addAction(cancelAction)
         
         let confirmAction = UIAlertAction(title: "확인", style: .default) { [weak self] _ in
             guard let self = self else { return }
-            if let textField = alertController.textFields?.first, let text = textField.text, text == "iBox" {
+            if let textField = alertController.textFields?.first, let text = textField.text, text == "42Box" {
                 self.resetData()
             } else {
                 self.showAlert()
@@ -58,7 +58,7 @@ extension ResetViewController: ResetViewDelegate {
         alertController.addTextField() { textField in
             NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: textField, queue: OperationQueue.main, using:
                                                     {_ in
-                let isTextMatch = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "iBox"
+                let isTextMatch = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "42Box"
                 
                 confirmAction.isEnabled = isTextMatch
             })
