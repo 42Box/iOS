@@ -2,8 +2,9 @@
     <img src="https://github.com/42Box/iOS/assets/116494364/ab0a2abc-f065-4d5f-b33e-b114979011cf" alt="Fox">
 </div>
 
-
-[<img width="180" alt="appstore" src="https://user-images.githubusercontent.com/55099365/196023806-5eb7be0f-c7cf-4661-bb39-35a15146c33a.png">](https://apps.apple.com)
+<a href="https://apps.apple.com/kr/app/42box/id6499335551" target="_blank">
+  <img width="180" alt="appstore" src="https://user-images.githubusercontent.com/55099365/196023806-5eb7be0f-c7cf-4661-bb39-35a15146c33a.png">
+</a>
 
 <br/>
 
