@@ -1,4 +1,5 @@
 gen:
+	mise use tuist@3.36.2
 	tuist fetch
 	tuist generate
 
