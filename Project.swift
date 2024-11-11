@@ -14,7 +14,7 @@ protocol ProjectFactory {
 extension Plist.Value {
     static var displayName: Plist.Value = "42Box"
     static var displayShareExtensionName: Plist.Value = "42Box.Share"
-    static var appVersion: Plist.Value = "1.1.0"
+    static var appVersion: Plist.Value = "1.1.1"
 }
 
 // MARK: - iBox Factory
