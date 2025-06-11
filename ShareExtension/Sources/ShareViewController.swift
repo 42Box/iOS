@@ -130,15 +130,16 @@ class CustomShareViewController: UIViewController {
         })
     }
     
-    @objc func openURL(_ url: URL) -> Bool {
-        self.hideExtensionWithCompletionHandler(completion: { _ in
-            self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
-        })
-        
+    @objc @discardableResult private func openURL(_ url: URL) -> Bool {
         var responder: UIResponder? = self
         while responder != nil {
             if let application = responder as? UIApplication {
-                return application.perform(#selector(openURL(_:)), with: url) != nil
+                if #available(iOS 18.0, *) {
+                    application.open(url, options: [:], completionHandler: nil)
+                    return true
+                } else {
+                    return application.perform(#selector(openURL(_:)), with: url) != nil
+                }
             }
             responder = responder?.next
         }
