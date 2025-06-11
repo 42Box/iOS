@@ -14,7 +14,7 @@ protocol ShareExtensionPanelViewDelegate: AnyObject {
     func didTapOpenApp()
 }
 
-class ShareExtensionPanelView: UIView {
+final class ShareExtensionPanelView: UIView {
     
     // MARK: - Properties
     weak var delegate: ShareExtensionPanelViewDelegate?
